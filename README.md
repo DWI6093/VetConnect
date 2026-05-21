@@ -70,6 +70,7 @@ npm run build
 
 ## Estructura de carpetas del Frontend
 
+```
 src/app/
 │
 ├── core/                          # Solo singletons globales
@@ -110,8 +111,11 @@ src/app/
     ├── pipes/
     └── models/                    # Interfaces compartidas (Usuario, Plan, etc.)
 
+```
+
 ## Estructura de carpetas del Backend
 
+```
 src/
 │
 ├── modules/                        
@@ -156,3 +160,5 @@ src/
 │   └── migrations/
 │
 └── main.ts
+```
+
