@@ -1,0 +1,10 @@
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // Railway inyecta PORT; fallback a 3000 en local
+  const port = process.env.PORT ?? 3000;
+
+  await app.listen(port, '0.0.0.0'); // '0.0.0.0' obligatorio en Railway
+  console.log(`Application running on port ${port}`);
+}
+bootstrap();
