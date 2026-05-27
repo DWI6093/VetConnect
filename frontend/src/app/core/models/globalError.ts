@@ -5,3 +5,5 @@ export interface IErrorGlobal {
     path: string;
     error?: any;
 }
+
+// Otro cambio para pruebas
