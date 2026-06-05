@@ -1,5 +1,3 @@
-
-
 ## Inicio rapido (Onboarding)
 
 ### Requisitos
