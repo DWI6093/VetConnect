@@ -9,3 +9,12 @@ jobs:
     steps:
       - name: Say Hello
         run: echo "Hello World"
+
+      - name: Fecha de Hoy
+        run: date
+        
+      - name: Listar archivos ocultos
+        run: ls -a
+
+      - name: Nombre
+        run: echo "César Abraham Lopez Aguilar"
