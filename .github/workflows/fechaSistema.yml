@@ -1,0 +1,19 @@
+name: Fecha del Sistema
+on: 
+  workflow_dispatch:
+
+jobs:
+  Tarea1:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Saludar
+        run: echo "Bienvenidos a todos"
+
+  Tarea2:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Fecha del sistema
+        run: echo "Hoy es $(date)"
+        
