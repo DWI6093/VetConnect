@@ -1,0 +1,14 @@
+name: Hola mundo
+on:
+ workflow_dispatch:
+jobs:
+  Tarea1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: decir-hola
+        run: echo "Hola a todos"        
+   Tarea2:
+     runs-on: ubuntu-latest 
+     steps:
+      - name: decir-fecha
+        run: echo "Hoy es $(date)"

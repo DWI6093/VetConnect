@@ -1,0 +1,25 @@
+name: Hello world with workflow Abraham
+on: 
+  workflow_dispatch: 
+
+jobs:
+  Tarea1:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Say Hello
+        run: echo "Hello World"
+  
+  Tarea2:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Fecha del sistema
+        run: echo "Hoy es $(date)"
+
+      - name: Listar archivos ocultos
+        run: ls -a
+
+      - name: Nombre
+        run: echo "César Abraham Lopez Aguilar"
+        
