@@ -1,0 +1,218 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model aceptacion_terminos {
+  version_aviso_privacidad String   @db.VarChar(20)
+  version_terminos         String   @db.VarChar(20)
+  id_aceptacion            String   @id(map: "PK_199e53ad9d92a5b18da788e89c0") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id_usuario               String   @db.Uuid
+  fecha_aceptacion         DateTime @default(now()) @db.Timestamp(6)
+  ip_aceptacion            String   @db.VarChar(45)
+  usuarios                 usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade, onUpdate: NoAction, map: "FK_e9ff7ea6bb56c0a1765b92ee2eb")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bloqueo_ip {
+  id_bloqueo      Int      @id(map: "pk_bloqueo_ip") @default(autoincrement())
+  ip              String   @unique(map: "uq_bloqueo_ip") @db.Inet
+  intentos        Int      @default(1) @db.SmallInt
+  bloqueada_hasta DateTime @db.Timestamptz(6)
+  fecha_registro  DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([bloqueada_hasta], map: "idx_bloqueo_fecha")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model horario {
+  id_horario    Int        @id(map: "pk_horario") @default(autoincrement())
+  id_negocio    Int
+  dia           dia_semana
+  hora_apertura DateTime   @db.Time(6)
+  hora_cierre   DateTime   @db.Time(6)
+  negocio       negocio    @relation(fields: [id_negocio], references: [id_negocio], onDelete: Cascade, map: "fk_horario_negocio")
+
+  @@unique([id_negocio, dia], map: "uq_horario")
+  @@index([id_negocio], map: "idx_horario_negocio")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model imagen_negocio {
+  id_imagen      Int      @id(map: "pk_imagen_negocio") @default(autoincrement())
+  id_negocio     Int
+  ruta_imagen    String   @db.VarChar(500)
+  nombre_archivo String   @db.VarChar(255)
+  orden          Int      @default(1) @db.SmallInt
+  fecha_subida   DateTime @default(now()) @db.Timestamptz(6)
+  negocio        negocio  @relation(fields: [id_negocio], references: [id_negocio], onDelete: Cascade, map: "fk_imagen_negocio")
+
+  @@index([id_negocio], map: "idx_imagen_negocio")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model log_auditoria {
+  id_log           Int              @id(map: "pk_log_auditoria") @default(autoincrement())
+  id_usuario       Int?
+  accion           accion_auditoria
+  entidad_afectada String?          @db.VarChar(50)
+  id_entidad       Int?
+  ip               String?          @db.Inet
+  user_agent       String?          @db.VarChar(500)
+  fecha_hora       DateTime         @default(now()) @db.Timestamptz(6)
+  usuario          usuario?         @relation(fields: [id_usuario], references: [id_usuario], map: "fk_log_usuario")
+
+  @@index([accion], map: "idx_log_accion")
+  @@index([fecha_hora], map: "idx_log_fecha")
+  @@index([id_usuario], map: "idx_log_usuario")
+}
+
+model log_errores {
+  modulo      String    @db.VarChar(100)
+  mensaje     String
+  stacktrace  String?
+  id_error    String    @id(map: "PK_bfec650304b237bb955af98c480") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id_usuario  String?   @db.Uuid
+  ip          String?   @db.VarChar(45)
+  fecha_error DateTime  @default(now()) @db.Timestamp(6)
+  usuarios    usuarios? @relation(fields: [id_usuario], references: [id_usuario], onUpdate: NoAction, map: "FK_ef0aa2f8b6a1c580eb5b969c130")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model negocio {
+  id_negocio          Int                      @id(map: "pk_negocio") @default(autoincrement())
+  id_propietario      Int
+  nombre              String                   @db.VarChar(50)
+  direccion           String                   @db.VarChar(150)
+  telefono            String                   @db.VarChar(10)
+  descripcion         String?
+  ubicacion           Unsupported("geography")
+  estado              estado_negocio           @default(ACTIVO)
+  fecha_creacion      DateTime                 @default(now()) @db.Timestamptz(6)
+  fecha_actualizacion DateTime?                @db.Timestamptz(6)
+  horario             horario[]
+  imagen_negocio      imagen_negocio[]
+  usuario             usuario                  @relation(fields: [id_propietario], references: [id_usuario], map: "fk_negocio_usuario")
+  producto            producto[]
+  servicio            servicio[]
+
+  @@index([estado], map: "idx_negocio_estado")
+  @@index([nombre], map: "idx_negocio_nombre")
+  @@index([id_propietario], map: "idx_negocio_propietario")
+  @@index([ubicacion], map: "idx_negocio_ubicacion", type: Gist)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model producto {
+  id_producto Int     @id(map: "pk_producto") @default(autoincrement())
+  id_negocio  Int
+  nombre      String  @db.VarChar(50)
+  descripcion String? @db.VarChar(250)
+  precio      Decimal @db.Decimal(10, 2)
+  disponible  Boolean @default(true)
+  negocio     negocio @relation(fields: [id_negocio], references: [id_negocio], onDelete: Cascade, map: "fk_producto_negocio")
+
+  @@index([id_negocio], map: "idx_producto_negocio")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model servicio {
+  id_servicio Int     @id(map: "pk_servicio") @default(autoincrement())
+  id_negocio  Int
+  nombre      String  @db.VarChar(50)
+  descripcion String? @db.VarChar(250)
+  precio      Decimal @db.Decimal(10, 2)
+  negocio     negocio @relation(fields: [id_negocio], references: [id_negocio], onDelete: Cascade, map: "fk_servicio_negocio")
+
+  @@index([id_negocio], map: "idx_servicio_negocio")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model spatial_ref_sys {
+  srid      Int     @id
+  auth_name String? @db.VarChar(256)
+  auth_srid Int?
+  srtext    String? @db.VarChar(2048)
+  proj4text String? @db.VarChar(2048)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model usuario {
+  id_usuario                   Int             @id(map: "pk_usuario") @default(autoincrement())
+  nombre                       String          @db.VarChar(50)
+  apellido                     String          @db.VarChar(50)
+  correo                       String          @unique(map: "uq_usuario_correo") @db.VarChar(254)
+  password_hash                String          @db.VarChar(255)
+  rol                          rol_usuario
+  estado                       estado_usuario  @default(ACTIVO)
+  intentos_fallidos            Int             @default(0) @db.SmallInt
+  fecha_registro               DateTime        @default(now()) @db.Timestamptz(6)
+  fecha_actualizacion          DateTime?       @db.Timestamptz(6)
+  fecha_solicitud_eliminacion  DateTime?       @db.Timestamptz(6)
+  fecha_eliminacion_programada DateTime?       @db.Timestamptz(6)
+  log_auditoria                log_auditoria[]
+  negocio                      negocio[]
+
+  @@index([estado], map: "idx_usuario_estado")
+  @@index([rol], map: "idx_usuario_rol")
+}
+
+enum accion_auditoria {
+  LOGIN
+  LOGOUT
+  CREAR_NEGOCIO
+  ACTUALIZAR_NEGOCIO
+  ELIMINAR_NEGOCIO
+  SOLICITAR_ELIMINACION_CUENTA
+  RESTAURAR_CUENTA
+  ELIMINAR_CUENTA
+}
+
+enum dia_semana {
+  LUNES
+  MARTES
+  MIERCOLES
+  JUEVES
+  VIERNES
+  SABADO
+  DOMINGO
+}
+
+enum estado_negocio {
+  ACTIVO
+  INACTIVO
+}
+
+enum estado_usuario {
+  ACTIVO
+  BLOQUEADO
+  PENDIENTE_ELIMINACION
+  ELIMINADO
+}
+
+enum rol_usuario {
+  CLIENTE
+  COLABORADOR
+}
+
+enum usuarios_estado_enum {
+  ACTIVO
+  INACTIVO
+  SUSPENDIDO
+  ELIMINADO
+}
+
+enum usuarios_rol_enum {
+  CLIENTE
+  COLABORADOR
+}
