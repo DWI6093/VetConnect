@@ -11,13 +11,14 @@ import { ServicioAutenticacion } from '../../core/services/auth.service';
 })
 export class LayoutColaboradoresComponente {
   protected readonly servicioAutenticacion = inject(ServicioAutenticacion);
-  protected readonly sidebarAbierto = signal<boolean>(true);
+  protected readonly menuPerfilAbierto = signal<boolean>(false);
 
-  protected alternarSidebar(): void {
-    this.sidebarAbierto.update((valor) => !valor);
+  protected alternarMenuPerfil(): void {
+    this.menuPerfilAbierto.update((valor) => !valor);
   }
 
   protected cerrarSesionUsuario(): void {
     this.servicioAutenticacion.cerrarSesion();
   }
 }
+

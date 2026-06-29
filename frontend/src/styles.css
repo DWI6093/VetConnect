@@ -1,1 +1,93 @@
-/* You can add global styles to this file, and also import other style files */
+/* =============================================
+   VetConnect – Variables Globales de Diseño
+   ============================================= */
+
+:root {
+  /* Paleta Principal */
+  --color-principal:    #14B8A6;
+  --color-secundario:   #1E3A5F;
+
+  /* Fondos */
+  --color-fondo:        #F8FAFC;
+  --color-tarjeta:      #FFFFFF;
+
+  /* Tipografía */
+  --color-texto:        #334155;
+  --color-texto-suave:  #64748b;
+  --color-texto-oscuro: #0f172a;
+
+  /* Bordes y divisores */
+  --color-borde:        #e2e8f0;
+  --color-borde-suave:  #f1f5f9;
+
+  /* Estados / Semánticos */
+  --color-exito:        #22C55E;
+  --color-advertencia:  #F59E0B;
+  --color-error:        #EF4444;
+  --color-info:         #3B82F6;
+
+  /* Variantes con opacidad */
+  --color-principal-suave:  rgba(20, 184, 166, 0.1);
+  --color-principal-borde:  #CCFBF1;
+  --color-exito-suave:      rgba(34, 197, 94, 0.1);
+  --color-error-suave:      rgba(239, 68, 68, 0.08);
+  --color-info-suave:       rgba(59, 130, 246, 0.08);
+
+  /* Tipografía */
+  --fuente-base: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Sombras */
+  --sombra-tarjeta:  0 4px 20px rgba(0, 0, 0, 0.05);
+  --sombra-navbar:   0 1px 3px rgba(0, 0, 0, 0.05);
+  --sombra-dropdown: 0 10px 25px rgba(0, 0, 0, 0.08);
+
+  /* Radios de borde */
+  --radio-sm:   8px;
+  --radio-md:   12px;
+  --radio-lg:   16px;
+  --radio-pill: 9999px;
+
+  /* Transición estándar */
+  --transicion: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =============================================
+   Reset & Base
+   ============================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--fuente-base);
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: var(--fuente-base);
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}

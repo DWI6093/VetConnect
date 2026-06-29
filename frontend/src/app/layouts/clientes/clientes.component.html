@@ -1,45 +1,66 @@
 <div class="layout-contenedor">
-  <!-- Navbar Superior Premium -->
+  <!-- Navbar Superior -->
   <header class="barra-navegacion">
     <div class="navbar-limite">
+
       <!-- Logo -->
       <div class="navbar-marca" routerLink="/cliente/inicio">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" class="marca-icono">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30" height="30" class="marca-icono">
           <path fill="none" d="M0 0h24v24H0z"/>
-          <path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          <path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/>
         </svg>
-        <span class="marca-texto">VetConnect</span>
+        <div class="marca-texto-grupo">
+          <span class="marca-nombre">VetConnect</span>
+          <span class="marca-subtitulo">Conectando mascotas con los mejores negocios 🐾</span>
+        </div>
       </div>
 
-      <!-- Links del Menú Principal -->
+      <!-- Menú Central -->
       <nav class="menu-navegacion">
-        <a routerLink="/cliente/inicio" routerLinkActive="activo" class="menu-enlace">Inicio</a>
-        <a class="menu-enlace enlace-deshabilitado">Buscar Veterinarias</a>
-        <a class="menu-enlace enlace-deshabilitado">Mis Mascotas</a>
-        <a class="menu-enlace enlace-deshabilitado">Mis Citas</a>
+        <a routerLink="/cliente/inicio" routerLinkActive="activo" class="menu-enlace">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          Inicio
+        </a>
+        <a class="menu-enlace enlace-deshabilitado">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5z"/></svg>
+          Mapa
+        </a>
       </nav>
 
-      <!-- Perfil del Usuario -->
-      <div class="perfil-contenedor">
-        <button type="button" class="perfil-boton" (click)="alternarMenuPerfil()">
-          <span class="usuario-inicial">C</span>
-          <span class="usuario-nombre-completo">Mi Cuenta</span>
-          <span class="flecha-dropdown">▼</span>
+      <!-- Zona Derecha: Notificaciones + Perfil -->
+      <div class="zona-derecha">
+        <!-- Botón notificación -->
+        <button type="button" class="boton-notificacion" aria-label="Notificaciones">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
         </button>
 
-        <!-- Dropdown de Perfil -->
-        @if (menuPerfilAbierto()) {
-          <div class="dropdown-menu">
-            <div class="dropdown-cabecera">
-              <span class="dropdown-rol-etiqueta">Cliente</span>
+        <!-- Perfil -->
+        <div class="perfil-contenedor">
+          <button type="button" class="perfil-boton" (click)="alternarMenuPerfil()">
+            <div class="avatar-foto">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             </div>
-            <div class="dropdown-divisor"></div>
-            <button type="button" class="dropdown-item item-rojo" (click)="cerrarSesionUsuario()">
-              <span class="icono-cerrar">🚪</span> Cerrar Sesión
-            </button>
-          </div>
-        }
+            <div class="perfil-info-texto">
+              <span class="usuario-nombre-completo">Hola, Ana</span>
+              <span class="usuario-rol">Cliente</span>
+            </div>
+            <span class="flecha-dropdown">▾</span>
+          </button>
+
+          @if (menuPerfilAbierto()) {
+            <div class="dropdown-menu">
+              <div class="dropdown-cabecera">
+                <span class="dropdown-rol-etiqueta">Cliente</span>
+              </div>
+              <div class="dropdown-divisor"></div>
+              <button type="button" class="dropdown-item item-rojo" (click)="cerrarSesionUsuario()">
+                <span class="icono-cerrar">🚪</span> Cerrar Sesión
+              </button>
+            </div>
+          }
+        </div>
       </div>
+
     </div>
   </header>
 

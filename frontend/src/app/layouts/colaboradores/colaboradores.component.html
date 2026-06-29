@@ -1,95 +1,76 @@
-<div class="layout-colaborador-contenedor">
-  <!-- Sidebar Izquierdo Premium -->
-  <aside class="sidebar-panel" [class.sidebar-contraido]="!sidebarAbierto()">
-    <!-- Cabecera Sidebar -->
-    <div class="sidebar-cabecera">
-      <div class="logo-contenedor" routerLink="/colaborador/inicio">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30" height="30" class="logo-icono">
+﻿<div class="layout-contenedor">
+
+  <!-- Navbar Superior -->
+  <header class="barra-navegacion">
+    <div class="navbar-limite">
+
+      <!-- Logo -->
+      <div class="navbar-marca" routerLink="/colaborador/inicio">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30" height="30" class="marca-icono">
           <path fill="none" d="M0 0h24v24H0z"/>
-          <path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          <path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/>
         </svg>
-        @if (sidebarAbierto()) {
-          <span class="logo-texto">VetConnect</span>
-        }
-      </div>
-      <button type="button" class="boton-colapsar" (click)="alternarSidebar()">
-        {{ sidebarAbierto() ? '◀' : '▶' }}
-      </button>
-    </div>
-
-    <!-- Perfil del Colaborador -->
-    @if (sidebarAbierto()) {
-      <div class="perfil-resumen-seccion">
-        <div class="avatar-colaborador">C</div>
-        <div class="perfil-info">
-          <p class="nombre">Colaborador</p>
-          <span class="insignia-rol">Veterinario</span>
+        <div class="marca-texto-grupo">
+          <span class="marca-nombre">VetConnect</span>
+          <span class="marca-subtitulo">Conectando mascotas con los mejores negocios</span>
         </div>
       </div>
-    }
 
-    <!-- Menú de Opciones -->
-    <nav class="sidebar-menu">
-      <a routerLink="/colaborador/inicio" routerLinkActive="menu-activo" class="menu-item-enlace">
-        <span class="item-icono">📊</span>
-        @if (sidebarAbierto()) {
-          <span class="item-texto">Dashboard</span>
-        }
-      </a>
-      <a class="menu-item-enlace item-deshabilitado">
-        <span class="item-icono">🏥</span>
-        @if (sidebarAbierto()) {
-          <span class="item-texto">Mi Veterinaria</span>
-        }
-      </a>
-      <a class="menu-item-enlace item-deshabilitado">
-        <span class="item-icono">💉</span>
-        @if (sidebarAbierto()) {
-          <span class="item-texto">Servicios / Prod.</span>
-        }
-      </a>
-      <a class="menu-item-enlace item-deshabilitado">
-        <span class="item-icono">📅</span>
-        @if (sidebarAbierto()) {
-          <span class="item-texto">Horarios</span>
-        }
-      </a>
-      <a class="menu-item-enlace item-deshabilitado">
-        <span class="item-icono">🐕</span>
-        @if (sidebarAbierto()) {
-          <span class="item-texto">Citas Recibidas</span>
-        }
-      </a>
-    </nav>
+      <!-- Menu Central -->
+      <nav class="menu-navegacion">
+        <a routerLink="/colaborador/inicio" routerLinkActive="activo" class="menu-enlace">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          Inicio
+        </a>
+        <a class="menu-enlace enlace-deshabilitado">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5z"/></svg>
+          Mapa
+        </a>
+      </nav>
 
-    <!-- Botón de Cerrar Sesión -->
-    <div class="sidebar-pie">
-      <button type="button" class="boton-cerrar-sesion" (click)="cerrarSesionUsuario()">
-        <span class="item-icono">🚪</span>
-        @if (sidebarAbierto()) {
-          <span class="item-texto">Cerrar Sesión</span>
-        }
-      </button>
-    </div>
-  </aside>
+      <!-- Zona Derecha: Perfil + Configuracion -->
+      <div class="zona-derecha">
 
-  <!-- Área de Contenido Principal -->
-  <div class="contenido-area-derecha">
-    <!-- Barra Superior -->
-    <header class="barra-superior-header">
-      <div class="encabezado-titulo">
-        <h2>Panel de Control</h2>
-      </div>
-      @if (!sidebarAbierto() || true) {
-        <div class="encabezado-perfil-movil">
-          <span class="avatar-inicial-movil">C</span>
+        <!-- Perfil -->
+        <div class="perfil-contenedor">
+          <button type="button" class="perfil-boton" (click)="alternarMenuPerfil()">
+            <div class="avatar-foto">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </div>
+            <div class="perfil-info-texto">
+              <span class="usuario-nombre-completo">Hola, Carlos</span>
+              <span class="usuario-rol">Colaborador</span>
+            </div>
+            <span class="flecha-dropdown">&#x25BE;</span>
+          </button>
+
+          @if (menuPerfilAbierto()) {
+            <div class="dropdown-menu">
+              <div class="dropdown-cabecera">
+                <span class="dropdown-rol-etiqueta">Colaborador</span>
+              </div>
+              <div class="dropdown-divisor"></div>
+              <button type="button" class="dropdown-item item-rojo" (click)="cerrarSesionUsuario()">
+                <span class="icono-cerrar">&#x1F6AA;</span> Cerrar Sesion
+              </button>
+            </div>
+          }
         </div>
-      }
-    </header>
 
-    <!-- Contenedor de las Vistas -->
-    <main class="vistas-contenedor">
-      <router-outlet />
-    </main>
-  </div>
+        <!-- Boton de Configuracion -->
+        <button type="button" class="boton-configuracion" aria-label="Configuracion">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+          </svg>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Area de Contenido Principal -->
+  <main class="contenido-principal">
+    <router-outlet />
+  </main>
+
 </div>
