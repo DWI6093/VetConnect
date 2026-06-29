@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { CrearClienteDto } from '../usuarios/dto/crear-cliente.dto';
+import { CrearColaboradorDto } from '../usuarios/dto/crear-colaborador.dto';
 import { InicioSesionDto } from '../usuarios/dto/inicio-sesion.dto';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
@@ -140,6 +141,62 @@ export class AuthService {
         correo,
         password_hash: passwordHash,
         rol: 'CLIENTE',
+        estado: 'ACTIVO',
+      },
+      select: {
+        id_usuario: true,
+        nombre: true,
+        apellido: true,
+        correo: true,
+        rol: true,
+      },
+    });
+
+    const tokens = this.generarParDeTokens({
+      id_usuario: nuevoUsuario.id_usuario,
+      correo: nuevoUsuario.correo,
+      rol: nuevoUsuario.rol,
+      nombre: nuevoUsuario.nombre,
+      apellido: nuevoUsuario.apellido,
+    });
+
+    // Guardar el hash del refresh token en la bd
+    const refreshTokenHash = await bcrypt.hash(tokens.refresh_token, salt);
+    await this.prismaService.usuario.update({
+      where: { id_usuario: nuevoUsuario.id_usuario },
+      data: { refresh_token_hash: refreshTokenHash },
+    });
+
+    return tokens;
+  }
+
+  /**
+   * Registra un nuevo colaborador e inicia sesión generando los tokens correspondientes.
+   * El controlador es responsable de establecer las cookies HttpOnly.
+   */
+  async registrarColaborador(
+    crearColaboradorDto: CrearColaboradorDto,
+  ): Promise<ParDeTokens> {
+    const { nombre, apellido, correo, password } = crearColaboradorDto;
+
+    const correoExiste = await this.prismaService.usuario.findUnique({
+      where: { correo },
+    });
+
+    if (correoExiste) {
+      throw new ConflictException('El correo electrónico ya está registrado.');
+    }
+
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    const nuevoUsuario = await this.prismaService.usuario.create({
+      data: {
+        nombre,
+        apellido,
+        correo,
+        password_hash: passwordHash,
+        rol: 'COLABORADOR',
         estado: 'ACTIVO',
       },
       select: {
