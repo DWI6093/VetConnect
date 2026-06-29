@@ -1,0 +1,278 @@
+.layout-colaborador-contenedor {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f1f5f9;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Sidebar Estilo Premium */
+.sidebar-panel {
+  width: 260px;
+  background-color: #0f172a;
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #1e293b;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  z-index: 90;
+}
+
+.sidebar-contraido {
+  width: 70px;
+}
+
+/* Cabecera del Sidebar */
+.sidebar-cabecera {
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.25rem;
+  border-bottom: 1px solid #1e293b;
+}
+
+.logo-contenedor {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.logo-icono {
+  color: #2dd4bf;
+  flex-shrink: 0;
+}
+
+.logo-texto {
+  font-size: 1.2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #38bdf8 0%, #2dd4bf 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.boton-colapsar {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.boton-colapsar:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
+}
+
+/* Perfil Resumen en Sidebar */
+.perfil-resumen-seccion {
+  padding: 1.5rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid #1e293b;
+  overflow: hidden;
+}
+
+.avatar-colaborador {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.perfil-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.perfil-info .nombre {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #f8fafc;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.perfil-info .correo {
+  margin: 2px 0 6px 0;
+  font-size: 0.75rem;
+  color: #64748b;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.insignia-rol {
+  align-self: flex-start;
+  background: rgba(45, 212, 191, 0.1);
+  color: #2dd4bf;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Menú de Ítems */
+.sidebar-menu {
+  padding: 1.25rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.menu-item-enlace {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 11px 14px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.menu-item-enlace:hover:not(.item-deshabilitado) {
+  background-color: rgba(255, 255, 255, 0.04);
+  color: #38bdf8;
+}
+
+.menu-activo {
+  background-color: rgba(56, 189, 248, 0.08) !important;
+  color: #38bdf8 !important;
+}
+
+.item-icono {
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.item-texto {
+  white-space: nowrap;
+}
+
+.item-deshabilitado {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Pie del Sidebar */
+.sidebar-pie {
+  padding: 0.75rem 0.5rem;
+  border-top: 1px solid #1e293b;
+}
+
+.boton-cerrar-sesion {
+  width: 100%;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 11px 14px;
+  color: #f87171;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.boton-cerrar-sesion:hover {
+  background-color: rgba(239, 68, 68, 0.08);
+}
+
+/* Área de contenido de la Derecha */
+.contenido-area-derecha {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Barra superior */
+.barra-superior-header {
+  height: 70px;
+  background-color: white;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+}
+
+.encabezado-titulo h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.avatar-inicial-movil {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+/* Contenedor de Vistas */
+.vistas-contenedor {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* Estilo responsivo para móvil */
+@media (max-width: 768px) {
+  .sidebar-panel {
+    position: absolute;
+    height: 100vh;
+    left: 0;
+    top: 0;
+  }
+  .sidebar-contraido {
+    width: 0;
+    border-right: none;
+  }
+  .boton-colapsar {
+    position: absolute;
+    left: 10px;
+    top: 20px;
+    background: #0f172a;
+    z-index: 100;
+    border: 1px solid #1e293b;
+  }
+}

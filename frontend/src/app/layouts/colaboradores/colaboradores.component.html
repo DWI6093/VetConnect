@@ -1,0 +1,98 @@
+<div class="layout-colaborador-contenedor">
+  <!-- Sidebar Izquierdo Premium -->
+  <aside class="sidebar-panel" [class.sidebar-contraido]="!sidebarAbierto()">
+    <!-- Cabecera Sidebar -->
+    <div class="sidebar-cabecera">
+      <div class="logo-contenedor" routerLink="/colaborador/inicio">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30" height="30" class="logo-icono">
+          <path fill="none" d="M0 0h24v24H0z"/>
+          <path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        @if (sidebarAbierto()) {
+          <span class="logo-texto">VetConnect</span>
+        }
+      </div>
+      <button type="button" class="boton-colapsar" (click)="alternarSidebar()">
+        {{ sidebarAbierto() ? '◀' : '▶' }}
+      </button>
+    </div>
+
+    <!-- Perfil del Colaborador -->
+    @if (sidebarAbierto()) {
+      <div class="perfil-resumen-seccion">
+        <div class="avatar-colaborador">
+          {{ usuario()?.nombre?.charAt(0) }}
+        </div>
+        <div class="perfil-info">
+          <p class="nombre">Dr(a). {{ usuario()?.nombre }}</p>
+          <p class="correo">{{ usuario()?.correo }}</p>
+          <span class="insignia-rol">Veterinario</span>
+        </div>
+      </div>
+    }
+
+    <!-- Menú de Opciones -->
+    <nav class="sidebar-menu">
+      <a routerLink="/colaborador/inicio" routerLinkActive="menu-activo" class="menu-item-enlace">
+        <span class="item-icono">📊</span>
+        @if (sidebarAbierto()) {
+          <span class="item-texto">Dashboard</span>
+        }
+      </a>
+      <a class="menu-item-enlace item-deshabilitado">
+        <span class="item-icono">🏥</span>
+        @if (sidebarAbierto()) {
+          <span class="item-texto">Mi Veterinaria</span>
+        }
+      </a>
+      <a class="menu-item-enlace item-deshabilitado">
+        <span class="item-icono">💉</span>
+        @if (sidebarAbierto()) {
+          <span class="item-texto">Servicios / Prod.</span>
+        }
+      </a>
+      <a class="menu-item-enlace item-deshabilitado">
+        <span class="item-icono">📅</span>
+        @if (sidebarAbierto()) {
+          <span class="item-texto">Horarios</span>
+        }
+      </a>
+      <a class="menu-item-enlace item-deshabilitado">
+        <span class="item-icono">🐕</span>
+        @if (sidebarAbierto()) {
+          <span class="item-texto">Citas Recibidas</span>
+        }
+      </a>
+    </nav>
+
+    <!-- Botón de Cerrar Sesión -->
+    <div class="sidebar-pie">
+      <button type="button" class="boton-cerrar-sesion" (click)="cerrarSesionUsuario()">
+        <span class="item-icono">🚪</span>
+        @if (sidebarAbierto()) {
+          <span class="item-texto">Cerrar Sesión</span>
+        }
+      </button>
+    </div>
+  </aside>
+
+  <!-- Área de Contenido Principal -->
+  <div class="contenido-area-derecha">
+    <!-- Barra Superior -->
+    <header class="barra-superior-header">
+      <div class="encabezado-titulo">
+        <h2>Panel de Control</h2>
+      </div>
+      @if (!sidebarAbierto() || true) {
+        <div class="encabezado-perfil-movil">
+          <span class="avatar-inicial-movil">{{ usuario()?.nombre?.charAt(0) }}</span>
+        </div>
+      }
+    </header>
+
+    <!-- Contenedor de las Vistas -->
+    <main class="vistas-contenedor">
+      <router-outlet />
+    </main>
+  </div>
+</div>
