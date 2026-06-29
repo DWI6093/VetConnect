@@ -17,6 +17,11 @@ interface CargaUtilToken {
   apellido: string;
 }
 
+export interface ParDeTokens {
+  token: string;
+  refresh_token: string;
+}
+
 @Injectable()
 export class AuthService {
   private readonly claveSecretaJwt =
@@ -25,7 +30,7 @@ export class AuthService {
   constructor(private readonly prismaService: PrismaService) {}
 
   /**
-   * Genera un token firmado de forma nativa con un tiempo de expiración determinado.
+   * Genera un token firmado con un tiempo de expiración determinado.
    */
   private generarTokenFirma(cargaUtil: any, duracionSegundos: number): string {
     const cabecera = Buffer.from(
@@ -52,13 +57,13 @@ export class AuthService {
   }
 
   /**
-   * Verifica la validez y expiración de un token JWT firmado de forma nativa.
+   * Verifica la validez y expiración de un token JWT firmado.
    */
   private verificarToken(token: string): any {
     try {
       const partes = token.split('.');
       if (partes.length !== 3) {
-        throw new Error('Formato de token no válido');
+        throw new UnauthorizedException('Token malformado');
       }
 
       const [cabecera, carga, firma] = partes;
@@ -68,7 +73,7 @@ export class AuthService {
         .digest('base64url');
 
       if (firma !== firmaEsperada) {
-        throw new Error('Firma no coincide');
+        throw new UnauthorizedException('Token modificado');
       }
 
       const payload = JSON.parse(
@@ -77,22 +82,29 @@ export class AuthService {
       const tiempoActual = Math.floor(Date.now() / 1000);
 
       if (payload.exp && tiempoActual > payload.exp) {
-        throw new Error('El token ha expirado');
+        throw new UnauthorizedException('El token ha expirado');
       }
 
       return payload;
-    } catch {
-      throw new UnauthorizedException('Token inválido o expirado.');
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new UnauthorizedException('Token inválido');
     }
+  }
+
+  /**
+   * Valida el token de acceso provisto (usado por el guardián).
+   */
+  validarTokenAcceso(token: string): any {
+    return this.verificarToken(token);
   }
 
   /**
    * Genera el par de tokens de acceso (10 minutos) y refresco (7 días).
    */
-  private generarParDeTokens(carga: CargaUtilToken): {
-    token: string;
-    refresh_token: string;
-  } {
+  private generarParDeTokens(carga: CargaUtilToken): ParDeTokens {
     const token = this.generarTokenFirma(carga, 10 * 60); // 10 minutos
     const refresh_token = this.generarTokenFirma(
       { id_usuario: carga.id_usuario },
@@ -103,8 +115,11 @@ export class AuthService {
 
   /**
    * Registra un nuevo cliente e inicia sesión generando los tokens correspondientes.
+   * El controlador es responsable de establecer las cookies HttpOnly.
    */
-  async registrarCliente(crearClienteDto: CrearClienteDto) {
+  async registrarCliente(
+    crearClienteDto: CrearClienteDto,
+  ): Promise<ParDeTokens> {
     const { nombre, apellido, correo, password } = crearClienteDto;
 
     const correoExiste = await this.prismaService.usuario.findUnique({
@@ -133,7 +148,6 @@ export class AuthService {
         apellido: true,
         correo: true,
         rol: true,
-        estado: true,
       },
     });
 
@@ -152,16 +166,14 @@ export class AuthService {
       data: { refresh_token_hash: refreshTokenHash },
     });
 
-    return {
-      usuario: nuevoUsuario,
-      ...tokens,
-    };
+    return tokens;
   }
 
   /**
    * Inicia sesión validando credenciales y guardando el hash del refresh token.
+   * El controlador es responsable de establecer las cookies HttpOnly.
    */
-  async iniciarSesion(inicioSesionDto: InicioSesionDto) {
+  async iniciarSesion(inicioSesionDto: InicioSesionDto): Promise<ParDeTokens> {
     const { correo, password } = inicioSesionDto;
 
     const usuario = await this.prismaService.usuario.findUnique({
@@ -200,17 +212,16 @@ export class AuthService {
       data: { refresh_token_hash: refreshTokenHash },
     });
 
-    return {
-      ...tokens,
-    };
+    return tokens;
   }
 
   /**
    * Valida el refresh token provisto, comprueba su hash en la bd y emite nuevos tokens.
+   * El controlador es responsable de establecer las cookies HttpOnly.
    */
-  async refrescarTokens(refresh_token: string) {
+  async refrescarTokens(refreshToken: string): Promise<ParDeTokens> {
     // Validar firma y expiración del refresh token
-    const payload = this.verificarToken(refresh_token);
+    const payload = this.verificarToken(refreshToken);
 
     const usuario = await this.prismaService.usuario.findUnique({
       where: { id_usuario: payload.id_usuario },
@@ -226,7 +237,7 @@ export class AuthService {
 
     // Comparar con el hash almacenado
     const tokenValido = await bcrypt.compare(
-      refresh_token,
+      refreshToken,
       usuario.refresh_token_hash,
     );
     if (!tokenValido) {
@@ -256,11 +267,28 @@ export class AuthService {
   /**
    * Elimina el refresh token de la base de datos al cerrar sesión.
    */
-  async cerrarSesion(idUsuario: number) {
+  async cerrarSesion(idUsuario: number): Promise<{ mensaje: string }> {
     await this.prismaService.usuario.update({
       where: { id_usuario: idUsuario },
       data: { refresh_token_hash: null },
     });
     return { mensaje: 'Sesión cerrada exitosamente.' };
+  }
+
+  /**
+   * Retorna información mínima del usuario (solo rol) para el frontend.
+   * No expone datos sensibles como correo, nombre o apellido.
+   */
+  async obtenerInfoUsuario(idUsuario: number): Promise<{ rol: string }> {
+    const usuario = await this.prismaService.usuario.findUnique({
+      where: { id_usuario: idUsuario },
+      select: { rol: true, estado: true },
+    });
+
+    if (!usuario || usuario.estado !== 'ACTIVO') {
+      throw new UnauthorizedException('Usuario no encontrado o inactivo.');
+    }
+
+    return { rol: usuario.rol };
   }
 }
