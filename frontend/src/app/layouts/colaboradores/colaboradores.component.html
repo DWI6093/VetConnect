@@ -20,12 +20,9 @@
     <!-- Perfil del Colaborador -->
     @if (sidebarAbierto()) {
       <div class="perfil-resumen-seccion">
-        <div class="avatar-colaborador">
-          {{ usuario()?.nombre?.charAt(0) }}
-        </div>
+        <div class="avatar-colaborador">C</div>
         <div class="perfil-info">
-          <p class="nombre">Dr(a). {{ usuario()?.nombre }}</p>
-          <p class="correo">{{ usuario()?.correo }}</p>
+          <p class="nombre">Colaborador</p>
           <span class="insignia-rol">Veterinario</span>
         </div>
       </div>
@@ -85,7 +82,7 @@
       </div>
       @if (!sidebarAbierto() || true) {
         <div class="encabezado-perfil-movil">
-          <span class="avatar-inicial-movil">{{ usuario()?.nombre?.charAt(0) }}</span>
+          <span class="avatar-inicial-movil">C</span>
         </div>
       }
     </header>

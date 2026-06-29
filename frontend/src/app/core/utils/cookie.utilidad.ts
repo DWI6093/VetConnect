@@ -1,3 +1,10 @@
+/**
+ * Las cookies de autenticación (jwt_token, refresh_token) son cookies HttpOnly
+ * gestionadas exclusivamente por el backend. JavaScript no puede leerlas ni escribirlas.
+ *
+ * Este archivo se conserva por si se necesitan cookies no sensibles en el futuro.
+ */
+
 export function guardarCookie(nombre: string, valor: string, dias?: number): void {
   let expira = '';
   if (dias) {

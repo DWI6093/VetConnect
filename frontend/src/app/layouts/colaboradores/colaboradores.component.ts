@@ -1,7 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { ServicioAutenticacion } from '../../core/services/auth.service';
-import { Usuario } from '../../core/models/usuario.modelo';
 
 @Component({
   selector: 'app-layout-colaboradores',
@@ -11,13 +10,8 @@ import { Usuario } from '../../core/models/usuario.modelo';
   styleUrl: './colaboradores.component.css',
 })
 export class LayoutColaboradoresComponente {
-  private readonly servicioAutenticacion = inject(ServicioAutenticacion);
-  protected readonly usuario = signal<Usuario | null>(null);
+  protected readonly servicioAutenticacion = inject(ServicioAutenticacion);
   protected readonly sidebarAbierto = signal<boolean>(true);
-
-  constructor() {
-    this.usuario.set(this.servicioAutenticacion.obtenerUsuario());
-  }
 
   protected alternarSidebar(): void {
     this.sidebarAbierto.update((valor) => !valor);

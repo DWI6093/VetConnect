@@ -1,121 +1,134 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, catchError, of } from 'rxjs';
 import {
-  Usuario,
-  RespuestaAutenticacion,
+  SesionUsuario,
+  RespuestaAuth,
   DatosInicioSesion,
   DatosRegistroCliente,
   DatosRegistroColaborador,
 } from '../models/usuario.modelo';
-import {
-  guardarCookie,
-  obtenerCookie,
-  eliminarCookie,
-} from '../utils/cookie.utilidad';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ServicioAutenticacion {
   private readonly urlBaseApi = 'http://localhost:3000';
-  
-  // Guardamos el usuario actual usando un Angular Signal para reactividad moderna
-  readonly usuarioActual = signal<Usuario | null>(null);
+
+  /**
+   * Solo almacena información mínima de sesión: el rol.
+   * Los tokens son gestionados por el backend via cookies HttpOnly
+   * y nunca son accesibles desde JavaScript.
+   */
+  readonly sesionActual = signal<SesionUsuario | null>(null);
 
   private readonly httpCliente = inject(HttpClient);
   private readonly enrutador = inject(Router);
 
   constructor() {
-    this.cargarSesionDesdeCookies();
+    // Al iniciar la app, verificamos con el backend si hay una sesión activa
+    // mediante las cookies HttpOnly que el navegador envía automáticamente.
+    this.verificarSesionActiva();
   }
 
-  private cargarSesionDesdeCookies(): void {
-    const token = obtenerCookie('jwt_token');
-    const usuarioGuardado = obtenerCookie('usuario_sesion');
-
-    if (token && usuarioGuardado) {
-      try {
-        const datosUsuario: Usuario = JSON.parse(usuarioGuardado);
-        this.usuarioActual.set(datosUsuario);
-      } catch {
-        this.limpiarDatosSesion();
-      }
-    }
+  /**
+   * Consulta al backend si el usuario tiene una sesión activa.
+   * Si la cookie jwt_token es válida, el backend devuelve { rol }.
+   * Si no, el signal queda en null (no autenticado).
+   */
+  verificarSesionActiva(): void {
+    this.httpCliente
+      .get<SesionUsuario>(`${this.urlBaseApi}/auth/me`, { withCredentials: true })
+      .pipe(
+        catchError(() => of(null))
+      )
+      .subscribe((info) => {
+        this.sesionActual.set(info);
+      });
   }
 
-  iniciarSesion(credenciales: DatosInicioSesion): Observable<RespuestaAutenticacion> {
-    return this.httpCliente.post<RespuestaAutenticacion>(
-      `${this.urlBaseApi}/usuarios/login`,
-      {
-        correo: credenciales.correo,
-        password: credenciales.contrasena,
-      }
-    ).pipe(
-      tap((respuesta) => {
-        this.guardarDatosSesion(respuesta.token, respuesta.usuario);
-      })
-    );
+  iniciarSesion(credenciales: DatosInicioSesion): Observable<RespuestaAuth> {
+    return this.httpCliente
+      .post<RespuestaAuth>(
+        `${this.urlBaseApi}/auth/login`,
+        {
+          correo: credenciales.correo,
+          password: credenciales.contrasena,
+        },
+        { withCredentials: true }
+      )
+      .pipe(
+        tap(() => {
+          // Tras el login exitoso, el backend ya estableció las cookies HttpOnly.
+          // Consultamos /auth/me para obtener el rol y actualizar el signal.
+          this.verificarSesionActiva();
+        })
+      );
   }
 
-  registrarCliente(datos: DatosRegistroCliente): Observable<RespuestaAutenticacion> {
-    return this.httpCliente.post<RespuestaAutenticacion>(
-      `${this.urlBaseApi}/usuarios/registro-cliente`,
-      {
-        nombre: datos.nombre,
-        apellido: datos.apellido,
-        correo: datos.correo,
-        password: datos.contrasena,
-      }
-    ).pipe(
-      tap((respuesta) => {
-        this.guardarDatosSesion(respuesta.token, respuesta.usuario);
-      })
-    );
+  registrarCliente(datos: DatosRegistroCliente): Observable<RespuestaAuth> {
+    return this.httpCliente
+      .post<RespuestaAuth>(
+        `${this.urlBaseApi}/auth/registro-cliente`,
+        {
+          nombre: datos.nombre,
+          apellido: datos.apellido,
+          correo: datos.correo,
+          password: datos.contrasena,
+        },
+        { withCredentials: true }
+      )
+      .pipe(
+        tap(() => {
+          // Tras el registro, el backend ya estableció las cookies HttpOnly.
+          this.verificarSesionActiva();
+        })
+      );
   }
 
-  registrarColaborador(datos: DatosRegistroColaborador): Observable<Usuario> {
-    // El backend tiene un endpoint de colaboradores existente
-    return this.httpCliente.post<Usuario>(
+  registrarColaborador(datos: DatosRegistroColaborador): Observable<any> {
+    return this.httpCliente.post(
       `${this.urlBaseApi}/colaboradores`,
       {
         nombre: datos.nombre,
         apellido: datos.apellido,
         correo: datos.correo,
         password: datos.contrasena,
-      }
+      },
+      { withCredentials: true }
     );
   }
 
   cerrarSesion(): void {
-    this.limpiarDatosSesion();
-    this.enrutador.navigate(['/auth/login']);
+    this.httpCliente
+      .post<{ mensaje: string }>(`${this.urlBaseApi}/auth/logout`, {}, { withCredentials: true })
+      .pipe(catchError(() => of(null)))
+      .subscribe(() => {
+        this.sesionActual.set(null);
+        this.enrutador.navigate(['/auth/login']);
+      });
   }
 
-  obtenerUsuario(): Usuario | null {
-    return this.usuarioActual();
+  /**
+   * Llama al endpoint de refresco. El backend lee el refresh_token de la cookie HttpOnly,
+   * genera nuevos tokens y establece las nuevas cookies automáticamente.
+   * El frontend no manipula tokens en ningún momento.
+   */
+  refrescarElToken(): Observable<RespuestaAuth> {
+    return this.httpCliente.post<RespuestaAuth>(
+      `${this.urlBaseApi}/auth/refresh`,
+      {},
+      { withCredentials: true }
+    );
   }
 
   estaAutenticado(): boolean {
-    return this.usuarioActual() !== null && obtenerCookie('jwt_token') !== null;
+    return this.sesionActual() !== null;
   }
 
   obtenerRol(): 'CLIENTE' | 'COLABORADOR' | null {
-    const usuario = this.usuarioActual();
-    return usuario ? usuario.rol : null;
-  }
-
-  private guardarDatosSesion(token: string, usuario: Usuario): void {
-    // Guardamos las cookies válidas por 1 día
-    guardarCookie('jwt_token', token, 1);
-    guardarCookie('usuario_sesion', JSON.stringify(usuario), 1);
-    this.usuarioActual.set(usuario);
-  }
-
-  private limpiarDatosSesion(): void {
-    eliminarCookie('jwt_token');
-    eliminarCookie('usuario_sesion');
-    this.usuarioActual.set(null);
+    const sesion = this.sesionActual();
+    return sesion ? sesion.rol : null;
   }
 }

@@ -22,8 +22,8 @@
       <!-- Perfil del Usuario -->
       <div class="perfil-contenedor">
         <button type="button" class="perfil-boton" (click)="alternarMenuPerfil()">
-          <span class="usuario-inicial">{{ usuario()?.nombre?.charAt(0) }}</span>
-          <span class="usuario-nombre-completo">{{ usuario()?.nombre }} {{ usuario()?.apellido }}</span>
+          <span class="usuario-inicial">C</span>
+          <span class="usuario-nombre-completo">Mi Cuenta</span>
           <span class="flecha-dropdown">▼</span>
         </button>
 
@@ -31,8 +31,6 @@
         @if (menuPerfilAbierto()) {
           <div class="dropdown-menu">
             <div class="dropdown-cabecera">
-              <p class="dropdown-nombre">{{ usuario()?.nombre }} {{ usuario()?.apellido }}</p>
-              <p class="dropdown-correo">{{ usuario()?.correo }}</p>
               <span class="dropdown-rol-etiqueta">Cliente</span>
             </div>
             <div class="dropdown-divisor"></div>

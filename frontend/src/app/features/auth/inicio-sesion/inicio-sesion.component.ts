@@ -41,14 +41,18 @@ export class InicioSesionComponente {
     };
 
     this.servicioAutenticacion.iniciarSesion(credenciales).subscribe({
-      next: (respuesta) => {
+      next: () => {
         this.estaCargando.set(false);
-        const rol = respuesta.usuario.rol;
-        if (rol === 'CLIENTE') {
-          this.enrutador.navigate(['/cliente/inicio']);
-        } else if (rol === 'COLABORADOR') {
-          this.enrutador.navigate(['/colaborador/inicio']);
-        }
+        // El rol se carga asincrónicamente desde /auth/me via verificarSesionActiva().
+        // breve momento para que el signal se actualice antes de redirigir.
+        setTimeout(() => {
+          const rol = this.servicioAutenticacion.obtenerRol();
+          if (rol === 'CLIENTE') {
+            this.enrutador.navigate(['/cliente/inicio']);
+          } else if (rol === 'COLABORADOR') {
+            this.enrutador.navigate(['/colaborador/inicio']);
+          }
+        }, 300);
       },
       error: (error) => {
         this.estaCargando.set(false);
