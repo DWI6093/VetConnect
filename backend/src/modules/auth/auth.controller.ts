@@ -13,6 +13,7 @@ import {
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { CrearClienteDto } from '../usuarios/dto/crear-cliente.dto';
+import { CrearColaboradorDto } from '../usuarios/dto/crear-colaborador.dto';
 import { InicioSesionDto } from '../usuarios/dto/inicio-sesion.dto';
 import { GuardAutenticacion } from './guard/autenticacion.guard';
 
@@ -71,6 +72,16 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const tokens = await this.authService.registrarCliente(crearClienteDto);
+    this.establecerCookiesAuth(res, tokens.token, tokens.refresh_token);
+    return { mensaje: 'Registro exitoso.' };
+  }
+
+  @Post('registro-colaborador')
+  async registrarColaborador(
+    @Body() crearColaboradorDto: CrearColaboradorDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const tokens = await this.authService.registrarColaborador(crearColaboradorDto);
     this.establecerCookiesAuth(res, tokens.token, tokens.refresh_token);
     return { mensaje: 'Registro exitoso.' };
   }

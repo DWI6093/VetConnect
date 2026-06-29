@@ -87,17 +87,24 @@ export class ServicioAutenticacion {
       );
   }
 
-  registrarColaborador(datos: DatosRegistroColaborador): Observable<any> {
-    return this.httpCliente.post(
-      `${this.urlBaseApi}/colaboradores`,
-      {
-        nombre: datos.nombre,
-        apellido: datos.apellido,
-        correo: datos.correo,
-        password: datos.contrasena,
-      },
-      { withCredentials: true }
-    );
+  registrarColaborador(datos: DatosRegistroColaborador): Observable<RespuestaAuth> {
+    return this.httpCliente
+      .post<RespuestaAuth>(
+        `${this.urlBaseApi}/auth/registro-colaborador`,
+        {
+          nombre: datos.nombre,
+          apellido: datos.apellido,
+          correo: datos.correo,
+          password: datos.contrasena,
+        },
+        { withCredentials: true }
+      )
+      .pipe(
+        tap(() => {
+          // Tras el registro, el backend ya estableció las cookies HttpOnly.
+          this.verificarSesionActiva();
+        })
+      );
   }
 
   cerrarSesion(): void {

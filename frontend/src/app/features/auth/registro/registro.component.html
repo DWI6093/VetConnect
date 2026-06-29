@@ -100,7 +100,7 @@
       <form [formGroup]="formularioRegistro" (ngSubmit)="registrarUsuario()" class="formulario">
         <div class="fila-dos">
           <div class="campo-grupo">
-            <label for="nombre">Nombre completo</label>
+            <label for="nombre">Nombre(s)</label>
             <div class="campo-input">
               <span class="campo-icono">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -109,7 +109,7 @@
                 type="text"
                 id="nombre"
                 formControlName="nombre"
-                placeholder="Tu nombre completo"
+                placeholder="Tus nombres"
                 [class.campo-invalido]="formularioRegistro.get('nombre')?.invalid && formularioRegistro.get('nombre')?.touched"
               />
             </div>
@@ -126,30 +126,56 @@
           </div>
 
           <div class="campo-grupo">
-            <label for="correo">Correo electrónico</label>
+            <label for="apellido">Apellido(s)</label>
             <div class="campo-input">
               <span class="campo-icono">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               </span>
               <input
-                type="email"
-                id="correo"
-                formControlName="correo"
-                placeholder="ejemplo@correo.com"
-                [class.campo-invalido]="formularioRegistro.get('correo')?.invalid && formularioRegistro.get('correo')?.touched"
+                type="text"
+                id="apellido"
+                formControlName="apellido"
+                placeholder="Tus apellidos"
+                [class.campo-invalido]="formularioRegistro.get('apellido')?.invalid && formularioRegistro.get('apellido')?.touched"
               />
             </div>
-            @if (formularioRegistro.get('correo')?.invalid && formularioRegistro.get('correo')?.touched) {
+            @if (formularioRegistro.get('apellido')?.invalid && formularioRegistro.get('apellido')?.touched) {
               <div class="error-validacion">
-                @if (formularioRegistro.get('correo')?.errors?.['required']) {
-                  <span>El correo es obligatorio.</span>
+                @if (formularioRegistro.get('apellido')?.errors?.['required']) {
+                  <span>Obligatorio.</span>
                 }
-                @if (formularioRegistro.get('correo')?.errors?.['email']) {
-                  <span>Ingrese un correo electrónico válido.</span>
+                @if (formularioRegistro.get('apellido')?.errors?.['minlength']) {
+                  <span>Mín. 2 letras.</span>
                 }
               </div>
             }
           </div>
+        </div>
+
+        <div class="campo-grupo">
+          <label for="correo">Correo electrónico</label>
+          <div class="campo-input">
+            <span class="campo-icono">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            </span>
+            <input
+              type="email"
+              id="correo"
+              formControlName="correo"
+              placeholder="ejemplo@correo.com"
+              [class.campo-invalido]="formularioRegistro.get('correo')?.invalid && formularioRegistro.get('correo')?.touched"
+            />
+          </div>
+          @if (formularioRegistro.get('correo')?.invalid && formularioRegistro.get('correo')?.touched) {
+            <div class="error-validacion">
+              @if (formularioRegistro.get('correo')?.errors?.['required']) {
+                <span>El correo es obligatorio.</span>
+              }
+              @if (formularioRegistro.get('correo')?.errors?.['email']) {
+                <span>Ingrese un correo electrónico válido.</span>
+              }
+            </div>
+          }
         </div>
 
         <div class="fila-dos">

@@ -87,12 +87,11 @@ export class RegistroComponente {
       this.servicioAutenticacion.registrarColaborador(datosRegistro).subscribe({
         next: () => {
           this.estaCargando.set(false);
-          this.mensajeExito.set('¡Registro de Colaborador exitoso! Ahora puede iniciar sesión con sus credenciales.');
-          this.formularioRegistro.reset();
-          // Después de 2.5 segundos redirigir al login para que inicie sesión
+          this.mensajeExito.set('¡Registro exitoso! Iniciando sesión...');
+          // Después de 1.5 segundos redirigir al inicio del colaborador
           setTimeout(() => {
-            this.enrutador.navigate(['/auth/login']);
-          }, 2500);
+            this.enrutador.navigate(['/colaborador/inicio']);
+          }, 1500);
         },
         error: (error) => {
           this.estaCargando.set(false);
