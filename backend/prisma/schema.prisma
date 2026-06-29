@@ -153,6 +153,7 @@ model usuario {
   apellido                     String          @db.VarChar(50)
   correo                       String          @unique(map: "uq_usuario_correo") @db.VarChar(254)
   password_hash                String          @db.VarChar(255)
+  refresh_token_hash           String?         @db.VarChar(255)
   rol                          rol_usuario
   estado                       estado_usuario  @default(ACTIVO)
   intentos_fallidos            Int             @default(0) @db.SmallInt
@@ -165,6 +166,23 @@ model usuario {
 
   @@index([estado], map: "idx_usuario_estado")
   @@index([rol], map: "idx_usuario_rol")
+}
+
+model usuarios {
+  id_usuario                   String                @id(map: "PK_dfe59db369749f9042499fd8107") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  nombre                       String                @db.VarChar(50)
+  apellido                     String                @db.VarChar(50)
+  correo                       String                @unique(map: "UQ_63665765c1a778a770c9bd585d3") @db.VarChar(254)
+  password_hash                String                @db.VarChar
+  rol                          usuarios_rol_enum     @default(CLIENTE)
+  estado                       usuarios_estado_enum  @default(ACTIVO)
+  intentos_fallidos            Int                   @default(0)
+  fecha_registro               DateTime              @default(now()) @db.Timestamp(6)
+  fecha_actualizacion          DateTime              @default(now()) @db.Timestamp(6)
+  fecha_solicitud_eliminacion  DateTime?             @db.Timestamp(6)
+  fecha_eliminacion_programada DateTime?             @db.Timestamp(6)
+  aceptacion_terminos          aceptacion_terminos[]
+  log_errores                  log_errores[]
 }
 
 enum accion_auditoria {
