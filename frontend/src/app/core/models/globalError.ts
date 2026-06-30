@@ -3,7 +3,5 @@ export interface IErrorGlobal {
     message: string;
     timestamp: Date;
     path: string;
-    error?: any;
-}
-
-// Otro cambio para pruebas
+    error?: unknown;
+}
