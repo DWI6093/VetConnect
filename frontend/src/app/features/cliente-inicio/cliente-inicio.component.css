@@ -1,0 +1,79 @@
+/* Paleta de colores */
+/* Principal: #14B8A6, Secundario: #1E3A5F, Fondo: #F8FAFC, Tarjetas: #FFFFFF, Texto: #334155 */
+
+.inicio-cliente-contenedor {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  background: #F8FAFC;
+}
+
+.tarjeta-bienvenida {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  max-width: 500px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+}
+
+.icono-mascota {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.tarjeta-bienvenida h2 {
+  font-size: 1.75rem;
+  color: #1E3A5F;
+  margin: 0 0 0.5rem 0;
+  font-weight: 800;
+}
+
+.rol-etiqueta {
+  display: inline-block;
+  background: #F0FDFA;
+  color: #14B8A6;
+  font-size: 0.775rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid #CCFBF1;
+}
+
+.tarjeta-bienvenida p {
+  color: #334155;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin: 0 0 1.5rem 0;
+}
+
+.estado-cuenta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #F8FAFC;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.indicador-activo {
+  width: 8px;
+  height: 8px;
+  background-color: #22C55E;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #22C55E;
+}
+
+.estado-cuenta span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+}
