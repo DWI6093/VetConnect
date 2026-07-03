@@ -1,16 +1,9 @@
 # ─────────────────────────────────────────
 # Dockerfile de DESARROLLO – Angular 21
 # ─────────────────────────────────────────
-FROM node:22-alpine
-
-# Angular CLI global
-RUN npm install -g @angular/cli@21
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm ci
-
-EXPOSE 4200
-
-CMD ["ng", "serve", "--host", "0.0.0.0", "--poll", "2000"]
+FROM node:20 
+WORKDIR /app 
+COPY . . 
+RUN npm install 
+EXPOSE 4200 
+CMD ["npm", "run", "dev", "build"]
