@@ -7,13 +7,15 @@ datasource db {
 }
 
 model aceptacion_terminos {
-  version_aviso_privacidad String   @db.VarChar(20)
-  version_terminos         String   @db.VarChar(20)
-  id_aceptacion            String   @id(map: "PK_199e53ad9d92a5b18da788e89c0") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  id_usuario               String   @db.Uuid
-  fecha_aceptacion         DateTime @default(now()) @db.Timestamp(6)
-  ip_aceptacion            String   @db.VarChar(45)
-  usuarios                 usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade, onUpdate: NoAction, map: "FK_e9ff7ea6bb56c0a1765b92ee2eb")
+  id_aceptacion             Int      @id @default(autoincrement())
+  version_aviso_privacidad  String   @db.VarChar(20)
+  version_terminos          String   @db.VarChar(20)
+  id_usuario                Int
+  fecha_aceptacion          DateTime @default(now()) @db.Timestamp(6)
+  ip_aceptacion             String   @db.VarChar(45)
+  usuario                   usuario  @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade, onUpdate: NoAction, map: "fk_aceptacion_usuario")
+
+  @@index([id_usuario], map: "idx_aceptacion_usuario")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -74,14 +76,16 @@ model log_auditoria {
 }
 
 model log_errores {
+  id_error    Int       @id @default(autoincrement())
   modulo      String    @db.VarChar(100)
   mensaje     String
   stacktrace  String?
-  id_error    String    @id(map: "PK_bfec650304b237bb955af98c480") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  id_usuario  String?   @db.Uuid
+  id_usuario  Int?
   ip          String?   @db.VarChar(45)
   fecha_error DateTime  @default(now()) @db.Timestamp(6)
-  usuarios    usuarios? @relation(fields: [id_usuario], references: [id_usuario], onUpdate: NoAction, map: "FK_ef0aa2f8b6a1c580eb5b969c130")
+  usuario     usuario?  @relation(fields: [id_usuario], references: [id_usuario], onUpdate: NoAction, map: "fk_log_errores_usuario")
+
+  @@index([id_usuario], map: "idx_log_errores_usuario")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -163,26 +167,11 @@ model usuario {
   fecha_eliminacion_programada DateTime?       @db.Timestamptz(6)
   log_auditoria                log_auditoria[]
   negocio                      negocio[]
+  aceptacion_terminos          aceptacion_terminos[] 
+  log_errores                  log_errores[] 
 
   @@index([estado], map: "idx_usuario_estado")
   @@index([rol], map: "idx_usuario_rol")
-}
-
-model usuarios {
-  id_usuario                   String                @id(map: "PK_dfe59db369749f9042499fd8107") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  nombre                       String                @db.VarChar(50)
-  apellido                     String                @db.VarChar(50)
-  correo                       String                @unique(map: "UQ_63665765c1a778a770c9bd585d3") @db.VarChar(254)
-  password_hash                String                @db.VarChar
-  rol                          usuarios_rol_enum     @default(CLIENTE)
-  estado                       usuarios_estado_enum  @default(ACTIVO)
-  intentos_fallidos            Int                   @default(0)
-  fecha_registro               DateTime              @default(now()) @db.Timestamp(6)
-  fecha_actualizacion          DateTime              @default(now()) @db.Timestamp(6)
-  fecha_solicitud_eliminacion  DateTime?             @db.Timestamp(6)
-  fecha_eliminacion_programada DateTime?             @db.Timestamp(6)
-  aceptacion_terminos          aceptacion_terminos[]
-  log_errores                  log_errores[]
 }
 
 enum accion_auditoria {
