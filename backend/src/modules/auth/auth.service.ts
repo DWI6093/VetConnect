@@ -3,12 +3,15 @@ import {
   UnauthorizedException,
   ConflictException,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import { PrismaService } from '../../database/prisma.service';
 import { CrearClienteDto } from '../usuarios/dto/crear-cliente.dto';
 import { CrearColaboradorDto } from '../usuarios/dto/crear-colaborador.dto';
 import { InicioSesionDto } from '../usuarios/dto/inicio-sesion.dto';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
+import { AuditLogService } from 'src/util/log-audit.service';
+import { ErrorLogService } from 'src/util/log-error.service';
 
 interface CargaUtilToken {
   id_usuario: number;
@@ -28,7 +31,11 @@ export class AuthService {
   private readonly claveSecretaJwt =
     process.env.JWT_SECRET || 'VetConnectClaveSecretaParaFirmarTokensJWT2026';
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly auditLog: AuditLogService,
+    private readonly errorLog: ErrorLogService,
+  ) {}
 
   /**
    * Genera un token firmado con un tiempo de expiración determinado.
@@ -230,7 +237,10 @@ export class AuthService {
    * Inicia sesión validando credenciales y guardando el hash del refresh token.
    * El controlador es responsable de establecer las cookies HttpOnly.
    */
-  async iniciarSesion(inicioSesionDto: InicioSesionDto): Promise<ParDeTokens> {
+  async iniciarSesion(
+    req: Request,
+    inicioSesionDto: InicioSesionDto,
+  ): Promise<ParDeTokens> {
     const { correo, password } = inicioSesionDto;
 
     const usuario = await this.prismaService.usuario.findUnique({
@@ -268,6 +278,14 @@ export class AuthService {
       where: { id_usuario: usuario.id_usuario },
       data: { refresh_token_hash: refreshTokenHash },
     });
+
+    await this.auditLog.logAudit(
+      req,
+      'LOGIN',
+      'usuario',
+      1,
+      usuario.id_usuario,
+    );
 
     return tokens;
   }
@@ -324,11 +342,17 @@ export class AuthService {
   /**
    * Elimina el refresh token de la base de datos al cerrar sesión.
    */
-  async cerrarSesion(idUsuario: number): Promise<{ mensaje: string }> {
+  async cerrarSesion(
+    req: Request,
+    idUsuario: number,
+  ): Promise<{ mensaje: string }> {
     await this.prismaService.usuario.update({
       where: { id_usuario: idUsuario },
       data: { refresh_token_hash: null },
     });
+
+    await this.auditLog.logAudit(req, 'LOGOUT', 'usuario', 2, idUsuario);
+
     return { mensaje: 'Sesión cerrada exitosamente.' };
   }
 
