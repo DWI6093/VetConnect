@@ -4,28 +4,21 @@ on:
   push:
     branches:
       - main
-
   pull_request:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     services:
-
       postgres:
-
         image: postgres:16
-
         env:
           POSTGRES_USER: admin
           POSTGRES_PASSWORD: admin123
           POSTGRES_DB: testdb
-
         ports:
           - 5432:5432
-
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -33,7 +26,6 @@ jobs:
           --health-retries 5
 
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -44,6 +36,8 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      # No se ejecutan pruebas
 
       - name: Build
         run: npm run build
