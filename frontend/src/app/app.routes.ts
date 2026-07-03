@@ -5,6 +5,7 @@ import { LayoutClientesComponente } from './layouts/clientes/clientes.component'
 import { LayoutColaboradoresComponente } from './layouts/colaboradores/colaboradores.component';
 import { ClienteInicioComponente } from './features/cliente-inicio/cliente-inicio.component';
 import { ColaboradorInicioComponente } from './features/colaborador-inicio/colaborador-inicio.component';
+import { CuentaComponente } from '../shared/components/cuenta/cuenta';
 import { guardiaAutenticacion } from './core/guards/autenticacion.guard';
 import { guardiaRol } from './core/guards/rol.guard';
 
@@ -28,6 +29,10 @@ export const routes: Routes = [
         component: ClienteInicioComponente,
       },
       {
+        path: 'configuracion',
+        component: CuentaComponente,
+      },
+      {
         path: '',
         redirectTo: 'inicio',
         pathMatch: 'full',
@@ -43,6 +48,10 @@ export const routes: Routes = [
       {
         path: 'inicio',
         component: ColaboradorInicioComponente,
+      },
+      {
+        path: 'configuracion',
+        component: CuentaComponente,
       },
       {
         path: '',
