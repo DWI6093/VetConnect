@@ -35,9 +35,9 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
+        working-directory: ./frontend
         run: npm install
 
-      # No se ejecutan pruebas
-
       - name: Build
+        working-directory: ./frontend
         run: npm run build
