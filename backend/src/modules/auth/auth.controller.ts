@@ -81,7 +81,8 @@ export class AuthController {
     @Body() crearColaboradorDto: CrearColaboradorDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const tokens = await this.authService.registrarColaborador(crearColaboradorDto);
+    const tokens =
+      await this.authService.registrarColaborador(crearColaboradorDto);
     this.establecerCookiesAuth(res, tokens.token, tokens.refresh_token);
     return { mensaje: 'Registro exitoso.' };
   }
@@ -90,9 +91,10 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async iniciarSesion(
     @Body() inicioSesionDto: InicioSesionDto,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const tokens = await this.authService.iniciarSesion(inicioSesionDto);
+    const tokens = await this.authService.iniciarSesion(req, inicioSesionDto);
     this.establecerCookiesAuth(res, tokens.token, tokens.refresh_token);
     return { mensaje: 'Sesión iniciada.' };
   }
@@ -123,7 +125,7 @@ export class AuthController {
     if (!idUsuario) {
       throw new UnauthorizedException('No se pudo identificar al usuario.');
     }
-    const resultado = await this.authService.cerrarSesion(idUsuario);
+    const resultado = await this.authService.cerrarSesion(req, idUsuario);
     this.limpiarCookiesAuth(res);
     return resultado;
   }
