@@ -1,23 +1,13 @@
-import { Component, signal, inject } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { ServicioAutenticacion } from '../../core/services/auth.service';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { Header } from '../../../shared/components/header/header';
 
 @Component({
   selector: 'app-layout-clientes',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, Header],
   templateUrl: './clientes.component.html',
   styleUrl: './clientes.component.css',
 })
-export class LayoutClientesComponente {
-  protected readonly servicioAutenticacion = inject(ServicioAutenticacion);
-  protected readonly menuPerfilAbierto = signal<boolean>(false);
+export class LayoutClientesComponente {}
 
-  protected alternarMenuPerfil(): void {
-    this.menuPerfilAbierto.update((valor) => !valor);
-  }
-
-  protected cerrarSesionUsuario(): void {
-    this.servicioAutenticacion.cerrarSesion();
-  }
-}

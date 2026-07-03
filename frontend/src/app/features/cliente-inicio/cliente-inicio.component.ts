@@ -1,5 +1,4 @@
-import { Component, inject } from '@angular/core';
-import { ServicioAutenticacion } from '../../core/services/auth.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-cliente-inicio',
@@ -7,6 +6,5 @@ import { ServicioAutenticacion } from '../../core/services/auth.service';
   templateUrl: './cliente-inicio.component.html',
   styleUrl: './cliente-inicio.component.css',
 })
-export class ClienteInicioComponente {
-  protected readonly servicioAutenticacion = inject(ServicioAutenticacion);
-}
+export class ClienteInicioComponente {}
+

@@ -1,47 +1,6 @@
 <div class="layout-contenedor">
-  <!-- Navbar Superior Premium -->
-  <header class="barra-navegacion">
-    <div class="navbar-limite">
-      <!-- Logo -->
-      <div class="navbar-marca" routerLink="/cliente/inicio">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" class="marca-icono">
-          <path fill="none" d="M0 0h24v24H0z"/>
-          <path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-        </svg>
-        <span class="marca-texto">VetConnect</span>
-      </div>
-
-      <!-- Links del Menú Principal -->
-      <nav class="menu-navegacion">
-        <a routerLink="/cliente/inicio" routerLinkActive="activo" class="menu-enlace">Inicio</a>
-        <a class="menu-enlace enlace-deshabilitado">Buscar Veterinarias</a>
-        <a class="menu-enlace enlace-deshabilitado">Mis Mascotas</a>
-        <a class="menu-enlace enlace-deshabilitado">Mis Citas</a>
-      </nav>
-
-      <!-- Perfil del Usuario -->
-      <div class="perfil-contenedor">
-        <button type="button" class="perfil-boton" (click)="alternarMenuPerfil()">
-          <span class="usuario-inicial">C</span>
-          <span class="usuario-nombre-completo">Mi Cuenta</span>
-          <span class="flecha-dropdown">▼</span>
-        </button>
-
-        <!-- Dropdown de Perfil -->
-        @if (menuPerfilAbierto()) {
-          <div class="dropdown-menu">
-            <div class="dropdown-cabecera">
-              <span class="dropdown-rol-etiqueta">Cliente</span>
-            </div>
-            <div class="dropdown-divisor"></div>
-            <button type="button" class="dropdown-item item-rojo" (click)="cerrarSesionUsuario()">
-              <span class="icono-cerrar">🚪</span> Cerrar Sesión
-            </button>
-          </div>
-        }
-      </div>
-    </div>
-  </header>
+  <!-- Navbar Superior -->
+  <app-header />
 
   <!-- Área de Contenido Principal -->
   <main class="contenido-principal">
