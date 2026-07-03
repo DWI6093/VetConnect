@@ -1,7 +1,7 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, catchError, of } from 'rxjs';
+import { Observable, tap, catchError, of, throwError } from 'rxjs';
 import {
   SesionUsuario,
   RespuestaAuth,
@@ -63,7 +63,8 @@ export class ServicioAutenticacion {
           // Tras el login exitoso, el backend ya estableció las cookies HttpOnly.
           // Consultamos /auth/me para obtener el rol y actualizar el signal.
           this.verificarSesionActiva();
-        })
+        }),
+        catchError((error) => throwError(() => error))
       );
   }
 
@@ -83,7 +84,8 @@ export class ServicioAutenticacion {
         tap(() => {
           // Tras el registro, el backend ya estableció las cookies HttpOnly.
           this.verificarSesionActiva();
-        })
+        }),
+        catchError((error) => throwError(() => error))
       );
   }
 
@@ -103,7 +105,8 @@ export class ServicioAutenticacion {
         tap(() => {
           // Tras el registro, el backend ya estableció las cookies HttpOnly.
           this.verificarSesionActiva();
-        })
+        }),
+        catchError((error) => throwError(() => error))
       );
   }
 

@@ -1,6 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
 import { ServicioAutenticacion } from '../../../core/services/auth.service';
 
 @Component({
@@ -40,28 +41,29 @@ export class InicioSesionComponente {
       contrasena: this.formularioInicioSesion.get('contrasena')?.value,
     };
 
-    this.servicioAutenticacion.iniciarSesion(credenciales).subscribe({
-      next: () => {
-        this.estaCargando.set(false);
-        // El rol se carga asincrónicamente desde /auth/me via verificarSesionActiva().
-        // breve momento para que el signal se actualice antes de redirigir.
-        setTimeout(() => {
-          const rol = this.servicioAutenticacion.obtenerRol();
-          if (rol === 'CLIENTE') {
-            this.enrutador.navigate(['/cliente/inicio']);
-          } else if (rol === 'COLABORADOR') {
-            this.enrutador.navigate(['/colaborador/inicio']);
+    this.servicioAutenticacion
+      .iniciarSesion(credenciales)
+      .pipe(finalize(() => this.estaCargando.set(false)))
+      .subscribe({
+        next: () => {
+          // El rol se carga asíncronamente desde /auth/me via verificarSesionActiva().
+          // breve momento para que el signal se actualice antes de redirigir.
+          setTimeout(() => {
+            const rol = this.servicioAutenticacion.obtenerRol();
+            if (rol === 'CLIENTE') {
+              this.enrutador.navigate(['/cliente/inicio']);
+            } else if (rol === 'COLABORADOR') {
+              this.enrutador.navigate(['/colaborador/inicio']);
+            }
+          }, 300);
+        },
+        error: (error) => {
+          if (error.status === 401 || error.status === 0) {
+            this.mensajeError.set('Correo o contraseña inválidos.');
+          } else {
+            this.mensajeError.set('Ocurrió un error al intentar iniciar sesión. Por favor, intente más tarde.');
           }
-        }, 300);
-      },
-      error: (error) => {
-        this.estaCargando.set(false);
-        if (error.status === 401) {
-          this.mensajeError.set('Correo electrónico o contraseña incorrectos.');
-        } else {
-          this.mensajeError.set('Ocurrió un error al intentar iniciar sesión. Por favor, intente más tarde.');
-        }
-      },
-    });
+        },
+      });
   }
 }

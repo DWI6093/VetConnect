@@ -116,10 +116,25 @@
             @if (formularioRegistro.get('nombre')?.invalid && formularioRegistro.get('nombre')?.touched) {
               <div class="error-validacion">
                 @if (formularioRegistro.get('nombre')?.errors?.['required']) {
-                  <span>Obligatorio.</span>
+                  <span>El nombre es obligatorio.</span>
                 }
                 @if (formularioRegistro.get('nombre')?.errors?.['minlength']) {
-                  <span>Mín. 2 letras.</span>
+                  <span>Mín. 3 caracteres.</span>
+                }
+                @if (formularioRegistro.get('nombre')?.errors?.['maxlength']) {
+                  <span>Máx. 50 caracteres.</span>
+                }
+                @if (formularioRegistro.get('nombre')?.errors?.['soloNumeros']) {
+                  <span>El nombre no puede contener solo números.</span>
+                }
+                @if (formularioRegistro.get('nombre')?.errors?.['contieneNumeros']) {
+                  <span>El nombre no puede contener números.</span>
+                }
+                @if (formularioRegistro.get('nombre')?.errors?.['caracteresEspeciales']) {
+                  <span>El nombre contiene caracteres no permitidos.</span>
+                }
+                @if (formularioRegistro.get('nombre')?.errors?.['soloEspacios'] || formularioRegistro.get('nombre')?.errors?.['espaciosEnExtremos'] || formularioRegistro.get('nombre')?.errors?.['multiplesEspacios']) {
+                  <span>El nombre no puede tener espacios extra.</span>
                 }
               </div>
             }
@@ -142,10 +157,25 @@
             @if (formularioRegistro.get('apellido')?.invalid && formularioRegistro.get('apellido')?.touched) {
               <div class="error-validacion">
                 @if (formularioRegistro.get('apellido')?.errors?.['required']) {
-                  <span>Obligatorio.</span>
+                  <span>El apellido es obligatorio.</span>
                 }
                 @if (formularioRegistro.get('apellido')?.errors?.['minlength']) {
-                  <span>Mín. 2 letras.</span>
+                  <span>Mín. 3 caracteres.</span>
+                }
+                @if (formularioRegistro.get('apellido')?.errors?.['maxlength']) {
+                  <span>Máx. 50 caracteres.</span>
+                }
+                @if (formularioRegistro.get('apellido')?.errors?.['soloNumeros']) {
+                  <span>El apellido no puede contener solo números.</span>
+                }
+                @if (formularioRegistro.get('apellido')?.errors?.['contieneNumeros']) {
+                  <span>El apellido no puede contener números.</span>
+                }
+                @if (formularioRegistro.get('apellido')?.errors?.['caracteresEspeciales']) {
+                  <span>El apellido contiene caracteres no permitidos.</span>
+                }
+                @if (formularioRegistro.get('apellido')?.errors?.['soloEspacios'] || formularioRegistro.get('apellido')?.errors?.['espaciosEnExtremos'] || formularioRegistro.get('apellido')?.errors?.['multiplesEspacios']) {
+                  <span>El apellido no puede tener espacios extra.</span>
                 }
               </div>
             }
@@ -200,6 +230,15 @@
                 }
                 @if (formularioRegistro.get('contrasena')?.errors?.['minlength']) {
                   <span>Mínimo 6 caracteres.</span>
+                }
+                @if (formularioRegistro.get('contrasena')?.errors?.['maxlength']) {
+                  <span>Máximo 50 caracteres.</span>
+                }
+                @if (formularioRegistro.get('contrasena')?.errors?.['soloNumeros']) {
+                  <span>La contraseña no puede ser solo números.</span>
+                }
+                @if (formularioRegistro.get('contrasena')?.errors?.['contieneEspacios']) {
+                  <span>La contraseña no puede contener espacios.</span>
                 }
               </div>
             }
