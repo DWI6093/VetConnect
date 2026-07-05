@@ -84,14 +84,12 @@
       <!-- Mensajes -->
       @if (mensajeError()) {
         <div class="mensaje-alerta error">
-          <span>⚠️</span>
           <p>{{ mensajeError() }}</p>
         </div>
       }
 
       @if (mensajeExito()) {
         <div class="mensaje-alerta exito">
-          <span>✨</span>
           <p>{{ mensajeExito() }}</p>
         </div>
       }
@@ -136,6 +134,9 @@
                 @if (formularioRegistro.get('nombre')?.errors?.['soloEspacios'] || formularioRegistro.get('nombre')?.errors?.['espaciosEnExtremos'] || formularioRegistro.get('nombre')?.errors?.['multiplesEspacios']) {
                   <span>El nombre no puede tener espacios extra.</span>
                 }
+                @if (formularioRegistro.get('nombre')?.errors?.['posibleInyeccionSQL']) {
+                  <span>El nombre contiene caracteres no permitidos.</span>
+                }
               </div>
             }
           </div>
@@ -177,6 +178,9 @@
                 @if (formularioRegistro.get('apellido')?.errors?.['soloEspacios'] || formularioRegistro.get('apellido')?.errors?.['espaciosEnExtremos'] || formularioRegistro.get('apellido')?.errors?.['multiplesEspacios']) {
                   <span>El apellido no puede tener espacios extra.</span>
                 }
+                @if (formularioRegistro.get('apellido')?.errors?.['posibleInyeccionSQL']) {
+                  <span>El apellido contiene caracteres no permitidos.</span>
+                }
               </div>
             }
           </div>
@@ -192,7 +196,7 @@
               type="email"
               id="correo"
               formControlName="correo"
-              placeholder="ejemplo@correo.com"
+              placeholder="Correo"
               [class.campo-invalido]="formularioRegistro.get('correo')?.invalid && formularioRegistro.get('correo')?.touched"
             />
           </div>
@@ -204,6 +208,9 @@
               @if (formularioRegistro.get('correo')?.errors?.['email']) {
                 <span>Ingrese un correo electrónico válido.</span>
               }
+              @if (formularioRegistro.get('correo')?.errors?.['posibleInyeccionSQL']) {
+                <span>El correo contiene caracteres no permitidos.</span>
+              }
             </div>
           }
         </div>
@@ -211,18 +218,12 @@
         <div class="fila-dos">
           <div class="campo-grupo">
             <label for="contrasena">Contraseña</label>
-            <div class="campo-input">
-              <span class="campo-icono">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              </span>
-              <input
-                type="password"
-                id="contrasena"
-                formControlName="contrasena"
-                placeholder="••••••••"
-                [class.campo-invalido]="formularioRegistro.get('contrasena')?.invalid && formularioRegistro.get('contrasena')?.touched"
-              />
-            </div>
+            <app-input-contrasena
+              identificador="contrasena"
+              formControlName="contrasena"
+              marcadorDePosicion="Contraseña"
+              [esInvalido]="(formularioRegistro.get('contrasena')?.invalid && formularioRegistro.get('contrasena')?.touched) ?? false"
+            ></app-input-contrasena>
             @if (formularioRegistro.get('contrasena')?.invalid && formularioRegistro.get('contrasena')?.touched) {
               <div class="error-validacion">
                 @if (formularioRegistro.get('contrasena')?.errors?.['required']) {
@@ -240,24 +241,21 @@
                 @if (formularioRegistro.get('contrasena')?.errors?.['contieneEspacios']) {
                   <span>La contraseña no puede contener espacios.</span>
                 }
+                @if (formularioRegistro.get('contrasena')?.errors?.['posibleInyeccionSQL']) {
+                  <span>La contraseña contiene caracteres no permitidos.</span>
+                }
               </div>
             }
           </div>
 
           <div class="campo-grupo">
             <label for="confirmarContrasena">Confirmar contraseña</label>
-            <div class="campo-input">
-              <span class="campo-icono">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              </span>
-              <input
-                type="password"
-                id="confirmarContrasena"
-                formControlName="confirmarContrasena"
-                placeholder="••••••••"
-                [class.campo-invalido]="(formularioRegistro.get('confirmarContrasena')?.invalid || formularioRegistro.errors?.['contrasenasNoCoinciden']) && formularioRegistro.get('confirmarContrasena')?.touched"
-              />
-            </div>
+            <app-input-contrasena
+              identificador="confirmarContrasena"
+              formControlName="confirmarContrasena"
+              marcadorDePosicion="Confirmar Contraseña"
+              [esInvalido]="((formularioRegistro.get('confirmarContrasena')?.invalid || formularioRegistro.errors?.['contrasenasNoCoinciden']) && formularioRegistro.get('confirmarContrasena')?.touched) ?? false"
+            ></app-input-contrasena>
             @if (formularioRegistro.get('confirmarContrasena')?.touched) {
               <div class="error-validacion">
                 @if (formularioRegistro.get('confirmarContrasena')?.errors?.['required']) {

@@ -1,10 +1,12 @@
 /**
- * Información mínima de sesión disponible en el frontend.
- * Solo se expone el rol; datos sensibles como correo, nombre
- * o apellido NO se envían al frontend.
+ * Información de sesión disponible en el frontend, incluyendo datos de perfil.
  */
 export interface SesionUsuario {
   rol: 'CLIENTE' | 'COLABORADOR';
+  nombre: string;
+  apellido: string;
+  correo: string;
+  password?: string;
 }
 
 /**

@@ -13,6 +13,14 @@ export class Header {
   protected readonly servicioAutenticacion = inject(ServicioAutenticacion);
   protected readonly menuPerfilAbierto = signal<boolean>(false);
 
+  protected obtenerPrimerNombre(): string {
+    const sesion = this.servicioAutenticacion.sesionActual();
+    if (!sesion || !sesion.nombre) {
+      return '';
+    }
+    return sesion.nombre.split(' ')[0];
+  }
+
   protected alternarMenuPerfil(): void {
     this.menuPerfilAbierto.update((valor) => !valor);
   }

@@ -10,6 +10,5 @@ export const guardiaAutenticacion: CanActivateFn = () => {
     return true;
   }
 
-  enrutador.navigate(['/auth/login']);
-  return false;
+  return enrutador.createUrlTree(['/auth/login']);
 };

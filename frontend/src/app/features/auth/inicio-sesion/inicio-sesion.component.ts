@@ -1,13 +1,15 @@
 import { Component, signal, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ServicioAutenticacion } from '../../../core/services/auth.service';
+import { InputContrasenaComponente } from '../../../../shared/components/input-contrasena/input-contrasena.component';
+import { emailFieldValidator, passwordFieldValidator } from '../../../../shared/validators/forms.validators';
 
 @Component({
   selector: 'app-inicio-sesion',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, InputContrasenaComponente],
   templateUrl: './inicio-sesion.component.html',
   styleUrl: './inicio-sesion.component.css',
 })
@@ -22,8 +24,8 @@ export class InicioSesionComponente {
 
   constructor() {
     this.formularioInicioSesion = this.constructorFormularios.group({
-      correo: ['', [Validators.required, Validators.email]],
-      contrasena: ['', [Validators.required, Validators.minLength(6)]],
+      correo: ['', emailFieldValidator()],
+      contrasena: ['', passwordFieldValidator()],
     });
   }
 
@@ -59,7 +61,7 @@ export class InicioSesionComponente {
         },
         error: (error) => {
           if (error.status === 401 || error.status === 0) {
-            this.mensajeError.set('Correo o contraseña inválidos.');
+            this.mensajeError.set('Correo o Contraseña incorrectos');
           } else {
             this.mensajeError.set('Ocurrió un error al intentar iniciar sesión. Por favor, intente más tarde.');
           }

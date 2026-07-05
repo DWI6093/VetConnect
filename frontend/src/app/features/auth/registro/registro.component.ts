@@ -6,12 +6,14 @@ import { ServicioAutenticacion } from '../../../core/services/auth.service';
 import {
   nameFieldValidator,
   passwordFieldValidator,
+  emailFieldValidator,
 } from '../../../../shared/validators/forms.validators';
+import { InputContrasenaComponente } from '../../../../shared/components/input-contrasena/input-contrasena.component';
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, InputContrasenaComponente],
   templateUrl: './registro.component.html',
   styleUrl: './registro.component.css',
 })
@@ -31,7 +33,7 @@ export class RegistroComponente {
       {
         nombre: ['', nameFieldValidator()],
         apellido: ['', nameFieldValidator()],
-        correo: ['', [this.validarCorreo]],
+        correo: ['', emailFieldValidator()],
         contrasena: ['', passwordFieldValidator()],
         confirmarContrasena: ['', [this.validarConfirmacionRequerida]],
       },
@@ -47,12 +49,6 @@ export class RegistroComponente {
     return contrasena === confirmarContrasena ? null : { contrasenasNoCoinciden: true };
   }
 
-  private validarCorreo(control: AbstractControl): ValidationErrors | null {
-    const valor = control.value;
-    if (!valor) return { required: true };
-    const patron = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return patron.test(valor) ? null : { email: true };
-  }
 
   private validarConfirmacionRequerida(control: AbstractControl): ValidationErrors | null {
     const valor = control.value;
