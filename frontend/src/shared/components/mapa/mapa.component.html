@@ -1,0 +1,47 @@
+<div class="mapa-wrapper">
+  @if (estado() === 'cargando') {
+    <div class="estado-overlay estado-cargando">
+      <div class="spinner-carga"></div>
+      <p class="estado-texto">Obteniendo tu ubicación actual...</p>
+    </div>
+  }
+
+  @if (estado() === 'denegado') {
+    <div class="estado-overlay estado-denegado">
+      <div class="estado-contenedor">
+        <div class="icono-estado"></div>
+        <h3 class="titulo-estado">Acceso a ubicación denegado</h3>
+        <p class="descripcion-estado">
+          {{ mensajeError() }}
+        </p>
+        <div class="indicacion-navegador">
+          <small>Tip: Puedes habilitar los permisos haciendo clic en el icono de candado al lado de la barra de direcciones de tu navegador y recargando la página.</small>
+        </div>
+        <button (click)="reintentarUbicacion()" class="boton-reintento">
+          Permitir ubicación y reintentar
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (estado() === 'error') {
+    <div class="estado-overlay estado-error">
+      <div class="estado-contenedor">
+        <div class="icono-estado"></div>
+        <h3 class="titulo-estado">No pudimos obtener tu ubicación</h3>
+        <p class="descripcion-estado">
+          {{ mensajeError() || 'Hubo un error inesperado al acceder al servicio de localización.' }}
+        </p>
+        <button (click)="reintentarUbicacion()" class="boton-reintento">
+          Intentar de nuevo
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- El contenedor del mapa se renderiza siempre y mantiene sus dimensiones para que Leaflet pueda inicializarse correctamente -->
+  <div 
+    #mapaContenedor 
+    class="mapa-contenedor"
+  ></div>
+</div>

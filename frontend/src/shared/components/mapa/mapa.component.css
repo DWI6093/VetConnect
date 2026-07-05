@@ -1,0 +1,209 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Wrapper principal del mapa para mantener bordes e interfaz consistente */
+.mapa-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-borde-suave);
+  border-radius: var(--radio-lg);
+  overflow: hidden;
+  box-shadow: var(--sombra-tarjeta);
+  border: 1px solid var(--color-borde);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: var(--fuente-base);
+}
+
+/* Contenedor del mapa de Leaflet */
+.mapa-contenedor {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Ocultar el mapa en caso de no estar listo o con error */
+.mapa-oculto {
+  visibility: hidden;
+  position: absolute;
+  width: 0;
+  height: 0;
+  z-index: -1;
+}
+
+/* Contenedor genérico para estados de error, denegación o carga */
+.estado-contenedor {
+  padding: 2rem;
+  text-align: center;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  z-index: 2;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.estado-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.95);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.2rem;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Spinner de carga */
+.spinner-carga {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--color-borde-suave);
+  border-top-color: var(--color-principal);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.icono-estado {
+  font-size: 3.5rem;
+  margin-bottom: 0.5rem;
+  animation: bounce 2s infinite;
+}
+
+.titulo-estado {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-texto-oscuro);
+}
+
+.descripcion-estado {
+  font-size: 0.95rem;
+  color: var(--color-texto-suave);
+  line-height: 1.5;
+}
+
+.indicacion-navegador {
+  background-color: var(--color-info-suave);
+  border-left: 4px solid var(--color-info);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radio-sm);
+  text-align: left;
+  margin: 0.5rem 0;
+}
+
+.indicacion-navegador small {
+  color: var(--color-texto);
+  font-size: 0.85rem;
+  display: block;
+}
+
+/* Botón de reintento con diseño premium */
+.boton-reintento {
+  background-color: var(--color-principal);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: var(--radio-pill);
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.25);
+  transition: all var(--transicion);
+}
+
+.boton-reintento:hover {
+  background-color: #0d9488; /* Tonalidad más oscura de principal */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(20, 184, 166, 0.35);
+}
+
+.boton-reintento:active {
+  transform: translateY(0);
+}
+
+/* =============================================
+   Marcador de Ubicación Actual Personalizado (CSS)
+   ============================================= */
+.marcador-ubicacion-contenedor {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+/* Círculo central azul */
+.marcador-centro {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background-color: #3b82f6; /* Azul brillante */
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+/* Efecto de pulso expansivo */
+.marcador-pulso {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-color: rgba(59, 130, 246, 0.4);
+  border-radius: 50%;
+  animation: pulse-ring 1.8s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  z-index: 1;
+}
+
+/* =============================================
+   Animaciones
+   ============================================= */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  80%, 100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
