@@ -1,4 +1,13 @@
 <div class="mapa-wrapper">
+  <!-- Fondo de cuadrícula decorativo abstracto -->
+  <div class="mapa-fondo-decorativo">
+    <div class="mapa-linea-calle calle-h-1"></div>
+    <div class="mapa-linea-calle calle-h-2"></div>
+    <div class="mapa-linea-calle calle-v-1"></div>
+    <div class="mapa-linea-calle calle-v-2"></div>
+    <div class="mapa-circulo-anillo ring-1"></div>
+  </div>
+
   @if (estado() === 'cargando') {
     <div class="estado-overlay estado-cargando">
       <div class="spinner-carga"></div>
@@ -8,17 +17,50 @@
 
   @if (estado() === 'denegado') {
     <div class="estado-overlay estado-denegado">
-      <div class="estado-contenedor">
-        <div class="icono-estado"></div>
-        <h3 class="titulo-estado">Acceso a ubicación denegado</h3>
-        <p class="descripcion-estado">
-          {{ mensajeError() }}
-        </p>
-        <div class="indicacion-navegador">
-          <small>Tip: Puedes habilitar los permisos haciendo clic en el icono de candado al lado de la barra de direcciones de tu navegador y recargando la página.</small>
+      <div class="estado-tarjeta">
+        <div class="ilustracion-ubicacion">
+          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z" fill="var(--color-texto-suave)" fill-opacity="0.15" stroke="var(--color-texto-suave)" stroke-width="1.5"/>
+            <circle cx="12" cy="9" r="3" fill="var(--color-secundario)" fill-opacity="0.2" stroke="var(--color-secundario)" stroke-width="2"/>
+            <circle cx="17" cy="17" r="4.5" fill="var(--color-error)" stroke="white" stroke-width="1.5"/>
+            <path d="M15.5 17.5L18.5 14.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
         </div>
+        
+        <h3 class="titulo-estado">Ubicación desactivada</h3>
+        <p class="descripcion-estado">
+          Para mostrarte las veterinarias y negocios más cercanos, VetConnect necesita acceso a tu ubicación.
+        </p>
+
+        <div class="guia-pasos">
+          <div class="paso">
+            <span class="paso-numero">1</span>
+            <div class="paso-contenido">
+              <span class="paso-titulo">Haz clic en el candado</span>
+              <span class="paso-desc">Pulsa el icono de candado en la barra de direcciones de tu navegador.</span>
+            </div>
+          </div>
+          <div class="paso">
+            <span class="paso-numero">2</span>
+            <div class="paso-contenido">
+              <span class="paso-titulo">Permite el acceso</span>
+              <span class="paso-desc">Cambia el permiso de "Ubicación" a "Permitir".</span>
+            </div>
+          </div>
+          <div class="paso">
+            <span class="paso-numero">3</span>
+            <div class="paso-contenido">
+              <span class="paso-titulo">Recarga la página</span>
+              <span class="paso-desc">Presiona el botón inferior para aplicar la nueva configuración.</span>
+            </div>
+          </div>
+        </div>
+
         <button (click)="reintentarUbicacion()" class="boton-reintento">
-          Permitir ubicación y reintentar
+          <svg class="icono-boton" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          Recargar
         </button>
       </div>
     </div>
@@ -26,13 +68,22 @@
 
   @if (estado() === 'error') {
     <div class="estado-overlay estado-error">
-      <div class="estado-contenedor">
-        <div class="icono-estado"></div>
+      <div class="estado-tarjeta">
+        <div class="ilustracion-ubicacion">
+          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z" fill="var(--color-texto-suave)" fill-opacity="0.15" stroke="var(--color-texto-suave)" stroke-width="1.5"/>
+            <path d="M12 7V11" stroke="var(--color-advertencia)" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="14" r="1" fill="var(--color-advertencia)"/>
+          </svg>
+        </div>
         <h3 class="titulo-estado">No pudimos obtener tu ubicación</h3>
         <p class="descripcion-estado">
           {{ mensajeError() || 'Hubo un error inesperado al acceder al servicio de localización.' }}
         </p>
         <button (click)="reintentarUbicacion()" class="boton-reintento">
+          <svg class="icono-boton" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
           Intentar de nuevo
         </button>
       </div>
@@ -44,4 +95,14 @@
     #mapaContenedor 
     class="mapa-contenedor"
   ></div>
+
+  @if (estado() === 'exito') {
+    <div class="mapa-leyenda">
+      <div class="leyenda-icono">
+        <div class="leyenda-pulso"></div>
+        <div class="leyenda-centro"></div>
+      </div>
+      <p class="leyenda-texto">El punto animado indica tu <strong>ubicación actual</strong>.</p>
+    </div>
+  }
 </div>

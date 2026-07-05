@@ -27,6 +27,16 @@
   border: 1px solid var(--color-borde);
 }
 
+@media (max-width: 768px) {
+  .area-mapa {
+    height: auto;
+    overflow: visible;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+}
+
 .mapa-en-proceso {
   position: relative;
   z-index: 1;

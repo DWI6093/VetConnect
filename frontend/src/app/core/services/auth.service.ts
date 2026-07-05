@@ -27,9 +27,26 @@ export class ServicioAutenticacion {
   private readonly enrutador = inject(Router);
 
   constructor() {
-    // Al iniciar la app, verificamos con el backend si hay una sesión activa
-    // mediante las cookies HttpOnly que el navegador envía automáticamente.
-    this.verificarSesionActiva();
+    // La verificación inicial de la sesión se realiza a través de APP_INITIALIZER en app.config.ts
+    // para evitar redirecciones prematuras en los guards del enrutador.
+  }
+
+  /**
+   * Método de inicialización asíncrona invocado por APP_INITIALIZER al arrancar la aplicación.
+   * Retorna un observable para que Angular espere a que se complete antes de activar las rutas.
+   */
+  inicializarSesion(): Observable<SesionUsuario | null> {
+    return this.httpCliente
+      .get<SesionUsuario>(`${this.urlBaseApi}/auth/me`, { withCredentials: true })
+      .pipe(
+        tap((info) => {
+          this.sesionActual.set(info);
+        }),
+        catchError(() => {
+          this.sesionActual.set(null);
+          return of(null);
+        })
+      );
   }
 
   /**
@@ -38,14 +55,7 @@ export class ServicioAutenticacion {
    * Si no, el signal queda en null (no autenticado).
    */
   verificarSesionActiva(): void {
-    this.httpCliente
-      .get<SesionUsuario>(`${this.urlBaseApi}/auth/me`, { withCredentials: true })
-      .pipe(
-        catchError(() => of(null))
-      )
-      .subscribe((info) => {
-        this.sesionActual.set(info);
-      });
+    this.inicializarSesion().subscribe();
   }
 
   iniciarSesion(credenciales: DatosInicioSesion): Observable<RespuestaAuth> {

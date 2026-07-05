@@ -118,10 +118,16 @@ export class MapaComponente implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Permite al usuario reintentar la solicitud de geolocalización en caso de error
+   * Permite al usuario reintentar la solicitud de geolocalización en caso de error.
+   * Si el acceso está denegado, se recarga la página para que el navegador reevalúe
+   * los permisos una vez que el usuario los haya cambiado en la barra de direcciones.
    */
   protected reintentarUbicacion(): void {
-    this.servicioGeolocalizacion.obtenerUbicacionActual();
+    if (this.estado() === 'denegado') {
+      window.location.reload();
+    } else {
+      this.servicioGeolocalizacion.obtenerUbicacionActual();
+    }
   }
 
   public ngOnDestroy(): void {
