@@ -338,61 +338,58 @@
 /* =============================================
    Leyenda del Mapa
    ============================================= */
-.mapa-leyenda {
-  position: absolute;
-  bottom: 1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
-  padding: 0.6rem 1.2rem;
-  border-radius: 50px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+/* =============================================
+   Leyenda de Ubicación Unificada en Tarjeta
+   ============================================= */
+.leyenda-ubicacion-unificada {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  z-index: 1000;
-  border: 1px solid var(--color-borde);
-  animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-borde-suave);
 }
 
-.leyenda-icono {
+.ubicacion-unificada-punto {
   position: relative;
-  width: 16px;
-  height: 16px;
+  width: 10px;
+  height: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
 }
 
-.leyenda-centro {
+.ubicacion-unificada-centro {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: #3b82f6;
+  border: 1px solid #ffffff;
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+}
+
+.ubicacion-unificada-pulso {
   position: absolute;
   width: 10px;
   height: 10px;
-  background-color: #3b82f6;
-  border: 2px solid #ffffff;
-  border-radius: 50%;
-  z-index: 2;
-}
-
-.leyenda-pulso {
-  position: absolute;
-  width: 16px;
-  height: 16px;
   background-color: rgba(59, 130, 246, 0.4);
   border-radius: 50%;
   animation: pulse-ring 1.8s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
   z-index: 1;
 }
 
-.leyenda-texto {
+.ubicacion-unificada-texto {
   margin: 0;
-  font-size: 0.85rem;
-  color: var(--color-texto-oscuro);
+  font-size: 0.75rem;
+  color: var(--color-texto-suave);
   font-weight: 500;
+  line-height: 1.35;
 }
 
-.leyenda-texto strong {
+.ubicacion-unificada-texto strong {
   color: var(--color-principal);
   font-weight: 700;
 }
@@ -413,19 +410,6 @@
     border-radius: var(--radio-lg);
     border: 1px solid var(--color-borde);
     box-shadow: var(--sombra-tarjeta);
-  }
-
-  .mapa-leyenda {
-    position: static;
-    transform: none;
-    margin-top: 1rem;
-    width: 100%;
-    box-sizing: border-box;
-    justify-content: center;
-    background: white;
-    box-shadow: var(--sombra-tarjeta);
-    border-radius: var(--radio-md);
-    animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
 
@@ -468,3 +452,266 @@
     transform: translateY(-8px);
   }
 }
+
+/* =============================================
+   Marcador de Negocios (CSS)
+   ============================================= */
+::ng-deep .marcador-negocio-contenedor {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px !important;
+  height: 36px !important;
+  transition: transform 0.2s ease;
+  z-index: 500 !important;
+}
+
+::ng-deep .marcador-negocio-contenedor:hover {
+  transform: scale(1.15) translateY(-2px);
+  z-index: 1000 !important;
+}
+
+::ng-deep .marcador-negocio-pin {
+  width: 34px;
+  height: 34px;
+  background-color: var(--color-secundario); /* Azul marino/violeta */
+  border: 2.5px solid #ffffff;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 4px 12px rgba(30, 58, 95, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+::ng-deep .marcador-negocio-pin svg.icono-huella {
+  transform: rotate(45deg);
+  width: 17px;
+  height: 17px;
+  color: #ffffff;
+}
+
+/* =============================================
+   Popup de Leaflet Premium
+   ============================================= */
+::ng-deep .leaflet-popup-content-wrapper {
+  background: rgba(255, 255, 255, 0.97) !important;
+  backdrop-filter: blur(8px) !important;
+  border-radius: var(--radio-md) !important;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1), 0 1px 3px rgba(15, 23, 42, 0.05) !important;
+  border: 1px solid var(--color-borde) !important;
+  padding: 0.15rem !important;
+}
+
+::ng-deep .leaflet-popup-tip {
+  background: rgba(255, 255, 255, 0.97) !important;
+  border-right: 1px solid var(--color-borde) !important;
+  border-bottom: 1px solid var(--color-borde) !important;
+  box-shadow: 2px 2px 4px rgba(15, 23, 42, 0.05) !important;
+}
+
+::ng-deep .leaflet-popup-content {
+  margin: 12px 14px !important;
+  line-height: 1.4 !important;
+}
+
+::ng-deep .popup-negocio {
+  font-family: var(--fuente-base);
+  color: var(--color-texto-oscuro);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 180px;
+  max-width: 240px;
+}
+
+::ng-deep .popup-titulo {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-texto-oscuro);
+  margin: 0;
+  padding-bottom: 0.15rem;
+  border-bottom: 1px solid var(--color-borde-suave);
+}
+
+::ng-deep .popup-descripcion {
+  font-size: 0.8rem;
+  color: var(--color-texto-suave);
+  margin: 0;
+  line-height: 1.35;
+}
+
+::ng-deep .popup-info-linea {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.775rem;
+  color: var(--color-texto-suave);
+  margin: 0;
+}
+
+::ng-deep .popup-info-linea svg {
+  color: var(--color-principal);
+  flex-shrink: 0;
+}
+
+::ng-deep .popup-distancia {
+  display: inline-block;
+  align-self: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-principal);
+  background-color: var(--color-principal-suave);
+  border: 1px solid var(--color-principal-borde);
+  padding: 3px 10px;
+  border-radius: var(--radio-pill);
+}
+
+::ng-deep .popup-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--color-borde-suave);
+}
+
+::ng-deep .popup-boton-detalles {
+  background-color: var(--color-principal);
+  color: white;
+  border: none;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radio-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+::ng-deep .popup-boton-detalles:hover {
+  background-color: #0d9488;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(20, 184, 166, 0.2);
+}
+
+/* =============================================
+   Tarjeta de Información de Negocios
+   ============================================= */
+.tarjeta-leyenda-negocios {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-md);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  z-index: 1000;
+  max-width: 310px;
+  overflow: hidden;
+}
+
+.leyenda-negocios-icono {
+  width: 32px;
+  height: 32px;
+  background-color: var(--color-secundario);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(30, 58, 95, 0.15);
+  transition: all 0.3s ease;
+}
+
+.leyenda-negocios-icono svg {
+  width: 16px;
+  height: 16px;
+  color: white;
+}
+
+.leyenda-negocios-icono.estado-error-icono {
+  background-color: var(--color-error);
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.2);
+}
+
+.leyenda-negocios-icono.estado-vacio-icono {
+  background-color: var(--color-texto-suave);
+  box-shadow: 0 2px 6px rgba(100, 116, 139, 0.15);
+}
+
+.leyenda-negocios-contenido {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.leyenda-negocios-titulo {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-texto-oscuro);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.leyenda-negocios-titulo.error-titulo {
+  color: var(--color-error);
+}
+
+.leyenda-negocios-descripcion {
+  font-size: 0.78rem;
+  color: var(--color-texto-suave);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.boton-reintento-pequeno {
+  background-color: var(--color-fondo);
+  color: var(--color-texto-oscuro);
+  border: 1px solid var(--color-borde);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.boton-reintento-pequeno:hover {
+  background-color: var(--color-borde-suave);
+  transform: rotate(30deg);
+  color: var(--color-principal);
+}
+
+.spinner-carga-pequeno {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(20, 184, 166, 0.15);
+  border-top-color: var(--color-principal);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .tarjeta-leyenda-negocios {
+    position: static;
+    max-width: 100%;
+    margin-top: 1rem;
+    box-shadow: var(--sombra-tarjeta);
+    background: var(--color-tarjeta);
+    backdrop-filter: none;
+    padding: 1rem;
+    gap: 1rem;
+  }
+}
+
