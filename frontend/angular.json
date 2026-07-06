@@ -3,7 +3,10 @@
   "version": 1,
   "cli": {
     "packageManager": "npm",
-    "schematicCollections": ["angular-eslint"]
+    "schematicCollections": [
+      "angular-eslint"
+    ],
+    "analytics": "4a19bc4b-1226-4117-b6ad-322a244f299a"
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -53,6 +56,14 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "headers": {
+              "X-Frame-Options": "DENY",
+              "Content-Security-Policy": "frame-ancestors 'none';",
+              "X-Content-Type-Options": "nosniff",
+              "Referrer-Policy": "strict-origin-when-cross-origin"
+            }
+          },
           "configurations": {
             "production": {
               "buildTarget": "vetconnect-app:build:production"
