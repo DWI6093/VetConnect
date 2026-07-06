@@ -16,6 +16,9 @@ import { CrearClienteDto } from '../usuarios/dto/crear-cliente.dto';
 import { CrearColaboradorDto } from '../usuarios/dto/crear-colaborador.dto';
 import { InicioSesionDto } from '../usuarios/dto/inicio-sesion.dto';
 import { GuardAutenticacion } from './guard/autenticacion.guard';
+import { LimiteAutenticacionGuard } from '../../common/rate-limit/limite-autenticacion.guard';
+import { RateLimitStoreService } from '../../common/rate-limit/rate-limit-store.service';
+import { obtenerIpSolicitud } from '../../common/rate-limit/obtener-ip.util';
 
 /**
  * Duración en milisegundos de cada cookie.
@@ -38,7 +41,10 @@ const opcionesCookieBase = {
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly rateLimitStore: RateLimitStoreService,
+  ) {}
 
   /**
    * Establece las cookies HttpOnly en la respuesta.
@@ -87,6 +93,7 @@ export class AuthController {
     return { mensaje: 'Registro exitoso.' };
   }
 
+  @UseGuards(LimiteAutenticacionGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async iniciarSesion(
@@ -94,9 +101,20 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const tokens = await this.authService.iniciarSesion(req, inicioSesionDto);
-    this.establecerCookiesAuth(res, tokens.token, tokens.refresh_token);
-    return { mensaje: 'Sesión iniciada.' };
+    const ip = obtenerIpSolicitud(req);
+
+    try {
+      const tokens = await this.authService.iniciarSesion(
+        req,
+        inicioSesionDto,
+      );
+      this.rateLimitStore.registrarIntentoExitoso(ip);
+      this.establecerCookiesAuth(res, tokens.token, tokens.refresh_token);
+      return { mensaje: 'Sesión iniciada.' };
+    } catch (error) {
+      this.rateLimitStore.registrarIntentoFallido(ip);
+      throw error;
+    }
   }
 
   @Post('refresh')
