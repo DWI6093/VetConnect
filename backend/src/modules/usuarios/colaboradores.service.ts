@@ -114,9 +114,7 @@ export class ColaboradoresService {
         },
       });
       if (correoExiste) {
-        throw new ConflictException(
-          'El correo ya está registrado por otro usuario.',
-        );
+        throw new ConflictException('El correo ya ha sido registrado.');
       }
     }
 

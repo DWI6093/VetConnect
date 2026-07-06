@@ -9,18 +9,18 @@ import {
 export class RectificarDatosDto {
   @IsOptional()
   @IsString()
-  @MinLength(2)
+  @MinLength(3)
   @MaxLength(50)
   nombre?: string;
 
   @IsOptional()
   @IsString()
-  @MinLength(2)
+  @MinLength(3)
   @MaxLength(50)
   apellido?: string;
 
   @IsOptional()
   @IsEmail()
-  @MaxLength(254)
+  @MaxLength(50)
   correo?: string;
 }

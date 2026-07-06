@@ -36,7 +36,8 @@ export class ColaboradoresController {
   }
 
   @Get(':id')
-  obtenerPorId(@Param('id', ParseIntPipe) id: number) {
+  obtenerPorId(@Param('id', ParseIntPipe) id: number, @Req() req: Request) {
+    this.validarPropietario(id, req);
     return this.colaboradoresService.obtenerPorId(id);
   }
 
@@ -56,11 +57,11 @@ export class ColaboradoresController {
     return this.colaboradoresService.eliminar(id);
   }
 
-  /** Solo el dueño del perfil puede editarlo o eliminarlo. */
+  /** Solo el dueño del perfil puede acceder, editar o eliminar su propio recurso. */
   private validarPropietario(idRuta: number, req: Request) {
     const idUsuarioToken = (req as any).usuario?.id_usuario;
     if (idUsuarioToken !== idRuta) {
-      throw new ForbiddenException('Solo puedes modificar tu propio perfil.');
+      throw new ForbiddenException('Sin permiso para acceder a este recurso.');
     }
   }
 }

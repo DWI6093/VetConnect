@@ -22,6 +22,17 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
   return next(solicitudConCredenciales).pipe(
     catchError((error: unknown) => {
       if (error instanceof HttpErrorResponse && error.status === 401) {
+        const esRutaAutenticacion =
+          req.url.includes('/auth/login') ||
+          req.url.includes('/auth/registro-cliente') ||
+          req.url.includes('/auth/registro-colaborador') ||
+          req.url.includes('/auth/refresh') ||
+          req.url.includes('/auth/logout');
+
+        if (esRutaAutenticacion) {
+          return throwError(() => error);
+        }
+
         const mensajeError = error.error?.message;
 
         // Si el token fue modificado, malformado o es completamente inválido (pero no expirado),

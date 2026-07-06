@@ -19,7 +19,7 @@ export class RolesGuard implements CanActivate {
     );
 
     if (!rolesRequeridos || rolesRequeridos.length === 0) {
-      return true;
+      throw new ForbiddenException('No tienes permisos suficientes para acceder a este recurso.');
     }
 
     const solicitud = contexto.switchToHttp().getRequest();

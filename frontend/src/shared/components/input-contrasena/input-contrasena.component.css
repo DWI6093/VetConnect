@@ -1,0 +1,84 @@
+.campo-input {
+  position: relative;
+  width: 100%;
+}
+
+.campo-icono {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  transition: color 0.2s;
+}
+
+.campo-input input {
+  width: 100%;
+  padding: 12px 44px 12px 44px; /* Incrementado el padding-right a 44px para dar espacio al ojo */
+  background: #FFFFFF;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: #334155;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.campo-input input::placeholder {
+  color: #94a3b8;
+}
+
+.campo-input input:focus {
+  border-color: #14B8A6;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12);
+}
+
+.campo-input input:focus ~ .campo-icono {
+  color: #14B8A6;
+}
+
+.campo-invalido {
+  border-color: #EF4444 !important;
+}
+
+.campo-invalido:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important;
+}
+
+.boton-ojo {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: color 0.2s;
+  z-index: 2;
+}
+
+.boton-ojo:hover:not(:disabled) {
+  color: #14B8A6;
+}
+
+.boton-ojo:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.campo-input input:focus ~ .boton-ojo {
+  color: #64748b;
+}
+
+.campo-input input:focus ~ .boton-ojo:hover {
+  color: #14B8A6;
+}

@@ -3,29 +3,38 @@
 .inicio-cliente-contenedor {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 68px);
-  overflow: hidden;
+  padding: 1.5rem 1em;
+  gap: 1.25rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.titulo-seccion {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-texto-oscuro);
+  margin-bottom: 0.25rem;
 }
 
 /* ── Área del Mapa ────────────────────────── */
 .area-mapa {
-  flex: 1;
+  height: 500px;
   background: #e8f4f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
   overflow: hidden;
-  border-radius: 0;
+  border-radius: var(--radio-lg);
+  box-shadow: var(--sombra-tarjeta);
+  border: 1px solid var(--color-borde);
 }
 
-.area-mapa::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(20, 184, 166, 0.08) 39px, rgba(20, 184, 166, 0.08) 40px),
-    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(20, 184, 166, 0.08) 39px, rgba(20, 184, 166, 0.08) 40px);
+@media (max-width: 768px) {
+  .area-mapa {
+    height: auto;
+    overflow: visible;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
 }
 
 .mapa-en-proceso {

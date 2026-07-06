@@ -28,19 +28,26 @@ export interface ParDeTokens {
 
 @Injectable()
 export class AuthService {
-  private readonly claveSecretaJwt =
-    process.env.JWT_SECRET || 'VetConnectClaveSecretaParaFirmarTokensJWT2026';
+  private readonly claveSecretaJwt: string;
+  private readonly claveSecretaRefresh: string;
 
   constructor(
     private readonly prismaService: PrismaService,
     private readonly auditLog: AuditLogService,
     private readonly errorLog: ErrorLogService,
-  ) {}
+  ) {
+    const jwt = process.env.JWT_SECRET;
+    const refresh = process.env.REFRESH_SECRET;
+    if (!jwt) throw new Error('Variable de entorno JWT_SECRET no configurada');
+    if (!refresh) throw new Error('Variable de entorno REFRESH_SECRET no configurada');
+    this.claveSecretaJwt = jwt;
+    this.claveSecretaRefresh = refresh;
+  }
 
   /**
    * Genera un token firmado con un tiempo de expiración determinado.
    */
-  private generarTokenFirma(cargaUtil: any, duracionSegundos: number): string {
+  private generarTokenFirma(cargaUtil: any, duracionSegundos: number, secreto: string): string {
     const cabecera = Buffer.from(
       JSON.stringify({ alg: 'HS256', typ: 'JWT' }),
     ).toString('base64url');
@@ -57,7 +64,7 @@ export class AuthService {
     );
 
     const firma = crypto
-      .createHmac('sha256', this.claveSecretaJwt)
+      .createHmac('sha256', secreto)
       .update(`${cabecera}.${carga}`)
       .digest('base64url');
 
@@ -67,7 +74,7 @@ export class AuthService {
   /**
    * Verifica la validez y expiración de un token JWT firmado.
    */
-  private verificarToken(token: string): any {
+  private verificarToken(token: string, secreto: string): any {
     try {
       const partes = token.split('.');
       if (partes.length !== 3) {
@@ -76,7 +83,7 @@ export class AuthService {
 
       const [cabecera, carga, firma] = partes;
       const firmaEsperada = crypto
-        .createHmac('sha256', this.claveSecretaJwt)
+        .createHmac('sha256', secreto)
         .update(`${cabecera}.${carga}`)
         .digest('base64url');
 
@@ -106,17 +113,18 @@ export class AuthService {
    * Valida el token de acceso provisto (usado por el guardián).
    */
   validarTokenAcceso(token: string): any {
-    return this.verificarToken(token);
+    return this.verificarToken(token, this.claveSecretaJwt);
   }
 
   /**
    * Genera el par de tokens de acceso (10 minutos) y refresco (7 días).
    */
   private generarParDeTokens(carga: CargaUtilToken): ParDeTokens {
-    const token = this.generarTokenFirma(carga, 10 * 60); // 10 minutos
+    const token = this.generarTokenFirma(carga, 10 * 60, this.claveSecretaJwt); // 10 minutos
     const refresh_token = this.generarTokenFirma(
       { id_usuario: carga.id_usuario },
       7 * 24 * 60 * 60,
+      this.claveSecretaRefresh,
     ); // 7 días
     return { token, refresh_token };
   }
@@ -296,7 +304,7 @@ export class AuthService {
    */
   async refrescarTokens(refreshToken: string): Promise<ParDeTokens> {
     // Validar firma y expiración del refresh token
-    const payload = this.verificarToken(refreshToken);
+    const payload = this.verificarToken(refreshToken, this.claveSecretaRefresh);
 
     const usuario = await this.prismaService.usuario.findUnique({
       where: { id_usuario: payload.id_usuario },
@@ -357,19 +365,36 @@ export class AuthService {
   }
 
   /**
-   * Retorna información mínima del usuario (solo rol) para el frontend.
-   * No expone datos sensibles como correo, nombre o apellido.
+   * Retorna información del perfil del usuario (nombre, apellido, correo, rol y password enmascarado) para el frontend.
    */
-  async obtenerInfoUsuario(idUsuario: number): Promise<{ rol: string }> {
+  async obtenerInfoUsuario(idUsuario: number): Promise<{
+    rol: string;
+    nombre: string;
+    apellido: string;
+    correo: string;
+    password?: string;
+  }> {
     const usuario = await this.prismaService.usuario.findUnique({
       where: { id_usuario: idUsuario },
-      select: { rol: true, estado: true },
+      select: {
+        rol: true,
+        estado: true,
+        nombre: true,
+        apellido: true,
+        correo: true,
+      },
     });
 
     if (!usuario || usuario.estado !== 'ACTIVO') {
       throw new UnauthorizedException('Usuario no encontrado o inactivo.');
     }
 
-    return { rol: usuario.rol };
+    return {
+      rol: usuario.rol,
+      nombre: usuario.nombre,
+      apellido: usuario.apellido,
+      correo: usuario.correo,
+      password: '********',
+    };
   }
 }
