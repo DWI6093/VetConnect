@@ -40,7 +40,9 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
           mensajeError === 'Token modificado' ||
           mensajeError === 'Token malformado' ||
           mensajeError === 'Token inválido' ||
-          mensajeError === 'Token no proporcionado'
+          mensajeError === 'Token no proporcionado' ||
+          mensajeError === 'Token de refresco no proporcionado' ||
+          mensajeError === 'Inconsistencia de sesión detectada'
         ) {
           servicioAuth.cerrarSesion();
           return throwError(() => error);

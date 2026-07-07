@@ -10,7 +10,7 @@ import { AuthService } from '../auth.service';
 export class GuardAutenticacion implements CanActivate {
   constructor(private readonly servicioAuth: AuthService) {}
 
-  canActivate(contexto: ExecutionContext): boolean {
+  async canActivate(contexto: ExecutionContext): Promise<boolean> {
     const solicitud = contexto.switchToHttp().getRequest();
     const token = this.extraerToken(solicitud);
 
@@ -19,6 +19,24 @@ export class GuardAutenticacion implements CanActivate {
     }
 
     const cargaUtil = this.servicioAuth.validarTokenAcceso(token);
+
+    // Si el token proviene de la cookie jwt_token, verificar coherencia de sesión
+    if (solicitud.cookies?.jwt_token) {
+      const tokenRefresco = solicitud.cookies.refresh_token;
+      if (!tokenRefresco) {
+        throw new UnauthorizedException('Token de refresco no proporcionado');
+      }
+
+      const esConsistente = await this.servicioAuth.validarConsistenciaTokens(
+        cargaUtil.id_usuario,
+        tokenRefresco,
+      );
+
+      if (!esConsistente) {
+        throw new UnauthorizedException('Inconsistencia de sesión detectada');
+      }
+    }
+
     solicitud['usuario'] = cargaUtil;
     return true;
   }
