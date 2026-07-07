@@ -52,10 +52,19 @@ export class InicioSesionComponente {
           // breve momento para que el signal se actualice antes de redirigir.
           setTimeout(() => {
             const rol = this.servicioAutenticacion.obtenerRol();
+            const estado = this.servicioAutenticacion.obtenerEstado();
             if (rol === 'CLIENTE') {
-              this.enrutador.navigate(['/cliente/inicio']);
+              if (estado === 'PENDIENTE_ELIMINACION') {
+                this.enrutador.navigate(['/cliente/configuracion']);
+              } else {
+                this.enrutador.navigate(['/cliente/inicio']);
+              }
             } else if (rol === 'COLABORADOR') {
+              if (estado === 'PENDIENTE_ELIMINACION') {
+                this.enrutador.navigate(['/colaborador/configuracion']);
+              } else {
               this.enrutador.navigate(['/colaborador/inicio']);
+              }
             }
           }, 300);
         },

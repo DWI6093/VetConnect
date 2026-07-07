@@ -8,7 +8,7 @@ export class EliminacionProgramadaTask {
 
   constructor(private readonly arcoService: ArcoService) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_3AM)
+  @Cron(process.env.CRON_ELIMINACION || CronExpression.EVERY_DAY_AT_3AM)
   async ejecutarEliminacionesProgramadas() {
     const pendientes = await this.arcoService.obtenerPendientesDeAnonimizar();
     if (pendientes.length === 0) return;

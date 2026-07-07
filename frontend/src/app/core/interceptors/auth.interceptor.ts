@@ -27,7 +27,8 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
           req.url.includes('/auth/registro-cliente') ||
           req.url.includes('/auth/registro-colaborador') ||
           req.url.includes('/auth/refresh') ||
-          req.url.includes('/auth/logout');
+          req.url.includes('/auth/logout') ||
+          req.url.includes('/auth/me');
 
         if (esRutaAutenticacion) {
           return throwError(() => error);
@@ -48,7 +49,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
         }
 
         // Si el error es debido a expiración, intentamos refrescar la sesión
-        return manejarError401(req, next, servicioAuth, error);
+        return manejarError401(req, next, servicioAuth);
       }
       return throwError(() => error);
     })
@@ -59,7 +60,6 @@ function manejarError401(
   solicitud: HttpRequest<unknown>,
   siguiente: HttpHandlerFn,
   servicioAuth: ServicioAutenticacion,
-  errorOriginal: HttpErrorResponse
 ): Observable<HttpEvent<unknown>> {
   // Si ya hay un proceso de refresco activo, esperamos a que termine
   if (estaRefrescandoToken) {

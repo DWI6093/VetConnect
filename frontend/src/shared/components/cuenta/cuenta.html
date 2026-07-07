@@ -3,19 +3,178 @@
     <div class="cuenta-header">
       <div class="avatar-perfil">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40" fill="currentColor">
-          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          <path
+            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
         </svg>
       </div>
       <div class="cuenta-titulo-grupo">
         <h2>Mi Cuenta</h2>
-        <span class="cuenta-rol-badge">En desarrollo</span>
+        @if (perfil(); as p) {
+        <span class="cuenta-rol-badge">{{ p.rol === 'CLIENTE' ? 'Cliente' : 'Colaborador' }}</span>
+        }
       </div>
     </div>
 
+    @if (cargando()) {
+    <p>Cargando información de tu perfil...</p>
+    }
+
+    @if (errorCarga()) {
+    <div class="alerta alerta-error">
+      <span class="alerta-icono">⚠</span>
+      <span>{{ errorCarga() }}</span>
+    </div>
+    }
+
+    @if (mensajeExito()) {
+    <div class="alerta alerta-exito">
+      <span class="alerta-icono">✓</span>
+      <span>{{ mensajeExito() }}</span>
+    </div>
+    }
+
+    @if (perfil(); as p) {
     <div class="cuenta-grid">
       <div class="cuenta-seccion">
-        <p>Próximamente podrás gestionar aquí tus datos de perfil.</p>
+        <h3>Información de perfil</h3>
+        <form [formGroup]="formularioRectificacion" (ngSubmit)="actualizarDatos()">
+          <div class="cuenta-formulario">
+            <!-- Campo Nombre -->
+            <div class="campo-grupo">
+              <label for="campo-nombre">Nombre</label>
+              <input id="campo-nombre" type="text" formControlName="nombre" />
+              <div class="errores-campo">
+                @if (formularioRectificacion.get('nombre')?.invalid && formularioRectificacion.get('nombre')?.touched) {
+                <span class="error-text">El nombre es requerido y debe tener entre 3 y 50 caracteres.</span>
+                }
+              </div>
+            </div>
+
+            <!-- Campo Apellido -->
+            <div class="campo-grupo">
+              <label for="campo-apellido">Apellido</label>
+              <input id="campo-apellido" type="text" formControlName="apellido" />
+              <div class="errores-campo">
+                @if (formularioRectificacion.get('apellido')?.invalid &&
+                formularioRectificacion.get('apellido')?.touched) {
+                <span class="error-text">El apellido es requerido y debe tener entre 3 y 50 caracteres.</span>
+                }
+              </div>
+            </div>
+
+            <!-- Campo Correo -->
+            <div class="campo-grupo">
+              <label for="campo-correo">Correo electrónico</label>
+              <input id="campo-correo" type="email" formControlName="correo" />
+              <div class="errores-campo">
+                @if (formularioRectificacion.get('correo')?.invalid && formularioRectificacion.get('correo')?.touched) {
+                <span class="error-text">Ingresa un correo electrónico válido (máx. 50 caracteres).</span>
+                }
+              </div>
+            </div>
+
+            <!-- Campo Miembro desde (solo lectura) -->
+            <div class="campo-grupo">
+              <label for="campo-miembro-desde">Miembro desde</label>
+              <input id="campo-miembro-desde" type="text" [value]="p.fecha_registro | date:'dd/MM/yyyy'" disabled />
+            </div>
+
+            <!-- Botón de actualización -->
+            <div class="acciones-formulario">
+              <button type="submit" class="btn-primario"
+                [disabled]="!formularioHaCambiado || formularioRectificacion.invalid || actualizando()">
+                {{ actualizando() ? 'Actualizando...' : 'Actualizar datos' }}
+              </button>
+            </div>
+
+            <!-- Mensajes de éxito / error -->
+            @if (mensajeExitoRectificacion()) {
+            <div class="alerta alerta-exito">
+              <span class="alerta-icono">✓</span>
+              <span>{{ mensajeExitoRectificacion() }}</span>
+            </div>
+            }
+            @if (errorRectificacion()) {
+            <div class="alerta alerta-error">
+              <span class="alerta-icono">⚠</span>
+              <span>{{ errorRectificacion() }}</span>
+            </div>
+            }
+          </div>
+        </form>
       </div>
+    </div>
+
+    @if (p.estado === 'PENDIENTE_ELIMINACION') {
+    <div class="cuenta-seccion" style="margin-top: 1.5rem;">
+      <h3>Solicitud de eliminación activa</h3>
+      <div class="alerta alerta-error">
+        <span class="alerta-icono">⚠</span>
+        <span>
+          Tu cuenta será eliminada definitivamente el
+          {{ p.fecha_eliminacion_programada | date:'dd/MM/yyyy' }}.
+          Puedes cancelar esta solicitud antes de esa fecha.
+        </span>
+      </div>
+
+      @if (errorRestaurar()) {
+      <div class="alerta alerta-error">
+        <span class="alerta-icono">⚠</span>
+        <span>{{ errorRestaurar() }}</span>
+      </div>
+      }
+
+      <button class="btn-primario" (click)="restaurarCuenta()" [disabled]="restaurando()">
+        {{ restaurando() ? 'Procesando...' : 'Cancelar solicitud de eliminación' }}
+      </button>
+    </div>
+    } @else {
+    <div class="zona-peligro">
+      <div class="zona-peligro-texto">
+        <h3>Eliminar cuenta</h3>
+        <p>Esta acción iniciará el proceso de eliminación permanente de tu cuenta.</p>
+      </div>
+      <button class="btn-peligro" (click)="abrirModalEliminar()">
+        Eliminar cuenta
+      </button>
+    </div>
+    }
+    }
+  </div>
+</div>
+
+@if (mostrarModalEliminar()) {
+<!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
+<div class="modal-overlay" (click)="cerrarModalEliminar()" (keydown.escape)="cerrarModalEliminar()">
+  <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
+  <div class="modal-contenido" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-eliminar"
+    (click)="$event.stopPropagation()">
+    <h3 id="titulo-modal-eliminar">¿Estás seguro que deseas eliminar tu cuenta?</h3>
+    <p>
+      Al confirmar, tus datos permanecerán almacenados durante
+      <strong>30 días</strong>. Durante ese periodo puedes recuperar tu cuenta
+      cancelando la solicitud desde esta misma pantalla.
+    </p>
+    <p>
+      Una vez cumplido el plazo de 30 días, tus datos serán eliminados de
+      forma definitiva de nuestro sistema.
+    </p>
+
+    @if (errorEliminacion()) {
+    <div class="alerta alerta-error">
+      <span class="alerta-icono">⚠</span>
+      <span>{{ errorEliminacion() }}</span>
+    </div>
+    }
+
+    <div class="modal-acciones">
+      <button class="btn-secundario" (click)="cerrarModalEliminar()" [disabled]="eliminando()">
+        Cancelar
+      </button>
+      <button class="btn-peligro" (click)="confirmarEliminacion()" [disabled]="eliminando()">
+        {{ eliminando() ? 'Procesando...' : 'Sí, eliminar mi cuenta' }}
+      </button>
     </div>
   </div>
 </div>
+}

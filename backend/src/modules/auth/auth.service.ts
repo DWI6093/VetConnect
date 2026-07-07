@@ -39,7 +39,8 @@ export class AuthService {
     const jwt = process.env.JWT_SECRET;
     const refresh = process.env.REFRESH_SECRET;
     if (!jwt) throw new Error('Variable de entorno JWT_SECRET no configurada');
-    if (!refresh) throw new Error('Variable de entorno REFRESH_SECRET no configurada');
+    if (!refresh)
+      throw new Error('Variable de entorno REFRESH_SECRET no configurada');
     this.claveSecretaJwt = jwt;
     this.claveSecretaRefresh = refresh;
   }
@@ -47,7 +48,11 @@ export class AuthService {
   /**
    * Genera un token firmado con un tiempo de expiración determinado.
    */
-  private generarTokenFirma(cargaUtil: any, duracionSegundos: number, secreto: string): string {
+  private generarTokenFirma(
+    cargaUtil: any,
+    duracionSegundos: number,
+    secreto: string,
+  ): string {
     const cabecera = Buffer.from(
       JSON.stringify({ alg: 'HS256', typ: 'JWT' }),
     ).toString('base64url');
@@ -255,7 +260,11 @@ export class AuthService {
       where: { correo },
     });
 
-    if (!usuario || usuario.estado !== 'ACTIVO') {
+    if (
+      !usuario ||
+      usuario.estado == 'BLOQUEADO' ||
+      usuario.estado == 'ELIMINADO'
+    ) {
       throw new UnauthorizedException(
         'Credenciales incorrectas o usuario inactivo.',
       );
@@ -369,6 +378,7 @@ export class AuthService {
    */
   async obtenerInfoUsuario(idUsuario: number): Promise<{
     rol: string;
+    estado: string;
     nombre: string;
     apellido: string;
     correo: string;
@@ -385,12 +395,17 @@ export class AuthService {
       },
     });
 
-    if (!usuario || usuario.estado !== 'ACTIVO') {
+    if (
+      !usuario ||
+      usuario.estado === 'BLOQUEADO' ||
+      usuario.estado === 'ELIMINADO'
+    ) {
       throw new UnauthorizedException('Usuario no encontrado o inactivo.');
     }
 
     return {
       rol: usuario.rol,
+      estado: usuario.estado,
       nombre: usuario.nombre,
       apellido: usuario.apellido,
       correo: usuario.correo,
