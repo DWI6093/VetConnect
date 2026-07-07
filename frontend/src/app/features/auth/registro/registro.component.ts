@@ -1,5 +1,5 @@
 import { Component, signal, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, AbstractControl, ValidationErrors, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ServicioAutenticacion } from '../../../core/services/auth.service';
@@ -9,6 +9,7 @@ import {
   emailFieldValidator,
 } from '../../../../shared/validators/forms.validators';
 import { InputContrasenaComponente } from '../../../../shared/components/input-contrasena/input-contrasena.component';
+import { ServicioLegal } from '../../../core/services/legal.service';
 
 @Component({
   selector: 'app-registro',
@@ -21,6 +22,7 @@ export class RegistroComponente {
   private readonly constructorFormularios = inject(FormBuilder);
   private readonly servicioAutenticacion = inject(ServicioAutenticacion);
   private readonly enrutador = inject(Router);
+  private readonly servicioLegal = inject(ServicioLegal);
 
   protected readonly formularioRegistro: FormGroup;
   protected readonly rolSeleccionado = signal<'CLIENTE' | 'COLABORADOR'>('CLIENTE');
@@ -36,6 +38,7 @@ export class RegistroComponente {
         correo: ['', emailFieldValidator()],
         contrasena: ['', passwordFieldValidator()],
         confirmarContrasena: ['', [this.validarConfirmacionRequerida]],
+        aceptaAviso: [false, [Validators.requiredTrue]],
       },
       {
         validators: this.validarContrasenasCoincidan,
@@ -59,6 +62,11 @@ export class RegistroComponente {
   protected seleccionarRol(rol: 'CLIENTE' | 'COLABORADOR'): void {
     this.rolSeleccionado.set(rol);
     this.mensajeError.set(null);
+  }
+
+  protected abrirAvisoPrivacidad(evento: Event): void {
+    evento.preventDefault();
+    this.servicioLegal.abrirAvisoPrivacidad();
   }
 
   protected registrarUsuario(): void {

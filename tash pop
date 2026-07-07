@@ -1,0 +1,349 @@
+[1mdiff --git a/backend/src/app.module.ts b/backend/src/app.module.ts[m
+[1mindex 91d31f2..db4b602 100644[m
+[1m--- a/backend/src/app.module.ts[m
+[1m+++ b/backend/src/app.module.ts[m
+[36m@@ -5,10 +5,11 @@[m [mimport { PrismaModule } from './database/prisma.module';[m
+ import { UsuariosModule } from './modules/usuarios/usuarios.module';[m
+ import { AuthModule } from './modules/auth/auth.module';[m
+ import { LegalModule } from './modules/legal/legal.module';[m
+[32m+[m[32mimport { RateLimitModule } from './common/rate-limit/rate-limit.module';[m
+ [m
+ @Module({[m
+   imports: [PrismaModule, UsuariosModule, AuthModule, LegalModule],[m
+[31m-  controllers: [AppController],[m
+[32m+[m[32m  controllers: [AppController, RateLimitModule],[m
+   providers: [AppService],[m
+ })[m
+ export class AppModule {}[m
+[1mdiff --git a/backend/src/common/rate-limit/auth-rate-limit.guard.ts b/backend/src/common/rate-limit/auth-rate-limit.guard.ts[m
+[1mnew file mode 100644[m
+[1mindex 0000000..be32d8d[m
+[1m--- /dev/null[m
+[1m+++ b/backend/src/common/rate-limit/auth-rate-limit.guard.ts[m
+[36m@@ -0,0 +1,35 @@[m
+[32m+[m[32mimport { CanActivate, ExecutionContext, Injectable, HttpException, HttpStatus } from '@nestjs/common';[m
+[32m+[m[32mimport { Request } from 'express';[m
+[32m+[m[32mimport { RateLimitStoreService } from './rate-limit-store.service';[m
+[32m+[m
+[32m+[m[32mconst MAX_INTENTOS = 5;[m
+[32m+[m[32mconst VENTANA_MS = 10 * 60 * 1000;[m
+[32m+[m[32mconst BLOQUEO_MS = 10 * 60 * 1000;[m
+[32m+[m
+[32m+[m[32m@Injectable()[m
+[32m+[m[32mexport class AuthRateLimitGuard implements CanActivate {[m
+[32m+[m[32m  constructor(private readonly store: RateLimitStoreService) {}[m
+[32m+[m
+[32m+[m[32m  canActivate(context: ExecutionContext): boolean {[m
+[32m+[m[32m    const req = context.switchToHttp().getRequest<Request>();[m
+[32m+[m[32m    const ip = req.ip ?? req.socket.remoteAddress ?? 'desconocida';[m
+[32m+[m[32m    const key = `auth:${ip}`;[m
+[32m+[m
+[32m+[m[32m    if (this.store.isBlocked(key)) {[m
+[32m+[m[32m      throw new HttpException([m
+[32m+[m[32m        { message: 'IP bloqueada por exceso de intentos. Intenta más tarde.', code: 'IP_BLOCKED' },[m
+[32m+[m[32m        HttpStatus.TOO_MANY_REQUESTS,[m
+[32m+[m[32m      );[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    const entry = this.store.increment(key, VENTANA_MS);[m
+[32m+[m[32m    if (entry.count > MAX_INTENTOS) {[m
+[32m+[m[32m      this.store.block(key, BLOQUEO_MS);[m
+[32m+[m[32m      throw new HttpException([m
+[32m+[m[32m        { message: 'Demasiados intentos. IP bloqueada temporalmente.', code: 'IP_BLOCKED' },[m
+[32m+[m[32m        HttpStatus.TOO_MANY_REQUESTS,[m
+[32m+[m[32m      );[m
+[32m+[m[32m    }[m
+[32m+[m[32m    return true;[m
+[32m+[m[32m  }[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/backend/src/common/rate-limit/rate-limit-store.service.ts b/backend/src/common/rate-limit/rate-limit-store.service.ts[m
+[1mnew file mode 100644[m
+[1mindex 0000000..5c433ea[m
+[1m--- /dev/null[m
+[1m+++ b/backend/src/common/rate-limit/rate-limit-store.service.ts[m
+[36m@@ -0,0 +1,44 @@[m
+[32m+[m[32mimport { Injectable } from '@nestjs/common';[m
+[32m+[m
+[32m+[m[32minterface RecordEntry {[m
+[32m+[m[32m  count: number;[m
+[32m+[m[32m  windowStart: number;[m
+[32m+[m[32m  blockedUntil?: number;[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32m@Injectable()[m
+[32m+[m[32mexport class RateLimitStoreService {[m
+[32m+[m[32m  private readonly store = new Map<string, RecordEntry>();[m
+[32m+[m
+[32m+[m[32m  increment(key: string, windowMs: number): RecordEntry {[m
+[32m+[m[32m    const now = Date.now();[m
+[32m+[m[32m    const entry = this.store.get(key);[m
+[32m+[m[32m    if (!entry || now - entry.windowStart > windowMs) {[m
+[32m+[m[32m      const fresh: RecordEntry = { count: 1, windowStart: now };[m
+[32m+[m[32m      this.store.set(key, fresh);[m
+[32m+[m[32m      return fresh;[m
+[32m+[m[32m    }[m
+[32m+[m[32m    entry.count += 1;[m
+[32m+[m[32m    return entry;[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  block(key: string, blockMs: number): void {[m
+[32m+[m[32m    const entry = this.store.get(key) ?? { count: 0, windowStart: Date.now() };[m
+[32m+[m[32m    entry.blockedUntil = Date.now() + blockMs;[m
+[32m+[m[32m    this.store.set(key, entry);[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  isBlocked(key: string): boolean {[m
+[32m+[m[32m    const entry = this.store.get(key);[m
+[32m+[m[32m    if (!entry?.blockedUntil) return false;[m
+[32m+[m[32m    if (Date.now() > entry.blockedUntil) {[m
+[32m+[m[32m      this.store.delete(key);[m
+[32m+[m[32m      return false;[m
+[32m+[m[32m    }[m
+[32m+[m[32m    return true;[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  reset(key: string): void {[m
+[32m+[m[32m    this.store.delete(key);[m
+[32m+[m[32m  }[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/backend/src/common/rate-limit/rate-limit.module.ts b/backend/src/common/rate-limit/rate-limit.module.ts[m
+[1mnew file mode 100644[m
+[1mindex 0000000..8f028c3[m
+[1m--- /dev/null[m
+[1m+++ b/backend/src/common/rate-limit/rate-limit.module.ts[m
+[36m@@ -0,0 +1,11 @@[m
+[32m+[m[32mimport { Global, Module } from '@nestjs/common';[m
+[32m+[m[32mimport { RateLimitStoreService } from './rate-limit-store.service';[m
+[32m+[m[32mimport { AuthRateLimitGuard } from './auth-rate-limit.guard';[m
+[32m+[m[32mimport { ResourceRateLimitGuard } from './resource-rate-limit.guard';[m
+[32m+[m
+[32m+[m[32m@Global()[m
+[32m+[m[32m@Module({[m
+[32m+[m[32m  providers: [RateLimitStoreService, AuthRateLimitGuard, ResourceRateLimitGuard],[m
+[32m+[m[32m  exports: [RateLimitStoreService, AuthRateLimitGuard, ResourceRateLimitGuard],[m
+[32m+[m[32m})[m
+[32m+[m[32mexport class RateLimitModule {}[m
+\ No newline at end of file[m
+[1mdiff --git a/backend/src/common/rate-limit/resource-rate-limit.guard.ts b/backend/src/common/rate-limit/resource-rate-limit.guard.ts[m
+[1mnew file mode 100644[m
+[1mindex 0000000..0ccec26[m
+[1m--- /dev/null[m
+[1m+++ b/backend/src/common/rate-limit/resource-rate-limit.guard.ts[m
+[36m@@ -0,0 +1,29 @@[m
+[32m+[m[32mimport { CanActivate, ExecutionContext, Injectable, HttpException, HttpStatus } from '@nestjs/common';[m
+[32m+[m[32mimport { Request } from 'express';[m
+[32m+[m[32mimport { RateLimitStoreService } from './rate-limit-store.service';[m
+[32m+[m
+[32m+[m[32mconst MAX_SOLICITUDES = 8;[m
+[32m+[m[32mconst VENTANA_MS = 60 * 1000;[m
+[32m+[m
+[32m+[m[32m@Injectable()[m
+[32m+[m[32mexport class ResourceRateLimitGuard implements CanActivate {[m
+[32m+[m[32m  constructor(private readonly store: RateLimitStoreService) {}[m
+[32m+[m
+[32m+[m[32m  canActivate(context: ExecutionContext): boolean {[m
+[32m+[m[32m    const req = context.switchToHttp().getRequest<Request>();[m
+[32m+[m[32m    const usuario = (req as any).user; // seteado por tu JwtAuthGuard existente[m
+[32m+[m[32m    const userId = usuario?.id ?? usuario?.sub ?? req.ip;[m
+[32m+[m[32m    const recurso = req.baseUrl + req.path;[m
+[32m+[m[32m    const key = `resource:${userId}:${recurso}`;[m
+[32m+[m
+[32m+[m[32m    const entry = this.store.increment(key, VENTANA_MS);[m
+[32m+[m[32m    if (entry.count > MAX_SOLICITUDES) {[m
+[32m+[m[32m      this.store.reset(key);[m
+[32m+[m[32m      throw new HttpException([m
+[32m+[m[32m        { message: 'Exceso de peticiones detectado. Sesión cerrada por seguridad.', code: 'SESSION_TERMINATED' },[m
+[32m+[m[32m        HttpStatus.TOO_MANY_REQUESTS,[m
+[32m+[m[32m      );[m
+[32m+[m[32m    }[m
+[32m+[m[32m    return true;[m
+[32m+[m[32m  }[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/backend/src/modules/auth/auth.controller.ts b/backend/src/modules/auth/auth.controller.ts[m
+[1mindex 7de9fb0..dd30df4 100644[m
+[1m--- a/backend/src/modules/auth/auth.controller.ts[m
+[1m+++ b/backend/src/modules/auth/auth.controller.ts[m
+[36m@@ -16,7 +16,7 @@[m [mimport { CrearClienteDto } from '../usuarios/dto/crear-cliente.dto';[m
+ import { CrearColaboradorDto } from '../usuarios/dto/crear-colaborador.dto';[m
+ import { InicioSesionDto } from '../usuarios/dto/inicio-sesion.dto';[m
+ import { GuardAutenticacion } from './guard/autenticacion.guard';[m
+[31m-[m
+[32m+[m[32mimport { AuthRateLimitGuard } from 'src/common/rate-limit/auth-rate-limit.guard';[m
+ /**[m
+  * Duración en milisegundos de cada cookie.[m
+  * jwt_token: 10 minutos | refresh_token: 7 días[m
+[36m@@ -86,6 +86,7 @@[m [mexport class AuthController {[m
+     return { mensaje: 'Registro exitoso.' };[m
+   }[m
+ [m
+[32m+[m[32m  @UseGuards(AuthRateLimitGuard)[m
+   @Post('login')[m
+   @HttpCode(HttpStatus.OK)[m
+   async iniciarSesion([m
+[1mdiff --git a/backend/src/modules/legal/legal.controller.ts b/backend/src/modules/legal/legal.controller.ts[m
+[1mindex c5ad218..8f3673f 100644[m
+[1m--- a/backend/src/modules/legal/legal.controller.ts[m
+[1m+++ b/backend/src/modules/legal/legal.controller.ts[m
+[36m@@ -1,11 +1,14 @@[m
+[31m-import { Controller, Get, Query, StreamableFile } from '@nestjs/common';[m
+[32m+[m[32mimport { Controller, Get, Query, StreamableFile, UseGuards } from '@nestjs/common';[m
+ import { createReadStream } from 'fs';[m
+ import { LegalService } from './legal.service';[m
+[32m+[m[32mimport { GuardAutenticacion } from '../auth/guard/autenticacion.guard';[m
+[32m+[m
+[32m+[m
+ [m
+ @Controller('legal')[m
+ export class LegalController {[m
+   constructor(private readonly legalService: LegalService) {}[m
+[31m-[m
+[32m+[m[32m  @UseGuards(GuardAutenticacion)[m
+   @Get('aviso-privacidad')[m
+   getAvisoPrivacidad(@Query('download') download?: string): StreamableFile {[m
+     const filePath = this.legalService.getAvisoPrivacidadPath();[m
+[1mdiff --git a/backend/src/modules/usuarios/colaboradores.controller.ts b/backend/src/modules/usuarios/colaboradores.controller.ts[m
+[1mindex 2ca1717..cd37a2a 100644[m
+[1m--- a/backend/src/modules/usuarios/colaboradores.controller.ts[m
+[1m+++ b/backend/src/modules/usuarios/colaboradores.controller.ts[m
+[36m@@ -13,29 +13,36 @@[m [mimport { ColaboradoresService } from './colaboradores.service';[m
+ import { CrearColaboradorDto } from './dto/crear-colaborador.dto';[m
+ import { ActualizarColaboradorDto } from './dto/actualizar-colaborador.dto';[m
+ import { GuardAutenticacion } from '../auth/guard/autenticacion.guard';[m
+[32m+[m[32mimport { AuthRateLimitGuard } from 'src/common/rate-limit/auth-rate-limit.guard';[m
+[32m+[m
+ [m
+ @Controller('colaboradores')[m
+ export class ColaboradoresController {[m
+   constructor(private readonly colaboradoresService: ColaboradoresService) {}[m
+ [m
+   @Post()[m
+[32m+[m[32m  @UseGuards(AuthRateLimitGuard)[m
+   crear(@Body() crearColaboradorDto: CrearColaboradorDto) {[m
+     return this.colaboradoresService.crear(crearColaboradorDto);[m
+   }[m
+ [m
+   @Get()[m
+[32m+[m[32m  @UseGuards(AuthRateLimitGuard)[m
+   @UseGuards(GuardAutenticacion)[m
+   obtenerTodos() {[m
+     return this.colaboradoresService.obtenerTodos();[m
+   }[m
+ [m
+   @Get(':id')[m
+[32m+[m
+[32m+[m[32m  @UseGuards(AuthRateLimitGuard)[m
+   @UseGuards(GuardAutenticacion)[m
+   obtenerPorId(@Param('id', ParseIntPipe) id: number) {[m
+     return this.colaboradoresService.obtenerPorId(id);[m
+   }[m
+ [m
+   @Patch(':id')[m
+[32m+[m[32m  @UseGuards(AuthRateLimitGuard)[m
+   @UseGuards(GuardAutenticacion)[m
+   actualizar([m
+     @Param('id', ParseIntPipe) id: number,[m
+[36m@@ -45,6 +52,7 @@[m [mexport class ColaboradoresController {[m
+   }[m
+ [m
+   @Delete(':id')[m
+[32m+[m[32m  @UseGuards(AuthRateLimitGuard)[m
+   @UseGuards(GuardAutenticacion)[m
+   eliminar(@Param('id', ParseIntPipe) id: number) {[m
+     return this.colaboradoresService.eliminar(id);[m
+[1mdiff --git a/backend/src/modules/usuarios/usuarios.controller.ts b/backend/src/modules/usuarios/usuarios.controller.ts[m
+[1mindex 21bafe9..414f939 100644[m
+[1m--- a/backend/src/modules/usuarios/usuarios.controller.ts[m
+[1m+++ b/backend/src/modules/usuarios/usuarios.controller.ts[m
+[36m@@ -1,7 +1,9 @@[m
+[31m-import { Controller } from '@nestjs/common';[m
+[32m+[m[32mimport { Controller, UseGuards } from '@nestjs/common';[m
+ import { UsuariosService } from './usuarios.service';[m
+[32m+[m[32mimport { AuthRateLimitGuard } from 'src/common/rate-limit/auth-rate-limit.guard';[m
+ [m
+ @Controller('usuarios')[m
+[32m+[m[32m@UseGuards(AuthRateLimitGuard)[m
+ export class UsuariosController {[m
+   constructor(private readonly usuariosService: UsuariosService) {}[m
+ }[m
+[1mdiff --git a/frontend/angular.json b/frontend/angular.json[m
+[1mindex c3abcb2..104f9db 100644[m
+[1m--- a/frontend/angular.json[m
+[1m+++ b/frontend/angular.json[m
+[36m@@ -3,7 +3,10 @@[m
+   "version": 1,[m
+   "cli": {[m
+     "packageManager": "npm",[m
+[31m-    "schematicCollections": ["angular-eslint"][m
+[32m+[m[32m    "schematicCollections": [[m
+[32m+[m[32m      "angular-eslint"[m
+[32m+[m[32m    ],[m
+[32m+[m[32m    "analytics": "5edb623b-179a-4e60-bbe5-d8101593d271"[m
+   },[m
+   "newProjectRoot": "projects",[m
+   "projects": {[m
+[36m@@ -44,6 +47,11 @@[m
+               "outputHashing": "all"[m
+             },[m
+             "development": {[m
+[32m+[m[32m              "fileReplacements": [[m
+[32m+[m[32m                        {[m
+[32m+[m[32m                          "replace": "src/environments/environment.ts",[m
+[32m+[m[32m                          "with": "src/environments/environment.development.ts"[m
+[32m+[m[32m                        }],[m
+               "optimization": false,[m
+               "extractLicenses": false,[m
+               "sourceMap": true[m
+[1mdiff --git a/frontend/package-lock.json b/frontend/package-lock.json[m
+[1mindex 3331de1..7356a73 100644[m
+[1m--- a/frontend/package-lock.json[m
+[1m+++ b/frontend/package-lock.json[m
+[36m@@ -412,7 +412,6 @@[m
+       "integrity": "sha512-BaUSLSyS+43fzDoJkTMkGqNdCXq3fGnUZsfXTmrlZPJf5AYFbgAlAPGZXDJyoNWw43fux+DafdlrlKcYUSgSIw==",[m
+       "dev": true,[m
+       "license": "MIT",[m
+[31m-      "peer": true,[m
+       "dependencies": {[m
+         "@angular-eslint/bundled-angular-compiler": "21.4.0",[m
+         "eslint-scope": "9.1.2"[m
+[36m@@ -543,7 +542,6 @@[m
+       "integrity": "sha512-oLEL1C1fI39b1eQo5f2cyQhQfE+QMv7dm8z2MmxbP7YR7jAdQPVfGU8CXECR5g7mrYi9WgvIRKB+9Oeq2aH6Jw==",[m
+       "dev": true,[m
+       "license": "MIT",[m
+[31m-      "peer": true,[m
+       "dependencies": {[m
+         "@angular-devkit/architect": "0.2102.12",[m
+         "@angular-devkit/core": "21.2.12",[m
+[36m@@ -578,7 +576,6 @@[m
+       "resolved": "https://registry.npmjs.org/@angular/common/-/common-21.2.14.tgz",[m
+       "integrity": "sha512-J6K7cE7uKOKmg4+sxLeGfsmaYDjP5l1XCiMMI0WPT0t68uxLk8g3MzV5Trqfb6ZnRxWcfp9c4c+XxAvMBB7ymA==",[m
+       "license": "MIT",[m
+[31m-      "peer": true,[m
+       "dependencies": {[m
+         "tslib": "^2.3.0"[m
+       },[m
+[36m@@ -595,7 +592,6 @@[m
+       "resolved": "https://registry.npmjs.org/@angular/compiler/-/compiler-21.2.14.tgz",[m
+       "integrity": "sha512-8mqgwRYfn2Z1vg/5YVt60dDBattnZL45nNJd2vTMwAiDTzhWhgKgRWKOeVL0aj2JqHeHiwuIlrLnz46acJMulQ==",[m
+       "license": "MIT",[m
+[31m-      "peer": true,[m
+       "dependencies": {[m
+         "tslib": "^2.3.0"[m
+       },[m
+[36m@@ -609,7 +605,6 @@[m
+       "integrity": "sha512-h+WQfPKFxaDfDhMqUUdOQ1TsDMccav8kLFERmKTRfD4MNOczSMpOMyeXJHCL0Rq4I8WDQvaBJGMG7DXRDefSog==",[m
+       "dev": true,[m
+       "license": "MIT",[m
+[31m-      "peer": true,[m
+       "dependencies": {[m
+         "@babel/core": "7.29.0",[m
+         "@jridgewell/sourcemap-codec": "^1.4.14",[m
+[36m@@ -642,7 +637,6 @@[m
+       "resolved": "https://registry.npmjs.org/@angular/core/-/core-21.2.14.tgz",[m
+       "integrity": "sha512-Z1Ivjh7L2lT//8LA7vQ3tj7Rg6wl2XRA5kPSAukgn8u0Yu0XxG8NE8KG0Eypb3v9CEcbwATwpgnxzbJFZ8TFcw==",[m
+       "license": "MIT",[m
+[31m-      "peer": true,[m
+       "dependencies": {[m
+        

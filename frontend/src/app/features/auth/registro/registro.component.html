@@ -268,8 +268,27 @@
             }
           </div>
         </div>
+        <div class="campo-checkbox">
+          <label class="checkbox-aviso">
+            <input
+              type="checkbox"
+              formControlName="aceptaAviso"
+              id="aceptaAviso"
+            />
+            <span class="checkbox-personalizado"></span>
+            <span class="checkbox-texto">
+              He leído y acepto el
+              <a href="#" (click)="abrirAvisoPrivacidad($event)" class="enlace-aviso">aviso de privacidad</a>
+            </span>
+          </label>
+          @if (formularioRegistro.get('aceptaAviso')?.invalid && formularioRegistro.get('aceptaAviso')?.touched) {
+            <div class="error-validacion">
+              <span>Debes aceptar el aviso de privacidad para continuar.</span>
+            </div>
+          }
+        </div>
 
-        <button type="submit" class="boton-principal" [disabled]="estaCargando()">
+        <button type="submit" class="boton-principal" [disabled]="estaCargando() || !formularioRegistro.get('aceptaAviso')?.value">
           @if (!estaCargando()) {
             <span class="boton-icono">🐾</span>
             <span>Crear cuenta</span>
