@@ -87,6 +87,7 @@ export class ServicioAutenticacion {
           apellido: datos.apellido,
           correo: datos.correo,
           password: datos.contrasena,
+          aceptoAviso: datos.aceptoAviso,
         },
         { withCredentials: true }
       )
@@ -108,6 +109,7 @@ export class ServicioAutenticacion {
           apellido: datos.apellido,
           correo: datos.correo,
           password: datos.contrasena,
+          aceptoAviso: datos.aceptoAviso,
         },
         { withCredentials: true }
       )
@@ -118,6 +120,10 @@ export class ServicioAutenticacion {
         }),
         catchError((error) => throwError(() => error))
       );
+  }
+
+  obtenerUrlAvisoPrivacidad(descargar = true): string {
+    return `${this.urlBaseApi}/legal/aviso-privacidad?download=${descargar}`;
   }
 
   cerrarSesion(): void {

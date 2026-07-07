@@ -10,7 +10,7 @@ export interface SesionUsuario {
 }
 
 /**
- * Respuesta genérica de éxito de los endpoints de autenticación.
+ * Respuesta de éxito de los endpoints de autenticación.
  */
 export interface RespuestaAuth {
   mensaje: string;
@@ -26,6 +26,7 @@ export interface DatosRegistroCliente {
   apellido: string;
   correo: string;
   contrasena: string;
+  aceptoAviso: boolean;
 }
 
 export interface DatosRegistroColaborador {
@@ -33,4 +34,5 @@ export interface DatosRegistroColaborador {
   apellido: string;
   correo: string;
   contrasena: string;
+  aceptoAviso: boolean;
 }

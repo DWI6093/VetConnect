@@ -25,6 +25,10 @@ export class Header {
     this.menuPerfilAbierto.update((valor) => !valor);
   }
 
+  protected descargarAvisoPrivacidad(): void {
+    window.open(this.servicioAutenticacion.obtenerUrlAvisoPrivacidad(true), '_blank');
+  }
+
   protected cerrarSesionUsuario(): void {
     this.servicioAutenticacion.cerrarSesion();
   }
