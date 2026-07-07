@@ -8,7 +8,7 @@ import { NegocioCercano } from '../models/negocio.modelo';
 })
 export class NegociosServicio {
   private readonly httpCliente = inject(HttpClient);
-  private readonly urlBaseApi = 'http://localhost:3000';
+  private readonly urlBaseApi = window.location.protocol === 'https:' ? 'https://localhost:3000' : 'http://localhost:3000';
 
   public obtenerNegociosCercanos(latitud: number, longitud: number): Observable<NegocioCercano[]> {
     const parametros = new HttpParams()

@@ -40,7 +40,8 @@ export class AuthService {
     const jwt = process.env.JWT_SECRET;
     const refresh = process.env.REFRESH_SECRET;
     if (!jwt) throw new Error('Variable de entorno JWT_SECRET no configurada');
-    if (!refresh) throw new Error('Variable de entorno REFRESH_SECRET no configurada');
+    if (!refresh)
+      throw new Error('Variable de entorno REFRESH_SECRET no configurada');
     this.claveSecretaJwt = jwt;
     this.claveSecretaRefresh = refresh;
   }
@@ -48,7 +49,11 @@ export class AuthService {
   /**
    * Genera un token firmado con un tiempo de expiración determinado.
    */
-  private generarTokenFirma(cargaUtil: any, duracionSegundos: number, secreto: string): string {
+  private generarTokenFirma(
+    cargaUtil: any,
+    duracionSegundos: number,
+    secreto: string,
+  ): string {
     const cabecera = Buffer.from(
       JSON.stringify({ alg: 'HS256', typ: 'JWT' }),
     ).toString('base64url');
@@ -141,7 +146,9 @@ export class AuthService {
     const { nombre, apellido, correo, password, aceptoAviso } = crearClienteDto;
 
     if (!aceptoAviso) {
-      throw new BadRequestException('Debe aceptar el aviso de privacidad para registrarse.');
+      throw new BadRequestException(
+        'Debe aceptar el aviso de privacidad para registrarse.',
+      );
     }
 
     const correoExiste = await this.prismaService.usuario.findUnique({
@@ -209,10 +216,13 @@ export class AuthService {
     crearColaboradorDto: CrearColaboradorDto,
     direccionIp: string,
   ): Promise<ParDeTokens> {
-    const { nombre, apellido, correo, password, aceptoAviso } = crearColaboradorDto;
+    const { nombre, apellido, correo, password, aceptoAviso } =
+      crearColaboradorDto;
 
     if (!aceptoAviso) {
-      throw new BadRequestException('Debe aceptar el aviso de privacidad para registrarse.');
+      throw new BadRequestException(
+        'Debe aceptar el aviso de privacidad para registrarse.',
+      );
     }
 
     const correoExiste = await this.prismaService.usuario.findUnique({
