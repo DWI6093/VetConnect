@@ -157,4 +157,9 @@ export class ServicioAutenticacion {
     const sesion = this.sesionActual();
     return sesion ? sesion.rol : null;
   }
+
+  obtenerEstado(): 'ACTIVO' | 'PENDIENTE_ELIMINACION' | null {
+  const sesion = this.sesionActual();
+  return sesion ? sesion.estado : null;
+}
 }

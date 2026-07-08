@@ -26,7 +26,8 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
           req.url.includes('/auth/registro-cliente') ||
           req.url.includes('/auth/registro-colaborador') ||
           req.url.includes('/auth/refresh') ||
-          req.url.includes('/auth/logout');
+          req.url.includes('/auth/logout') ||
+          req.url.includes('/auth/me');
 
         if (esRutaAutenticacion) {
           return throwError(() => error);
@@ -48,7 +49,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
           return throwError(() => error);
         }
 
-        // Si el error es debido a expiración,  refrescar la sesión
+        // Si el error es debido a expiración, intentamos refrescar la sesión
         return manejarError401(req, next, servicioAuth);
       }
       return throwError(() => error);

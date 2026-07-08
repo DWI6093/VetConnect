@@ -340,7 +340,11 @@ export class AuthService {
       where: { correo },
     });
 
-    if (!usuario || usuario.estado !== 'ACTIVO') {
+    if (
+      !usuario ||
+      usuario.estado == 'BLOQUEADO' ||
+      usuario.estado == 'ELIMINADO'
+    ) {
       throw new UnauthorizedException(
         'Credenciales incorrectas o usuario inactivo.',
       );
@@ -454,6 +458,7 @@ export class AuthService {
    */
   async obtenerInfoUsuario(idUsuario: number): Promise<{
     rol: string;
+    estado: string;
     nombre: string;
     apellido: string;
     correo: string;
@@ -470,12 +475,17 @@ export class AuthService {
       },
     });
 
-    if (!usuario || usuario.estado !== 'ACTIVO') {
+    if (
+      !usuario ||
+      usuario.estado === 'BLOQUEADO' ||
+      usuario.estado === 'ELIMINADO'
+    ) {
       throw new UnauthorizedException('Usuario no encontrado o inactivo.');
     }
 
     return {
       rol: usuario.rol,
+      estado: usuario.estado,
       nombre: usuario.nombre,
       apellido: usuario.apellido,
       correo: usuario.correo,
