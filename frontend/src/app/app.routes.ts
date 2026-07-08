@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { guardiaAutenticacion } from './core/guards/autenticacion.guard';
 import { guardiaRol } from './core/guards/rol.guard';
+import { guardiaEstadoEliminacionChild } from './core/guards/estadoEliminacion.guard';
 
 export const routes: Routes = [
   {
@@ -24,6 +25,7 @@ export const routes: Routes = [
         (m) => m.LayoutClientesComponente,
       ),
     canActivate: [guardiaAutenticacion, guardiaRol],
+    canActivateChild: [guardiaEstadoEliminacionChild],
     data: { rol: 'CLIENTE' },
     children: [
       {
@@ -54,6 +56,7 @@ export const routes: Routes = [
         (m) => m.LayoutColaboradoresComponente,
       ),
     canActivate: [guardiaAutenticacion, guardiaRol],
+    canActivateChild: [guardiaEstadoEliminacionChild],
     data: { rol: 'COLABORADOR' },
     children: [
       {
