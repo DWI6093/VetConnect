@@ -34,6 +34,8 @@ export class CrearColaboradorDto {
   password: string;
 
   @IsBoolean({ message: 'La aceptación del aviso debe ser un valor booleano.' })
-  @Equals(true, { message: 'Debe aceptar el aviso de privacidad para registrarse.' })
+  @Equals(true, {
+    message: 'Debe aceptar el aviso de privacidad para registrarse.',
+  })
   aceptoAviso: boolean;
 }

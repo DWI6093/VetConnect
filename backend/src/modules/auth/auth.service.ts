@@ -123,6 +123,50 @@ export class AuthService {
   }
 
   /**
+   * Valida la firma del token de refresco.
+   */
+  validarTokenRefresco(token: string): any {
+    return this.verificarToken(token, this.claveSecretaRefresh);
+  }
+
+  /**
+   * Verifica la coherencia de la sesión comparando el token de refresco con el de la base de datos
+   * y comprobando que pertenezca al usuario especificado.
+   */
+  async validarConsistenciaTokens(
+    idUsuario: number,
+    tokenRefresco: string,
+  ): Promise<boolean> {
+    try {
+      const payloadRefresco = this.verificarToken(
+        tokenRefresco,
+        this.claveSecretaRefresh,
+      );
+
+      if (payloadRefresco.id_usuario !== idUsuario) {
+        return false;
+      }
+
+      const usuario = await this.prismaService.usuario.findUnique({
+        where: { id_usuario: idUsuario },
+        select: { estado: true, refresh_token_hash: true },
+      });
+
+      if (
+        !usuario ||
+        usuario.estado !== 'ACTIVO' ||
+        !usuario.refresh_token_hash
+      ) {
+        return false;
+      }
+
+      return await bcrypt.compare(tokenRefresco, usuario.refresh_token_hash);
+    } catch (error) {
+      return false;
+    }
+  }
+
+  /**
    * Genera el par de tokens de acceso (10 minutos) y refresco (7 días).
    */
   private generarParDeTokens(carga: CargaUtilToken): ParDeTokens {
@@ -146,7 +190,9 @@ export class AuthService {
     const { nombre, apellido, correo, password, aceptoAviso } = crearClienteDto;
 
     if (!aceptoAviso) {
-      throw new BadRequestException('Debe aceptar el aviso de privacidad para registrarse.');
+      throw new BadRequestException(
+        'Debe aceptar el aviso de privacidad para registrarse.',
+      );
     }
 
     const correoExiste = await this.prismaService.usuario.findUnique({
@@ -214,10 +260,13 @@ export class AuthService {
     crearColaboradorDto: CrearColaboradorDto,
     direccionIp: string,
   ): Promise<ParDeTokens> {
-    const { nombre, apellido, correo, password, aceptoAviso } = crearColaboradorDto;
+    const { nombre, apellido, correo, password, aceptoAviso } =
+      crearColaboradorDto;
 
     if (!aceptoAviso) {
-      throw new BadRequestException('Debe aceptar el aviso de privacidad para registrarse.');
+      throw new BadRequestException(
+        'Debe aceptar el aviso de privacidad para registrarse.',
+      );
     }
 
     const correoExiste = await this.prismaService.usuario.findUnique({

@@ -58,6 +58,7 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
+            "ssl": true,
             "headers": {
               "X-Frame-Options": "DENY",
               "Content-Security-Policy": "frame-ancestors 'none';",

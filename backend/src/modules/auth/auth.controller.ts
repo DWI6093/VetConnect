@@ -73,7 +73,10 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const direccionIp = req.ip || req.socket.remoteAddress || '127.0.0.1';
-    const tokens = await this.authService.registrarCliente(crearClienteDto, direccionIp);
+    const tokens = await this.authService.registrarCliente(
+      crearClienteDto,
+      direccionIp,
+    );
     this.establecerCookiesAuth(res, tokens.token, tokens.refresh_token);
     return { mensaje: 'Registro exitoso.' };
   }
@@ -85,8 +88,10 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const direccionIp = req.ip || req.socket.remoteAddress || '127.0.0.1';
-    const tokens =
-      await this.authService.registrarColaborador(crearColaboradorDto, direccionIp);
+    const tokens = await this.authService.registrarColaborador(
+      crearColaboradorDto,
+      direccionIp,
+    );
     this.establecerCookiesAuth(res, tokens.token, tokens.refresh_token);
     return { mensaje: 'Registro exitoso.' };
   }

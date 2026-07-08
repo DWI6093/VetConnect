@@ -277,7 +277,8 @@
 .boton-principal:disabled {
   background: #cbd5e1;
   color: #94a3b8;
-  cursor: not-allowed;
+  cursor: default;
+  pointer-events: none;
   box-shadow: none;
 }
 

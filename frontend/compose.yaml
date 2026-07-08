@@ -15,3 +15,10 @@ services:
       POSTGRES_PASSWORD: admin123
     ports:
       - "5432:5432"
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+      - /var/lib/postgresql/data
