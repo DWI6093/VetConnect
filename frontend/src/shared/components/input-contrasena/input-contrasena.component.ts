@@ -15,27 +15,29 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   styleUrl: './input-contrasena.component.css',
 })
 export class InputContrasenaComponente implements ControlValueAccessor {
-  @Input() identificador: string = 'contrasena';
-  @Input() marcadorDePosicion: string = '••••••••';
-  @Input() esInvalido: boolean = false;
+  @Input() identificador = 'contrasena';
+  @Input() marcadorDePosicion = '••••••••';
+  @Input() esInvalido = false;
 
   protected mostrarContrasena = signal<boolean>(false);
-  protected valorInterno: string = '';
+  protected valorInterno = '';
   protected estaDeshabilitado = signal<boolean>(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   private alCambiar: (valor: string) => void = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   private alTocar: () => void = () => {};
 
   // Métodos requeridos por ControlValueAccessor
-  writeValue(valor: any): void {
-    this.valorInterno = valor || '';
+  writeValue(valor: unknown): void {
+    this.valorInterno = typeof valor === 'string' ? valor : '';
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (valor: string) => void): void {
     this.alCambiar = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.alTocar = fn;
   }
 

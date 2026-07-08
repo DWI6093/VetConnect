@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { PrismaService } from '../../database/prisma.service';
@@ -140,8 +141,13 @@ export class AuthService {
    */
   async registrarCliente(
     crearClienteDto: CrearClienteDto,
+    direccionIp: string,
   ): Promise<ParDeTokens> {
-    const { nombre, apellido, correo, password } = crearClienteDto;
+    const { nombre, apellido, correo, password, aceptoAviso } = crearClienteDto;
+
+    if (!aceptoAviso) {
+      throw new BadRequestException('Debe aceptar el aviso de privacidad para registrarse.');
+    }
 
     const correoExiste = await this.prismaService.usuario.findUnique({
       where: { correo },
@@ -172,6 +178,16 @@ export class AuthService {
       },
     });
 
+    // Guardar la aceptación del aviso de privacidad
+    await this.prismaService.aceptacion_terminos.create({
+      data: {
+        version_aviso_privacidad: '1.0',
+        version_terminos: '1.0',
+        id_usuario: nuevoUsuario.id_usuario,
+        ip_aceptacion: direccionIp,
+      },
+    });
+
     const tokens = this.generarParDeTokens({
       id_usuario: nuevoUsuario.id_usuario,
       correo: nuevoUsuario.correo,
@@ -196,8 +212,13 @@ export class AuthService {
    */
   async registrarColaborador(
     crearColaboradorDto: CrearColaboradorDto,
+    direccionIp: string,
   ): Promise<ParDeTokens> {
-    const { nombre, apellido, correo, password } = crearColaboradorDto;
+    const { nombre, apellido, correo, password, aceptoAviso } = crearColaboradorDto;
+
+    if (!aceptoAviso) {
+      throw new BadRequestException('Debe aceptar el aviso de privacidad para registrarse.');
+    }
 
     const correoExiste = await this.prismaService.usuario.findUnique({
       where: { correo },
@@ -225,6 +246,16 @@ export class AuthService {
         apellido: true,
         correo: true,
         rol: true,
+      },
+    });
+
+    // Guardar la aceptación del aviso de privacidad
+    await this.prismaService.aceptacion_terminos.create({
+      data: {
+        version_aviso_privacidad: '1.0',
+        version_terminos: '1.0',
+        id_usuario: nuevoUsuario.id_usuario,
+        ip_aceptacion: direccionIp,
       },
     });
 

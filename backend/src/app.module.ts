@@ -6,7 +6,6 @@ import { PrismaModule } from './database/prisma.module';
 import { UsuariosModule } from './modules/usuarios/usuarios.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { LegalModule } from './modules/legal/legal.module';
-import { LogsModule } from './modules/logs/logs.module';
 import { ArcoModule } from './modules/arco/arco.module';
 import { NegociosModule } from './modules/negocios/negocios.module';
 
@@ -17,7 +16,6 @@ import { NegociosModule } from './modules/negocios/negocios.module';
     UsuariosModule,
     AuthModule,
     LegalModule,
-    LogsModule,
     ArcoModule,
     NegociosModule,
   ],

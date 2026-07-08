@@ -9,7 +9,6 @@ const tokenRefrescado$ = new BehaviorSubject<boolean>(false);
 /**
  * Interceptor de autenticación basado en cookies HttpOnly.
  *
- * Ya NO se lee ni adjunta ningún token manualmente.
  * El navegador envía las cookies automáticamente gracias a `withCredentials: true`.
  * Este interceptor solo maneja los errores 401 para intentar refrescar la sesión.
  */
@@ -59,9 +58,9 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
 function manejarError401(
   solicitud: HttpRequest<unknown>,
   siguiente: HttpHandlerFn,
-  servicioAuth: ServicioAutenticacion,
+  servicioAuth: ServicioAutenticacion
 ): Observable<HttpEvent<unknown>> {
-  // Si ya hay un proceso de refresco activo, esperamos a que termine
+  // Si ya hay un proceso de refresco activo, se espera a que termine
   if (estaRefrescandoToken) {
     return tokenRefrescado$.pipe(
       filter((exito): exito is true => exito === true),

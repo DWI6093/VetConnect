@@ -68,21 +68,25 @@ export class AuthController {
 
   @Post('registro-cliente')
   async registrarCliente(
+    @Req() req: Request,
     @Body() crearClienteDto: CrearClienteDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const tokens = await this.authService.registrarCliente(crearClienteDto);
+    const direccionIp = req.ip || req.socket.remoteAddress || '127.0.0.1';
+    const tokens = await this.authService.registrarCliente(crearClienteDto, direccionIp);
     this.establecerCookiesAuth(res, tokens.token, tokens.refresh_token);
     return { mensaje: 'Registro exitoso.' };
   }
 
   @Post('registro-colaborador')
   async registrarColaborador(
+    @Req() req: Request,
     @Body() crearColaboradorDto: CrearColaboradorDto,
     @Res({ passthrough: true }) res: Response,
   ) {
+    const direccionIp = req.ip || req.socket.remoteAddress || '127.0.0.1';
     const tokens =
-      await this.authService.registrarColaborador(crearColaboradorDto);
+      await this.authService.registrarColaborador(crearColaboradorDto, direccionIp);
     this.establecerCookiesAuth(res, tokens.token, tokens.refresh_token);
     return { mensaje: 'Registro exitoso.' };
   }

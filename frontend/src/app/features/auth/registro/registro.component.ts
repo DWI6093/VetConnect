@@ -1,6 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, AbstractControl, ValidationErrors, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { finalize } from 'rxjs';
 import { ServicioAutenticacion } from '../../../core/services/auth.service';
 import {
@@ -21,6 +22,7 @@ export class RegistroComponente {
   private readonly constructorFormularios = inject(FormBuilder);
   private readonly servicioAutenticacion = inject(ServicioAutenticacion);
   private readonly enrutador = inject(Router);
+  private readonly sanitizador = inject(DomSanitizer);
 
   protected readonly formularioRegistro: FormGroup;
   protected readonly rolSeleccionado = signal<'CLIENTE' | 'COLABORADOR'>('CLIENTE');
@@ -28,7 +30,13 @@ export class RegistroComponente {
   protected readonly mensajeExito = signal<string | null>(null);
   protected readonly estaCargando = signal<boolean>(false);
 
+  protected readonly mostrarModal = signal<boolean>(false);
+  protected readonly urlAvisoPrivacidadSegura: SafeResourceUrl;
+
   constructor() {
+    this.urlAvisoPrivacidadSegura = this.sanitizador.bypassSecurityTrustResourceUrl(
+      this.servicioAutenticacion.obtenerUrlAvisoPrivacidad(false)
+    );
     this.formularioRegistro = this.constructorFormularios.group(
       {
         nombre: ['', nameFieldValidator()],
@@ -36,6 +44,7 @@ export class RegistroComponente {
         correo: ['', emailFieldValidator()],
         contrasena: ['', passwordFieldValidator()],
         confirmarContrasena: ['', [this.validarConfirmacionRequerida]],
+        aceptoAviso: [false, [Validators.requiredTrue]],
       },
       {
         validators: this.validarContrasenasCoincidan,
@@ -76,6 +85,7 @@ export class RegistroComponente {
       apellido: this.formularioRegistro.get('apellido')?.value,
       correo: this.formularioRegistro.get('correo')?.value,
       contrasena: this.formularioRegistro.get('contrasena')?.value,
+      aceptoAviso: this.formularioRegistro.get('aceptoAviso')?.value,
     };
 
     const observable$ =
@@ -103,5 +113,15 @@ export class RegistroComponente {
           }
         },
       });
+  }
+
+  protected abrirModalAviso(evento: Event): void {
+    evento.preventDefault();
+    evento.stopPropagation();
+    this.mostrarModal.set(true);
+  }
+
+  protected cerrarModalAviso(): void {
+    this.mostrarModal.set(false);
   }
 }

@@ -269,7 +269,28 @@
           </div>
         </div>
 
-        <button type="submit" class="boton-principal" [disabled]="estaCargando()">
+        <!-- Contenedor de aceptación y visualización de Aviso de Privacidad -->
+        <div class="contenedor-aviso-privacidad">
+          <div class="grupo-checkbox-legal">
+            <input
+              type="checkbox"
+              id="aceptoAviso"
+              formControlName="aceptoAviso"
+              class="checkbox-legal"
+              [class.campo-invalido]="formularioRegistro.get('aceptoAviso')?.invalid && formularioRegistro.get('aceptoAviso')?.touched"
+            />
+            <label for="aceptoAviso" class="etiqueta-legal">
+              He leído y acepto el <button type="button" class="resaltado-aviso enlace-modal" (click)="abrirModalAviso($event)">Aviso de Privacidad</button>
+            </label>
+          </div>
+        </div>
+        @if (formularioRegistro.get('aceptoAviso')?.invalid && formularioRegistro.get('aceptoAviso')?.touched) {
+          <div class="error-validacion error-legal">
+            <span>Debe aceptar el aviso de privacidad para poder registrarse.</span>
+          </div>
+        }
+
+        <button type="submit" class="boton-principal" [disabled]="estaCargando() || formularioRegistro.invalid">
           @if (!estaCargando()) {
             <span class="boton-icono">🐾</span>
             <span>Crear cuenta</span>
@@ -308,4 +329,24 @@
       <p>Comunícate fácilmente con negocios de confianza.</p>
     </div>
   </div>
+
+  <!-- Modal del Aviso de Privacidad -->
+  @if (mostrarModal()) {
+    <div class="modal-overlay">
+      <div class="modal-contenedor">
+        <div class="modal-cabecera">
+          <h3>Aviso de Privacidad</h3>
+          <button type="button" class="modal-boton-cerrar" (click)="cerrarModalAviso()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="modal-cuerpo">
+          <iframe [src]="urlAvisoPrivacidadSegura" class="modal-iframe" title="Aviso de Privacidad"></iframe>
+        </div>
+        <div class="modal-pie">
+          <button type="button" class="boton-cerrar-modal" (click)="cerrarModalAviso()">Entendido</button>
+        </div>
+      </div>
+    </div>
+  }
 </div>
