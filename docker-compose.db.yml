@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: vetconnect_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vetconnect_user
+      POSTGRES_PASSWORD: vetconnect_pass
+      POSTGRES_DB: vetconnect_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - vetconnect_pgdata:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vetconnect_user -d vetconnect_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  vetconnect_pgdata:
