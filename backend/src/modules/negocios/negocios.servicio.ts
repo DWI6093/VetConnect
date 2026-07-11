@@ -8,6 +8,9 @@ import { NegociosRepositorio } from './negocios.repositorio';
 import { NegocioCercanoDto } from './dtos/negocio-cercano.dto';
 import { CrearNegocioDto } from './dtos/crear-negocio.dto';
 import { ActualizarNegocioDto } from './dtos/actualizar-negocio.dto';
+import { CrearServicioDto } from './dtos/crear-servicio.dto';
+import { CrearProductoDto } from './dtos/crear-producto.dto';
+import { HorarioItemDto } from './dtos/horario.dto';
 
 @Injectable()
 export class NegociosServicio {
@@ -75,6 +78,7 @@ export class NegociosServicio {
         estado: negocio.estado,
         latitud: Number(negocio.latitud),
         longitud: Number(negocio.longitud),
+        imagenPrincipal: negocio.imagen_principal ?? null,
       }));
     } catch (error) {
       console.error('Error al obtener negocios del propietario:', error);
@@ -148,4 +152,118 @@ export class NegociosServicio {
       throw new InternalServerErrorException('Ocurrió un error interno al cambiar el estado del negocio.');
     }
   }
+  private async verificarPropietarioONegar(idNegocio: number, idUsuario: number) {
+    const esPropietario = await this.negociosRepositorio.esPropietario(idNegocio, idUsuario);
+    if (!esPropietario) {
+      throw new ForbiddenException('No tienes permiso para modificar este negocio.');
+    }
+  }
+
+  // RF17 - Horarios
+  async actualizarHorarios(idNegocio: number, idUsuario: number, horarios: HorarioItemDto[]) {
+    await this.verificarPropietarioONegar(idNegocio, idUsuario);
+    try {
+      return await this.negociosRepositorio.reemplazarHorarios(idNegocio, horarios);
+    } catch (error) {
+      console.error('Error al guardar horarios:', error);
+      throw new InternalServerErrorException('No se pudieron guardar los horarios.');
+    }
+  }
+
+  // RF17 - Servicios
+   async crearServicio(idNegocio: number, idUsuario: number, datos: CrearServicioDto) {
+    await this.verificarPropietarioONegar(idNegocio, idUsuario);
+    try {
+      const servicio = await this.negociosRepositorio.crearServicio(idNegocio, datos);
+      return { ...servicio, precio: Number(servicio.precio) };
+    } catch (error) {
+      console.error('Error al agregar servicio:', error);
+      throw new InternalServerErrorException('No se pudo agregar el servicio.');
+    }
+  }
+
+  async eliminarServicio(idServicio: number, idUsuario: number) {
+    const servicio = await this.negociosRepositorio.obtenerServicioConPropietario(idServicio);
+    if (!servicio) throw new NotFoundException('Servicio no encontrado.');
+    if (servicio.negocio.id_propietario !== idUsuario) {
+      throw new ForbiddenException('No tienes permiso para eliminar este servicio.');
+    }
+    await this.negociosRepositorio.eliminarServicio(idServicio);
+    return { mensaje: 'Servicio eliminado correctamente.' };
+  }
+
+  // RF17 - Productos
+   async crearProducto(idNegocio: number, idUsuario: number, datos: CrearProductoDto) {
+    await this.verificarPropietarioONegar(idNegocio, idUsuario);
+    try {
+      const producto = await this.negociosRepositorio.crearProducto(idNegocio, datos);
+      return { ...producto, precio: Number(producto.precio) };
+    } catch (error) {
+      console.error('Error al agregar producto:', error);
+      throw new InternalServerErrorException('No se pudo agregar el producto.');
+    }
+  }
+
+  async eliminarProducto(idProducto: number, idUsuario: number) {
+    const producto = await this.negociosRepositorio.obtenerProductoConPropietario(idProducto);
+    if (!producto) throw new NotFoundException('Producto no encontrado.');
+    if (producto.negocio.id_propietario !== idUsuario) {
+      throw new ForbiddenException('No tienes permiso para eliminar este producto.');
+    }
+    await this.negociosRepositorio.eliminarProducto(idProducto);
+    return { mensaje: 'Producto eliminado correctamente.' };
+  }
+
+  // RF15, RF28 - Imágenes (máximo 4, plan Básico)
+  async agregarImagen(idNegocio: number, idUsuario: number, archivo: Express.Multer.File) {
+    await this.verificarPropietarioONegar(idNegocio, idUsuario);
+
+    const totalActual = await this.negociosRepositorio.contarImagenes(idNegocio);
+    if (totalActual >= 4) {
+      throw new ForbiddenException('El plan Básico permite un máximo de 4 imágenes por negocio.');
+    }
+
+    try {
+      return await this.negociosRepositorio.agregarImagen(
+        idNegocio,
+        `/uploads/negocios/${archivo.filename}`,
+        archivo.originalname,
+        totalActual + 1,
+      );
+    } catch (error) {
+      console.error('Error al subir imagen:', error);
+      throw new InternalServerErrorException('No se pudo subir la imagen.');
+    }
+  }
+
+  async eliminarImagen(idImagen: number, idUsuario: number) {
+    const imagen = await this.negociosRepositorio.obtenerImagenConPropietario(idImagen);
+    if (!imagen) throw new NotFoundException('Imagen no encontrada.');
+    if (imagen.negocio.id_propietario !== idUsuario) {
+      throw new ForbiddenException('No tienes permiso para eliminar esta imagen.');
+    }
+    await this.negociosRepositorio.eliminarImagen(idImagen);
+    return { mensaje: 'Imagen eliminada correctamente.' };
+  }
+  // AGREGAR dentro de la clase NegociosServicio
+
+  async obtenerDetalleColaborador(idNegocio: number, idUsuario: number) {
+    const negocio = await this.negociosRepositorio.obtenerDetalleCompleto(idNegocio);
+
+    if (!negocio) {
+      throw new NotFoundException('El negocio solicitado no existe.');
+    }
+    if (negocio.id_propietario !== idUsuario) {
+      throw new ForbiddenException('No tienes permiso para ver este negocio.');
+    }
+
+    return {
+      ...negocio,
+      latitud: Number(negocio.latitud),
+      longitud: Number(negocio.longitud),
+      servicios: (negocio.servicios ?? []).map((s: any) => ({ ...s, precio: Number(s.precio) })),
+      productos: (negocio.productos ?? []).map((p: any) => ({ ...p, precio: Number(p.precio) })),
+    };
+  }
+  
 }
