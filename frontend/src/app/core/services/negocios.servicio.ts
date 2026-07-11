@@ -8,6 +8,7 @@ import {
   CrearNegocioPayload,
   ActualizarNegocioPayload,
 } from '../models/negocio.modelo';
+import { HorarioPayload, Servicio, Producto, ImagenNegocio } from '../models/negocio.modelo';
 
 @Injectable({
   providedIn: 'root'
@@ -67,4 +68,41 @@ export class NegociosServicio {
       { withCredentials: true }
     );
   }
+  // ── Horarios ──────────────────────────────
+public actualizarHorarios(idNegocio: number, horarios: HorarioPayload[]): Observable<HorarioPayload[]> {
+  return this.httpCliente.put<HorarioPayload[]>(
+    `${this.urlBaseApi}/negocios/${idNegocio}/horarios`,
+    { horarios },
+    { withCredentials: true }
+  );
+}
+
+// ── Servicios ─────────────────────────────
+public crearServicio(idNegocio: number, datos: { nombre: string; descripcion?: string; precio: number }): Observable<Servicio> {
+  return this.httpCliente.post<Servicio>(`${this.urlBaseApi}/negocios/${idNegocio}/servicios`, datos, { withCredentials: true });
+}
+
+public eliminarServicio(idServicio: number): Observable<{ mensaje: string }> {
+  return this.httpCliente.delete<{ mensaje: string }>(`${this.urlBaseApi}/negocios/servicios/${idServicio}`, { withCredentials: true });
+}
+
+// ── Productos ─────────────────────────────
+public crearProducto(idNegocio: number, datos: { nombre: string; descripcion?: string; precio: number; disponible?: boolean }): Observable<Producto> {
+  return this.httpCliente.post<Producto>(`${this.urlBaseApi}/negocios/${idNegocio}/productos`, datos, { withCredentials: true });
+}
+
+public eliminarProducto(idProducto: number): Observable<{ mensaje: string }> {
+  return this.httpCliente.delete<{ mensaje: string }>(`${this.urlBaseApi}/negocios/productos/${idProducto}`, { withCredentials: true });
+}
+
+// ── Imágenes ──────────────────────────────
+public subirImagen(idNegocio: number, archivo: File): Observable<ImagenNegocio> {
+  const formData = new FormData();
+  formData.append('imagen', archivo);
+  return this.httpCliente.post<ImagenNegocio>(`${this.urlBaseApi}/negocios/${idNegocio}/imagenes`, formData, { withCredentials: true });
+}
+
+public eliminarImagen(idImagen: number): Observable<{ mensaje: string }> {
+  return this.httpCliente.delete<{ mensaje: string }>(`${this.urlBaseApi}/negocios/imagenes/${idImagen}`, { withCredentials: true });
+}
 }

@@ -16,7 +16,6 @@
       <h2 class="seccion-titulo">Mis negocios</h2>
     </div>
 
-    <!-- Cargando -->
     @if (cargando()) {
       <div class="panel-en-proceso">
         <div class="en-proceso-icono">⏳</div>
@@ -24,7 +23,6 @@
       </div>
     }
 
-    <!-- Error -->
     @if (!cargando() && error()) {
       <div class="panel-en-proceso panel-error">
         <div class="en-proceso-icono">⚠️</div>
@@ -33,7 +31,6 @@
       </div>
     }
 
-    <!-- Sin negocios registrados -->
     @if (!cargando() && !error() && negocios().length === 0) {
       <div class="panel-en-proceso">
         <div class="en-proceso-icono">🏪</div>
@@ -45,7 +42,6 @@
       </div>
     }
 
-    <!-- Tarjetas de negocios -->
     @if (!cargando() && !error() && negocios().length > 0) {
       <div class="lista-negocios">
         @for (negocio of negocios(); track negocio.id_negocio) {
@@ -84,4 +80,18 @@
 
   <!-- Botón Agregar Negocio -->
   <div class="seccion-agregar">
-    @if
+    @if (negocios().length === 0) {
+      <a routerLink="/colaborador/negocios/crear" class="boton-agregar">
+        <span class="boton-agregar-icono">＋</span>
+        Agregar nuevo negocio
+      </a>
+    }
+    @if (negocios().length > 0) {
+      <button type="button" class="boton-agregar" disabled title="Plan Básico: solo puedes registrar 1 negocio">
+        <span class="boton-agregar-icono">＋</span>
+        Agregar nuevo negocio
+      </button>
+    }
+  </div>
+
+</div>

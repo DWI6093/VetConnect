@@ -46,3 +46,35 @@ export interface ActualizarNegocioPayload {
   latitud?: number;
   longitud?: number;
 }
+export type DiaSemana = 'LUNES' | 'MARTES' | 'MIERCOLES' | 'JUEVES' | 'VIERNES' | 'SABADO' | 'DOMINGO';
+
+export interface HorarioPayload {
+  dia: DiaSemana;
+  horaApertura: string;
+  horaCierre: string;
+}
+
+export interface Servicio {
+  id_servicio: number;
+  id_negocio: number;
+  nombre: string;
+  descripcion: string | null;
+  precio: number;
+}
+
+export interface Producto {
+  id_producto: number;
+  id_negocio: number;
+  nombre: string;
+  descripcion: string | null;
+  precio: number;
+  disponible: boolean;
+}
+
+export interface ImagenNegocio {
+  id_imagen: number;
+  id_negocio: number;
+  ruta_imagen: string;
+  nombre_archivo: string;
+  orden: number;
+}

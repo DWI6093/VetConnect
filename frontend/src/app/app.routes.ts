@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { guardiaAutenticacion } from './core/guards/autenticacion.guard';
 import { guardiaRol } from './core/guards/rol.guard';
 import { guardiaEstadoEliminacionChild } from './core/guards/estadoEliminacion.guard';
+import { NegocioFormularioComponente } from './features/negocio-formulario/negocio-formulario.component';
 
 export const routes: Routes = [
   {
@@ -64,6 +65,20 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/colaborador-inicio/colaborador-inicio.component').then(
             (m) => m.ColaboradorInicioComponente,
+          ),
+      },
+      {
+        path: 'negocios/crear',
+        loadComponent: () =>
+          import('./features/negocio-formulario/negocio-formulario.component').then(
+            (m) => m.NegocioFormularioComponente,
+          ),
+      },
+      {
+        path: 'negocios/:id/editar',
+        loadComponent: () =>
+          import('./features/negocio-formulario/negocio-formulario.component').then(
+            (m) => m.NegocioFormularioComponente,
           ),
       },
       {

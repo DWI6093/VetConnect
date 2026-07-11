@@ -59,6 +59,8 @@
           "builder": "@angular/build:dev-server",
           "options": {
             "ssl": true,
+            "sslKey": "ssl/localhost+2-key.pem",
+            "sslCert": "ssl/localhost+2.pem",
             "headers": {
               "X-Frame-Options": "DENY",
               "Content-Security-Policy": "frame-ancestors 'none';",
