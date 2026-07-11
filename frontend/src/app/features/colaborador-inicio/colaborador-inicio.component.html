@@ -38,7 +38,6 @@
         <p class="en-proceso-descripcion">
           Registra tu veterinaria o tienda de mascotas para que los clientes puedan encontrarte.
         </p>
-        <span class="etiqueta-proximamente">Plan Básico: 1 negocio</span>
       </div>
     }
 
@@ -46,6 +45,16 @@
       <div class="lista-negocios">
         @for (negocio of negocios(); track negocio.id_negocio) {
           <div class="tarjeta-negocio">
+            @if (negocio.imagenPrincipal) {
+              <img
+                [src]="'https://localhost:3000' + negocio.imagenPrincipal"
+                alt="{{ negocio.nombre }}"
+                class="tarjeta-negocio-imagen"
+              />
+            } @else {
+              <div class="tarjeta-negocio-imagen tarjeta-negocio-imagen--placeholder">🏪</div>
+            }
+
             <div class="tarjeta-negocio-encabezado">
               <h3 class="tarjeta-negocio-nombre">{{ negocio.nombre }}</h3>
               <span
@@ -79,19 +88,8 @@
   </section>
 
   <!-- Botón Agregar Negocio -->
-  <div class="seccion-agregar">
-    @if (negocios().length === 0) {
-      <a routerLink="/colaborador/negocios/crear" class="boton-agregar">
-        <span class="boton-agregar-icono">＋</span>
-        Agregar nuevo negocio
-      </a>
-    }
-    @if (negocios().length > 0) {
-      <button type="button" class="boton-agregar" disabled title="Plan Básico: solo puedes registrar 1 negocio">
-        <span class="boton-agregar-icono">＋</span>
-        Agregar nuevo negocio
-      </button>
-    }
-  </div>
-
+  <a routerLink="/colaborador/negocios/crear" class="boton-agregar">
+    <span class="boton-agregar-icono">＋</span>
+    Agregar nuevo negocio
+  </a>
 </div>

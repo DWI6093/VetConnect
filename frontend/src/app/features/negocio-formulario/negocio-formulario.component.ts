@@ -1,10 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { NegociosServicio } from '../../core/services/negocios.servicio';
 import { MapaSelectorComponente, CoordenadasSeleccionadas } from '../../../shared/components/mapa-selector/mapa-selector.component';
 import { DiaSemana, Servicio, Producto, ImagenNegocio } from '../../core/models/negocio.modelo';
+import { ActivatedRoute, Router } from '@angular/router';
 
 const DIAS_SEMANA: DiaSemana[] = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO'];
 
@@ -15,11 +15,13 @@ const DIAS_SEMANA: DiaSemana[] = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIE
   templateUrl: './negocio-formulario.component.html',
   styleUrl: './negocio-formulario.component.css',
 })
+
 export class NegocioFormularioComponente
  {
   private readonly negociosServicio = inject(NegociosServicio);
   private readonly router = inject(Router);
-
+  private readonly route = inject(ActivatedRoute);
+  protected readonly esEdicion = signal(false);
   protected readonly dias = DIAS_SEMANA;
 
   // ── Paso 1: Información básica ───────────
@@ -44,29 +46,33 @@ export class NegocioFormularioComponente
       this.errorInfoBasica.set('Nombre, dirección y teléfono son obligatorios.');
       return;
     }
-
+  
     this.guardandoInfoBasica.set(true);
     this.errorInfoBasica.set(null);
-
-    this.negociosServicio
-      .crearNegocio({
-        nombre: this.nombre(),
-        direccion: this.direccion(),
-        telefono: this.telefono(),
-        descripcion: this.descripcion() || undefined,
-        latitud: this.latitud(),
-        longitud: this.longitud(),
-      })
-      .subscribe({
-        next: (negocio) => {
-          this.idNegocio.set(negocio.id_negocio);
-          this.guardandoInfoBasica.set(false);
-        },
-        error: (error) => {
-          this.errorInfoBasica.set(error?.error?.message ?? 'No se pudo registrar el negocio.');
-          this.guardandoInfoBasica.set(false);
-        },
-      });
+ 
+    const payload = {
+      nombre: this.nombre(),
+      direccion: this.direccion(),
+      telefono: this.telefono(),
+      descripcion: this.descripcion() || undefined,
+      latitud: this.latitud(),
+      longitud: this.longitud(),
+    };
+ 
+    const peticion = this.esEdicion()
+      ? this.negociosServicio.actualizarNegocio(this.idNegocio()!, payload)
+      : this.negociosServicio.crearNegocio(payload);
+ 
+    peticion.subscribe({
+      next: (negocio: any) => {
+        this.idNegocio.set(negocio.id_negocio);
+        this.guardandoInfoBasica.set(false);
+      },
+      error: (error) => {
+        this.errorInfoBasica.set(error?.error?.message ?? 'No se pudo guardar el negocio.');
+        this.guardandoInfoBasica.set(false);
+      },
+    });
   }
 
   // ── Paso 2: Horarios ──────────────────────
@@ -215,5 +221,39 @@ export class NegocioFormularioComponente
 
   protected finalizarRegistro(): void {
     this.router.navigate(['/colaborador/inicio']);
+  }
+
+  ngOnInit(): void {
+    const idParametro = this.route.snapshot.paramMap.get('id');
+    if (!idParametro) return; // modo "crear", no hay nada que cargar
+
+    const id = Number(idParametro);
+    this.esEdicion.set(true);
+    this.idNegocio.set(id);
+
+    this.negociosServicio.obtenerDetalleColaborador(id).subscribe({
+      next: (negocio) => {
+        this.nombre.set(negocio.nombre);
+        this.direccion.set(negocio.direccion);
+        this.telefono.set(negocio.telefono);
+        this.descripcion.set(negocio.descripcion ?? '');
+        this.latitud.set(negocio.latitud);
+        this.longitud.set(negocio.longitud);
+
+        this.horarios.set(
+          (negocio.horarios ?? []).map((h: any) => ({
+            dia: h.dia,
+            horaApertura: h.hora_apertura?.substring(11, 16) ?? '09:00',
+            horaCierre: h.hora_cierre?.substring(11, 16) ?? '18:00',
+          })),
+        );
+        this.servicios.set(negocio.servicios ?? []);
+        this.productos.set(negocio.productos ?? []);
+        this.imagenes.set(negocio.imagenes ?? []);
+      },
+      error: () => {
+        this.errorInfoBasica.set('No se pudo cargar la información del negocio.');
+      },
+    });
   }
 }

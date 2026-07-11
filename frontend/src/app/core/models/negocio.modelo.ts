@@ -17,6 +17,7 @@ export interface NegocioColaborador {
   estado: 'ACTIVO' | 'INACTIVO';
   latitud: number;
   longitud: number;
+   imagenPrincipal?: string | null;
 }
 
 export interface NegocioCatalogo {
@@ -77,4 +78,5 @@ export interface ImagenNegocio {
   ruta_imagen: string;
   nombre_archivo: string;
   orden: number;
+  imagenPrincipal?: string | null;
 }

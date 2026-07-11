@@ -43,6 +43,11 @@ export class NegociosServicio {
     });
   }
 
+  public obtenerDetalleColaborador(idNegocio: number): Observable<any> {
+    return this.httpCliente.get<any>(`${this.urlBaseApi}/negocios/colaborador/${idNegocio}`, {
+      withCredentials: true,
+    });
+  }
   public obtenerMisNegocios(): Observable<NegocioColaborador[]> {
     return this.httpCliente.get<NegocioColaborador[]>(`${this.urlBaseApi}/negocios/mis-negocios`, {
       withCredentials: true
