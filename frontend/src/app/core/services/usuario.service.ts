@@ -5,7 +5,7 @@ import type { PerfilUsuario, RespuestaCancelacion } from '../models/usuario.mode
 
 @Injectable({ providedIn: 'root' })
 export class ServicioUsuario {
-  private readonly urlBaseApi = 'http://localhost:3000';
+  private readonly urlBaseApi = window.location.protocol === 'https:' ? 'https://localhost:3000' : 'http://localhost:3000';
   private readonly httpCliente = inject(HttpClient);
 
   obtenerMiPerfil(): Observable<PerfilUsuario> {
