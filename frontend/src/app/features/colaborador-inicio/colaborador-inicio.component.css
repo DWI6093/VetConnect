@@ -233,3 +233,18 @@
   color: #fff;
 }
 
+.tarjeta-negocio-imagen {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.tarjeta-negocio-imagen--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f1f1;
+  font-size: 2rem;
+}
