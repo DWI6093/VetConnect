@@ -16,24 +16,80 @@
       <h2 class="seccion-titulo">Mis negocios</h2>
     </div>
 
-    <!-- Estado en proceso -->
-    <div class="panel-en-proceso">
-      <div class="en-proceso-icono">🏗️</div>
-      <h3 class="en-proceso-titulo">Sección en proceso</h3>
-      <p class="en-proceso-descripcion">
-        La gestión de negocios estará disponible próximamente. <br>
-        Aquí podrás registrar y administrar tus veterinarias y tiendas de mascotas.
-      </p>
-      <span class="etiqueta-proximamente">Próximamente</span>
-    </div>
+    @if (cargando()) {
+      <div class="panel-en-proceso">
+        <div class="en-proceso-icono">⏳</div>
+        <p class="en-proceso-descripcion">Cargando tus negocios...</p>
+      </div>
+    }
+
+    @if (!cargando() && error()) {
+      <div class="panel-en-proceso panel-error">
+        <div class="en-proceso-icono">⚠️</div>
+        <h3 class="en-proceso-titulo">Ocurrió un problema</h3>
+        <p class="en-proceso-descripcion">{{ error() }}</p>
+      </div>
+    }
+
+    @if (!cargando() && !error() && negocios().length === 0) {
+      <div class="panel-en-proceso">
+        <div class="en-proceso-icono">🏪</div>
+        <h3 class="en-proceso-titulo">Aún no tienes negocios registrados</h3>
+        <p class="en-proceso-descripcion">
+          Registra tu veterinaria o tienda de mascotas para que los clientes puedan encontrarte.
+        </p>
+      </div>
+    }
+
+    @if (!cargando() && !error() && negocios().length > 0) {
+      <div class="lista-negocios">
+        @for (negocio of negocios(); track negocio.id_negocio) {
+          <div class="tarjeta-negocio">
+            @if (negocio.imagenPrincipal) {
+              <img
+                [src]="'https://localhost:3000' + negocio.imagenPrincipal"
+                alt="{{ negocio.nombre }}"
+                class="tarjeta-negocio-imagen"
+              />
+            } @else {
+              <div class="tarjeta-negocio-imagen tarjeta-negocio-imagen--placeholder">🏪</div>
+            }
+
+            <div class="tarjeta-negocio-encabezado">
+              <h3 class="tarjeta-negocio-nombre">{{ negocio.nombre }}</h3>
+              <span
+                class="etiqueta-estado"
+                [class.etiqueta-estado--activo]="negocio.estado === 'ACTIVO'"
+                [class.etiqueta-estado--inactivo]="negocio.estado === 'INACTIVO'"
+              >
+                {{ negocio.estado === 'ACTIVO' ? 'Activo' : 'Inactivo' }}
+              </span>
+            </div>
+
+            <p class="tarjeta-negocio-direccion">📍 {{ negocio.direccion }}</p>
+
+            <div class="tarjeta-negocio-acciones">
+              <a [routerLink]="['/colaborador/negocios', negocio.id_negocio, 'editar']" class="boton-secundario">
+                Editar
+              </a>
+              <button
+                type="button"
+                class="boton-alternar-estado"
+                [class.boton-alternar-estado--ocultar]="negocio.estado === 'ACTIVO'"
+                (click)="alternarEstado(negocio)"
+              >
+                {{ negocio.estado === 'ACTIVO' ? 'Ocultar' : 'Activar' }}
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
   </section>
 
-  <!-- Botón Agregar Negocio (deshabilitado) -->
-  <div class="seccion-agregar">
-    <button type="button" class="boton-agregar" disabled>
-      <span class="boton-agregar-icono">＋</span>
-      Agregar nuevo negocio
-    </button>
-  </div>
-
+  <!-- Botón Agregar Negocio -->
+  <a routerLink="/colaborador/negocios/crear" class="boton-agregar">
+    <span class="boton-agregar-icono">＋</span>
+    Agregar nuevo negocio
+  </a>
 </div>
