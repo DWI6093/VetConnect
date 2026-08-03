@@ -7,27 +7,50 @@
 
     @if (!idNegocio()) {
       <div class="campo-grupo">
-        <label>Nombre</label>
-        <input type="text" [ngModel]="nombre()" (ngModelChange)="nombre.set($event)" maxlength="50" />
+        <label for="nombre-negocio">Nombre</label>
+        <input
+          id="nombre-negocio"
+          type="text"
+          [ngModel]="nombre()"
+          (ngModelChange)="nombre.set($event)"
+          maxlength="50"
+        />
       </div>
 
       <div class="campo-grupo">
-        <label>Dirección</label>
-        <input type="text" [ngModel]="direccion()" (ngModelChange)="direccion.set($event)" maxlength="150" />
+        <label for="direccion-negocio">Dirección</label>
+        <input
+          id="direccion-negocio"
+          type="text"
+          [ngModel]="direccion()"
+          (ngModelChange)="direccion.set($event)"
+          maxlength="150"
+        />
       </div>
 
       <div class="campo-grupo">
-        <label>Teléfono</label>
-        <input type="tel" [ngModel]="telefono()" (ngModelChange)="telefono.set($event)" maxlength="10" />
+        <label for="telefono-negocio">Teléfono</label>
+        <input
+          id="telefono-negocio"
+          type="tel"
+          [ngModel]="telefono()"
+          (ngModelChange)="telefono.set($event)"
+          maxlength="10"
+        />
       </div>
 
       <div class="campo-grupo">
-        <label>Descripción (opcional)</label>
-        <textarea [ngModel]="descripcion()" (ngModelChange)="descripcion.set($event)" rows="3"></textarea>
+        <label for="descripcion-negocio">Descripción (opcional)</label>
+        <textarea
+          id="descripcion-negocio"
+          [ngModel]="descripcion()"
+          (ngModelChange)="descripcion.set($event)"
+          rows="3"
+        ></textarea>
       </div>
 
       <div class="campo-grupo">
-        <label>Ubicación</label>
+        <span class="campo-etiqueta">Ubicación</span>
         <app-mapa-selector
           [latitudInicial]="latitud()"
           [longitudInicial]="longitud()"
@@ -39,17 +62,23 @@
         <p class="mensaje-error">{{ errorInfoBasica() }}</p>
       }
 
-      <button type="button" class="boton-primario" [disabled]="guardandoInfoBasica()" (click)="guardarInfoBasica()">
+      <button
+        type="button"
+        class="boton-primario"
+        [disabled]="guardandoInfoBasica()"
+        (click)="guardarInfoBasica()"
+      >
         {{ guardandoInfoBasica() ? 'Guardando...' : 'Registrar negocio' }}
       </button>
     } @else {
-      <p class="paso-completado">✅ Negocio registrado: <strong>{{ nombre() }}</strong></p>
+      <p class="paso-completado">
+        ✅ Negocio registrado: <strong>{{ nombre() }}</strong>
+      </p>
     }
   </section>
 
   <!-- Los siguientes pasos se habilitan hasta tener un id_negocio -->
   @if (idNegocio()) {
-
     <!-- ── Paso 2: Horarios ── -->
     <section class="paso-seccion">
       <h2 class="paso-titulo">2. Horarios</h2>
@@ -61,14 +90,26 @@
               <option [value]="dia">{{ dia }}</option>
             }
           </select>
-          <input type="time" [ngModel]="fila.horaApertura" (ngModelChange)="fila.horaApertura = $event" />
+          <input
+            type="time"
+            [ngModel]="fila.horaApertura"
+            (ngModelChange)="fila.horaApertura = $event"
+          />
           <span>a</span>
-          <input type="time" [ngModel]="fila.horaCierre" (ngModelChange)="fila.horaCierre = $event" />
-          <button type="button" class="boton-quitar" (click)="eliminarFilaHorario($index)">✕</button>
+          <input
+            type="time"
+            [ngModel]="fila.horaCierre"
+            (ngModelChange)="fila.horaCierre = $event"
+          />
+          <button type="button" class="boton-quitar" (click)="eliminarFilaHorario($index)">
+            ✕
+          </button>
         </div>
       }
 
-      <button type="button" class="boton-secundario" (click)="agregarHorario()">+ Agregar día</button>
+      <button type="button" class="boton-secundario" (click)="agregarHorario()">
+        + Agregar día
+      </button>
 
       @if (errorHorarios()) {
         <p class="mensaje-error">{{ errorHorarios() }}</p>
@@ -100,9 +141,23 @@
       }
 
       <div class="fila-agregar">
-        <input type="text" placeholder="Nombre del servicio" [ngModel]="nombreServicio()" (ngModelChange)="nombreServicio.set($event)" />
-        <input type="number" placeholder="Precio" min="0" step="0.01" [ngModel]="precioServicio()" (ngModelChange)="precioServicio.set($event)" />
-        <button type="button" class="boton-secundario" (click)="agregarServicio()">+ Agregar</button>
+        <input
+          type="text"
+          placeholder="Nombre del servicio"
+          [ngModel]="nombreServicio()"
+          (ngModelChange)="nombreServicio.set($event)"
+        />
+        <input
+          type="number"
+          placeholder="Precio"
+          min="0"
+          step="0.01"
+          [ngModel]="precioServicio()"
+          (ngModelChange)="precioServicio.set($event)"
+        />
+        <button type="button" class="boton-secundario" (click)="agregarServicio()">
+          + Agregar
+        </button>
       </div>
 
       @if (errorServicio()) {
@@ -122,9 +177,23 @@
       }
 
       <div class="fila-agregar">
-        <input type="text" placeholder="Nombre del producto" [ngModel]="nombreProducto()" (ngModelChange)="nombreProducto.set($event)" />
-        <input type="number" placeholder="Precio" min="0" step="0.01" [ngModel]="precioProducto()" (ngModelChange)="precioProducto.set($event)" />
-        <button type="button" class="boton-secundario" (click)="agregarProducto()">+ Agregar</button>
+        <input
+          type="text"
+          placeholder="Nombre del producto"
+          [ngModel]="nombreProducto()"
+          (ngModelChange)="nombreProducto.set($event)"
+        />
+        <input
+          type="number"
+          placeholder="Precio"
+          min="0"
+          step="0.01"
+          [ngModel]="precioProducto()"
+          (ngModelChange)="precioProducto.set($event)"
+        />
+        <button type="button" class="boton-secundario" (click)="agregarProducto()">
+          + Agregar
+        </button>
       </div>
 
       @if (errorProducto()) {
@@ -139,14 +208,24 @@
       <div class="galeria-imagenes">
         @for (imagen of imagenes(); track imagen.id_imagen) {
           <div class="miniatura-imagen">
-            <img [src]="'http://localhost:3000' + imagen.ruta_imagen" [alt]="imagen.nombre_archivo" />
-            <button type="button" class="boton-quitar-imagen" (click)="quitarImagen(imagen)">✕</button>
+            <img
+              [src]="'http://localhost:3000' + imagen.ruta_imagen"
+              [alt]="imagen.nombre_archivo"
+            />
+            <button type="button" class="boton-quitar-imagen" (click)="quitarImagen(imagen)">
+              ✕
+            </button>
           </div>
         }
       </div>
 
       @if (imagenes().length < 4) {
-        <input type="file" accept=".jpg,.jpeg,.png,.webp" (change)="onSeleccionarImagen($event)" [disabled]="subiendoImagen()" />
+        <input
+          type="file"
+          accept=".jpg,.jpeg,.png,.webp"
+          (change)="onSeleccionarImagen($event)"
+          [disabled]="subiendoImagen()"
+        />
       }
 
       @if (subiendoImagen()) {
@@ -159,7 +238,9 @@
     </section>
 
     <div class="seccion-finalizar">
-      <button type="button" class="boton-primario" (click)="finalizarRegistro()">Finalizar y ver mi tablero</button>
+      <button type="button" class="boton-primario" (click)="finalizarRegistro()">
+        Finalizar y ver mi tablero
+      </button>
     </div>
   }
 </div>

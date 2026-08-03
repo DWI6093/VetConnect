@@ -20,4 +20,3 @@ export class ClienteInicioComponente {
     return sesion.nombre.split(' ')[0];
   }
 }
-

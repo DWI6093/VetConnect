@@ -1,12 +1,23 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NegociosServicio } from '../../core/services/negocios.servicio';
-import { MapaSelectorComponente, CoordenadasSeleccionadas } from '../../../shared/components/mapa-selector/mapa-selector.component';
+import {
+  MapaSelectorComponente,
+  CoordenadasSeleccionadas,
+} from '../../../shared/components/mapa-selector/mapa-selector.component';
 import { DiaSemana, Servicio, Producto, ImagenNegocio } from '../../core/models/negocio.modelo';
 import { ActivatedRoute, Router } from '@angular/router';
 
-const DIAS_SEMANA: DiaSemana[] = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO'];
+const DIAS_SEMANA: DiaSemana[] = [
+  'LUNES',
+  'MARTES',
+  'MIERCOLES',
+  'JUEVES',
+  'VIERNES',
+  'SABADO',
+  'DOMINGO',
+];
 
 @Component({
   selector: 'app-negocio-formulario',
@@ -15,9 +26,7 @@ const DIAS_SEMANA: DiaSemana[] = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIE
   templateUrl: './negocio-formulario.component.html',
   styleUrl: './negocio-formulario.component.css',
 })
-
-export class NegocioFormularioComponente
- {
+export class NegocioFormularioComponente implements OnInit {
   private readonly negociosServicio = inject(NegociosServicio);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -46,10 +55,10 @@ export class NegocioFormularioComponente
       this.errorInfoBasica.set('Nombre, dirección y teléfono son obligatorios.');
       return;
     }
-  
+
     this.guardandoInfoBasica.set(true);
     this.errorInfoBasica.set(null);
- 
+
     const payload = {
       nombre: this.nombre(),
       direccion: this.direccion(),
@@ -58,13 +67,13 @@ export class NegocioFormularioComponente
       latitud: this.latitud(),
       longitud: this.longitud(),
     };
- 
+
     const peticion = this.esEdicion()
       ? this.negociosServicio.actualizarNegocio(this.idNegocio()!, payload)
       : this.negociosServicio.crearNegocio(payload);
- 
+
     peticion.subscribe({
-      next: (negocio: any) => {
+      next: (negocio) => {
         this.idNegocio.set(negocio.id_negocio);
         this.guardandoInfoBasica.set(false);
       },
@@ -129,7 +138,10 @@ export class NegocioFormularioComponente
     }
 
     this.negociosServicio
-      .crearServicio(idNegocio, { nombre: this.nombreServicio(), precio: this.precioServicio()! })
+      .crearServicio(idNegocio, {
+        nombre: this.nombreServicio(),
+        precio: this.precioServicio()!,
+      })
       .subscribe({
         next: (servicio) => {
           this.servicios.update((lista) => [...lista, servicio]);
@@ -143,7 +155,10 @@ export class NegocioFormularioComponente
 
   protected quitarServicio(servicio: Servicio): void {
     this.negociosServicio.eliminarServicio(servicio.id_servicio).subscribe({
-      next: () => this.servicios.update((lista) => lista.filter((s) => s.id_servicio !== servicio.id_servicio)),
+      next: () =>
+        this.servicios.update((lista) =>
+          lista.filter((s) => s.id_servicio !== servicio.id_servicio),
+        ),
     });
   }
 
@@ -161,7 +176,10 @@ export class NegocioFormularioComponente
     }
 
     this.negociosServicio
-      .crearProducto(idNegocio, { nombre: this.nombreProducto(), precio: this.precioProducto()! })
+      .crearProducto(idNegocio, {
+        nombre: this.nombreProducto(),
+        precio: this.precioProducto()!,
+      })
       .subscribe({
         next: (producto) => {
           this.productos.update((lista) => [...lista, producto]);
@@ -175,7 +193,10 @@ export class NegocioFormularioComponente
 
   protected quitarProducto(producto: Producto): void {
     this.negociosServicio.eliminarProducto(producto.id_producto).subscribe({
-      next: () => this.productos.update((lista) => lista.filter((p) => p.id_producto !== producto.id_producto)),
+      next: () =>
+        this.productos.update((lista) =>
+          lista.filter((p) => p.id_producto !== producto.id_producto),
+        ),
     });
   }
 
@@ -215,7 +236,8 @@ export class NegocioFormularioComponente
 
   protected quitarImagen(imagen: ImagenNegocio): void {
     this.negociosServicio.eliminarImagen(imagen.id_imagen).subscribe({
-      next: () => this.imagenes.update((lista) => lista.filter((i) => i.id_imagen !== imagen.id_imagen)),
+      next: () =>
+        this.imagenes.update((lista) => lista.filter((i) => i.id_imagen !== imagen.id_imagen)),
     });
   }
 
@@ -241,7 +263,7 @@ export class NegocioFormularioComponente
         this.longitud.set(negocio.longitud);
 
         this.horarios.set(
-          (negocio.horarios ?? []).map((h: any) => ({
+          (negocio.horarios ?? []).map((h) => ({
             dia: h.dia,
             horaApertura: h.hora_apertura?.substring(11, 16) ?? '09:00',
             horaCierre: h.hora_cierre?.substring(11, 16) ?? '18:00',

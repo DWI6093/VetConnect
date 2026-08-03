@@ -4,11 +4,15 @@
 .pantalla-contenedor {
   min-height: 100vh;
   width: 100%;
-  background: #F8FAFC;
+  background: #f8fafc;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
   position: relative;
   overflow: hidden;
   padding: 0 1.5rem 2rem;
@@ -29,13 +33,33 @@
   position: absolute;
   font-size: 2rem;
   opacity: 0.07;
-  color: #14B8A6;
+  color: #14b8a6;
 }
 
-.huella-1 { top: 8%; left: 5%; transform: rotate(-15deg); font-size: 2.5rem; }
-.huella-2 { top: 25%; right: 8%; transform: rotate(20deg); font-size: 1.8rem; }
-.huella-3 { bottom: 25%; left: 10%; transform: rotate(10deg); font-size: 2.2rem; }
-.huella-4 { top: 55%; right: 15%; transform: rotate(-25deg); font-size: 1.5rem; }
+.huella-1 {
+  top: 8%;
+  left: 5%;
+  transform: rotate(-15deg);
+  font-size: 2.5rem;
+}
+.huella-2 {
+  top: 25%;
+  right: 8%;
+  transform: rotate(20deg);
+  font-size: 1.8rem;
+}
+.huella-3 {
+  bottom: 25%;
+  left: 10%;
+  transform: rotate(10deg);
+  font-size: 2.2rem;
+}
+.huella-4 {
+  top: 55%;
+  right: 15%;
+  transform: rotate(-25deg);
+  font-size: 1.5rem;
+}
 
 /* Cabecera superior */
 .cabecera-superior {
@@ -56,7 +80,7 @@
 .logo-icono {
   width: 72px;
   height: 72px;
-  background: #14B8A6;
+  background: #14b8a6;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -69,13 +93,13 @@
 .logo-texto h1 {
   font-size: 2rem;
   font-weight: 800;
-  color: #1E3A5F;
+  color: #1e3a5f;
   margin: 0;
   letter-spacing: -0.03em;
 }
 
 .logo-texto .resaltado {
-  color: #14B8A6;
+  color: #14b8a6;
 }
 
 .logo-texto p {
@@ -85,7 +109,7 @@
 }
 
 .corazon {
-  color: #EF4444;
+  color: #ef4444;
 }
 
 /* Tarjeta de login */
@@ -97,12 +121,18 @@
 }
 
 @keyframes deslizarArriba {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .tarjeta-contenido {
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 20px;
   padding: 2.5rem;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
@@ -112,7 +142,7 @@
 .tarjeta-contenido h2 {
   font-size: 1.6rem;
   font-weight: 700;
-  color: #1E3A5F;
+  color: #1e3a5f;
   margin: 0 0 0.25rem;
   text-align: center;
 }
@@ -139,9 +169,9 @@
 }
 
 .mensaje-alerta.error {
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
-  color: #991B1B;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
 }
 
 .mensaje-alerta p {
@@ -189,7 +219,7 @@
 .campo-input input {
   width: 100%;
   padding: 12px 16px 12px 44px;
-  background: #FFFFFF;
+  background: #ffffff;
   border: 1.5px solid #e2e8f0;
   border-radius: 12px;
   font-size: 0.95rem;
@@ -204,16 +234,16 @@
 }
 
 .campo-input input:focus {
-  border-color: #14B8A6;
+  border-color: #14b8a6;
   box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12);
 }
 
 .campo-input input:focus ~ .campo-icono {
-  color: #14B8A6;
+  color: #14b8a6;
 }
 
 .campo-invalido {
-  border-color: #EF4444 !important;
+  border-color: #ef4444 !important;
 }
 
 .campo-invalido:focus {
@@ -222,7 +252,7 @@
 
 .error-validacion {
   font-size: 0.78rem;
-  color: #EF4444;
+  color: #ef4444;
   font-weight: 500;
   margin-top: 0.1rem;
 }
@@ -230,7 +260,7 @@
 /* Enlace olvidé contraseña */
 .olvidaste-contrasena {
   font-size: 0.85rem;
-  color: #14B8A6;
+  color: #14b8a6;
   text-decoration: none;
   font-weight: 600;
   text-align: right;
@@ -249,12 +279,12 @@
   margin-top: 0.5rem;
   width: 100%;
   padding: 14px;
-  background: #14B8A6;
+  background: #14b8a6;
   border: none;
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #ffffff;
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -297,7 +327,9 @@
 }
 
 @keyframes girar {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Pie de tarjeta */
@@ -309,7 +341,7 @@
 }
 
 .enlace-primario {
-  color: #14B8A6;
+  color: #14b8a6;
   text-decoration: none;
   font-weight: 700;
   transition: color 0.2s;
@@ -336,7 +368,7 @@
   left: -10%;
   width: 120%;
   height: 80px;
-  background: #14B8A6;
+  background: #14b8a6;
   opacity: 0.12;
   border-radius: 50% 50% 0 0 / 100% 100% 0 0;
 }
@@ -371,7 +403,10 @@
     font-size: 1.6rem;
   }
 
-  .huella-1, .huella-2, .huella-3, .huella-4 {
+  .huella-1,
+  .huella-2,
+  .huella-3,
+  .huella-4 {
     display: none;
   }
 }

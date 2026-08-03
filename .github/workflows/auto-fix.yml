@@ -1,0 +1,85 @@
+name: Auto-fix code quality
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# La escritura se permite únicamente para PRs de ramas del mismo repositorio.
+# Las PRs desde forks solo ejecutan el workflow de validación (ci.yml).
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: auto-fix-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  auto-fix:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.repository }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            frontend/package-lock.json
+            backend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Apply frontend ESLint and Prettier fixes
+        working-directory: ./frontend
+        run: |
+          npm run lint:fix
+          npm run format
+
+      - name: Apply backend ESLint and Prettier fixes
+        working-directory: ./backend
+        run: |
+          npm run lint
+          npm run format
+
+      - name: Detect changes
+        id: changes
+        shell: bash
+        run: |
+          if git diff --quiet -- frontend backend; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push fixes to the PR branch
+        if: steps.changes.outputs.changed == 'true'
+        shell: bash
+        env:
+          PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add frontend backend
+          git commit -m 'style: apply lint and prettier fixes'
+          git push origin "HEAD:${PR_BRANCH}"
+
+      - name: Run CI again on the corrected commit
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: gh workflow run ci.yml --repo "$GITHUB_REPOSITORY" --ref "$PR_BRANCH"

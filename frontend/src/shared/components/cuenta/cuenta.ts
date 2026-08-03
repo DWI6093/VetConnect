@@ -16,7 +16,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 export class CuentaComponente implements OnInit {
   private readonly servicioUsuario = inject(ServicioUsuario);
   private readonly servicioAuth = inject(ServicioAutenticacion);
-  private readonly router = inject(Router);  
+  private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
 
   readonly perfil = signal<PerfilUsuario | null>(null);
@@ -69,8 +69,14 @@ export class CuentaComponente implements OnInit {
     };
 
     this.formularioRectificacion = this.fb.group({
-      nombre: [perfil.nombre, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      apellido: [perfil.apellido, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      nombre: [
+        perfil.nombre,
+        [Validators.required, Validators.minLength(3), Validators.maxLength(50)],
+      ],
+      apellido: [
+        perfil.apellido,
+        [Validators.required, Validators.minLength(3), Validators.maxLength(50)],
+      ],
       correo: [perfil.correo, [Validators.required, Validators.email, Validators.maxLength(50)]],
     });
   }
@@ -121,7 +127,7 @@ export class CuentaComponente implements OnInit {
       error: (err) => {
         this.actualizando.set(false);
         this.errorRectificacion.set(
-          err?.error?.message ?? 'Ocurrió un error al actualizar tus datos.'
+          err?.error?.message ?? 'Ocurrió un error al actualizar tus datos.',
         );
         // Ocultar error después de 5 segundos
         setTimeout(() => this.errorRectificacion.set(null), 5000);

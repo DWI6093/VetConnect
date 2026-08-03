@@ -161,7 +161,7 @@ export class AuthService {
       }
 
       return await bcrypt.compare(tokenRefresco, usuario.refresh_token_hash);
-    } catch (error) {
+    } catch {
       return false;
     }
   }

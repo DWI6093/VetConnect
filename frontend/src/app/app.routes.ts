@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { guardiaAutenticacion } from './core/guards/autenticacion.guard';
 import { guardiaRol } from './core/guards/rol.guard';
 import { guardiaEstadoEliminacionChild } from './core/guards/estadoEliminacion.guard';
-import { NegocioFormularioComponente } from './features/negocio-formulario/negocio-formulario.component';
 
 export const routes: Routes = [
   {
@@ -15,16 +14,12 @@ export const routes: Routes = [
   {
     path: 'auth/registro',
     loadComponent: () =>
-      import('./features/auth/registro/registro.component').then(
-        (m) => m.RegistroComponente,
-      ),
+      import('./features/auth/registro/registro.component').then((m) => m.RegistroComponente),
   },
   {
     path: 'cliente',
     loadComponent: () =>
-      import('./layouts/clientes/clientes.component').then(
-        (m) => m.LayoutClientesComponente,
-      ),
+      import('./layouts/clientes/clientes.component').then((m) => m.LayoutClientesComponente),
     canActivate: [guardiaAutenticacion, guardiaRol],
     canActivateChild: [guardiaEstadoEliminacionChild],
     data: { rol: 'CLIENTE' },
@@ -39,9 +34,7 @@ export const routes: Routes = [
       {
         path: 'configuracion',
         loadComponent: () =>
-          import('../shared/components/cuenta/cuenta').then(
-            (m) => m.CuentaComponente,
-          ),
+          import('../shared/components/cuenta/cuenta').then((m) => m.CuentaComponente),
       },
       {
         path: '',
@@ -84,9 +77,7 @@ export const routes: Routes = [
       {
         path: 'configuracion',
         loadComponent: () =>
-          import('../shared/components/cuenta/cuenta').then(
-            (m) => m.CuentaComponente,
-          ),
+          import('../shared/components/cuenta/cuenta').then((m) => m.CuentaComponente),
       },
       {
         path: '',

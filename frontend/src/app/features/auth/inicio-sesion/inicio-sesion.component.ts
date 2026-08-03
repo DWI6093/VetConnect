@@ -4,7 +4,10 @@ import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ServicioAutenticacion } from '../../../core/services/auth.service';
 import { InputContrasenaComponente } from '../../../../shared/components/input-contrasena/input-contrasena.component';
-import { emailFieldValidator, passwordFieldValidator } from '../../../../shared/validators/forms.validators';
+import {
+  emailFieldValidator,
+  passwordFieldValidator,
+} from '../../../../shared/validators/forms.validators';
 
 @Component({
   selector: 'app-inicio-sesion',
@@ -63,7 +66,7 @@ export class InicioSesionComponente {
               if (estado === 'PENDIENTE_ELIMINACION') {
                 this.enrutador.navigate(['/colaborador/configuracion']);
               } else {
-              this.enrutador.navigate(['/colaborador/inicio']);
+                this.enrutador.navigate(['/colaborador/inicio']);
               }
             }
           }, 300);
@@ -72,7 +75,9 @@ export class InicioSesionComponente {
           if (error.status === 401 || error.status === 0) {
             this.mensajeError.set('Correo o Contraseña incorrectos');
           } else {
-            this.mensajeError.set('Ocurrió un error al intentar iniciar sesión. Por favor, intente más tarde.');
+            this.mensajeError.set(
+              'Ocurrió un error al intentar iniciar sesión. Por favor, intente más tarde.',
+            );
           }
         },
       });

@@ -19,17 +19,50 @@
     <div class="estado-overlay estado-denegado">
       <div class="estado-tarjeta">
         <div class="ilustracion-ubicacion">
-          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z" fill="var(--color-texto-suave)" fill-opacity="0.15" stroke="var(--color-texto-suave)" stroke-width="1.5"/>
-            <circle cx="12" cy="9" r="3" fill="var(--color-secundario)" fill-opacity="0.2" stroke="var(--color-secundario)" stroke-width="2"/>
-            <circle cx="17" cy="17" r="4.5" fill="var(--color-error)" stroke="white" stroke-width="1.5"/>
-            <path d="M15.5 17.5L18.5 14.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <svg
+            width="60"
+            height="60"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z"
+              fill="var(--color-texto-suave)"
+              fill-opacity="0.15"
+              stroke="var(--color-texto-suave)"
+              stroke-width="1.5"
+            />
+            <circle
+              cx="12"
+              cy="9"
+              r="3"
+              fill="var(--color-secundario)"
+              fill-opacity="0.2"
+              stroke="var(--color-secundario)"
+              stroke-width="2"
+            />
+            <circle
+              cx="17"
+              cy="17"
+              r="4.5"
+              fill="var(--color-error)"
+              stroke="white"
+              stroke-width="1.5"
+            />
+            <path
+              d="M15.5 17.5L18.5 14.5"
+              stroke="white"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
           </svg>
         </div>
-        
+
         <h3 class="titulo-estado">Ubicación desactivada</h3>
         <p class="descripcion-estado">
-          Para mostrarte las veterinarias y negocios más cercanos, VetConnect necesita acceso a tu ubicación.
+          Para mostrarte las veterinarias y negocios más cercanos, VetConnect necesita acceso a tu
+          ubicación.
         </p>
 
         <div class="guia-pasos">
@@ -37,7 +70,9 @@
             <span class="paso-numero">1</span>
             <div class="paso-contenido">
               <span class="paso-titulo">Haz clic en el candado</span>
-              <span class="paso-desc">Pulsa el icono de candado en la barra de direcciones de tu navegador.</span>
+              <span class="paso-desc"
+                >Pulsa el icono de candado en la barra de direcciones de tu navegador.</span
+              >
             </div>
           </div>
           <div class="paso">
@@ -51,14 +86,26 @@
             <span class="paso-numero">3</span>
             <div class="paso-contenido">
               <span class="paso-titulo">Recarga la página</span>
-              <span class="paso-desc">Presiona el botón inferior para aplicar la nueva configuración.</span>
+              <span class="paso-desc"
+                >Presiona el botón inferior para aplicar la nueva configuración.</span
+              >
             </div>
           </div>
         </div>
 
         <button (click)="reintentarUbicacion()" class="boton-reintento">
-          <svg class="icono-boton" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          <svg
+            class="icono-boton"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
           </svg>
           Recargar
         </button>
@@ -70,10 +117,27 @@
     <div class="estado-overlay estado-error">
       <div class="estado-tarjeta">
         <div class="ilustracion-ubicacion">
-          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z" fill="var(--color-texto-suave)" fill-opacity="0.15" stroke="var(--color-texto-suave)" stroke-width="1.5"/>
-            <path d="M12 7V11" stroke="var(--color-advertencia)" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="12" cy="14" r="1" fill="var(--color-advertencia)"/>
+          <svg
+            width="60"
+            height="60"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z"
+              fill="var(--color-texto-suave)"
+              fill-opacity="0.15"
+              stroke="var(--color-texto-suave)"
+              stroke-width="1.5"
+            />
+            <path
+              d="M12 7V11"
+              stroke="var(--color-advertencia)"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <circle cx="12" cy="14" r="1" fill="var(--color-advertencia)" />
           </svg>
         </div>
         <h3 class="titulo-estado">No pudimos obtener tu ubicación</h3>
@@ -81,8 +145,18 @@
           {{ mensajeError() || 'Hubo un error inesperado al acceder al servicio de localización.' }}
         </p>
         <button (click)="reintentarUbicacion()" class="boton-reintento">
-          <svg class="icono-boton" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          <svg
+            class="icono-boton"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
           </svg>
           Intentar de nuevo
         </button>
@@ -91,26 +165,52 @@
   }
 
   <!-- El contenedor del mapa se renderiza siempre y mantiene sus dimensiones para que Leaflet pueda inicializarse correctamente -->
-  <div 
-    #mapaContenedor 
-    class="mapa-contenedor"
-  ></div>
+  <div #mapaContenedor class="mapa-contenedor"></div>
 
   @if (estado() === 'exito') {
     <!-- Tarjeta de información de los negocios cercanos unificada -->
     <div class="tarjeta-leyenda-negocios">
-      <div class="leyenda-negocios-icono" [ngClass]="{'estado-error-icono': estadoNegocios() === 'error', 'estado-vacio-icono': estadoNegocios() === 'vacio'}">
+      <div
+        class="leyenda-negocios-icono"
+        [ngClass]="{
+          'estado-error-icono': estadoNegocios() === 'error',
+          'estado-vacio-icono': estadoNegocios() === 'vacio',
+        }"
+      >
         @if (estadoNegocios() === 'error') {
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
         } @else if (estadoNegocios() === 'vacio') {
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
         } @else {
           <!-- Icono de huella -->
           <svg viewBox="0 0 24 24" fill="currentColor">
             <circle cx="7.5" cy="9.5" r="2.2" />
             <circle cx="12" cy="6.5" r="2.2" />
             <circle cx="16.5" cy="9.5" r="2.2" />
-            <path d="M12 11.5c-2 0-3.5 1.5-3.5 3 0 2.5 1.8 4 3.5 4s3.5-1.5 3.5-4c0-1.5-1.5-3-3.5-3z" />
+            <path
+              d="M12 11.5c-2 0-3.5 1.5-3.5 3 0 2.5 1.8 4 3.5 4s3.5-1.5 3.5-4c0-1.5-1.5-3-3.5-3z"
+            />
           </svg>
         }
       </div>
@@ -118,16 +218,25 @@
       <div class="leyenda-negocios-contenido">
         @if (estadoNegocios() === 'cargando' || estadoNegocios() === 'inicial') {
           <h4 class="leyenda-negocios-titulo">Buscando negocios cercanos...</h4>
-          <p class="leyenda-negocios-descripcion">Por favor espera, estamos obteniendo la información.</p>
+          <p class="leyenda-negocios-descripcion">
+            Por favor espera, estamos obteniendo la información.
+          </p>
         } @else if (estadoNegocios() === 'error') {
           <h4 class="leyenda-negocios-titulo error-titulo">Error al buscar negocios</h4>
-          <p class="leyenda-negocios-descripcion">{{ mensajeErrorNegocios() }}</p>
+          <p class="leyenda-negocios-descripcion">
+            {{ mensajeErrorNegocios() }}
+          </p>
         } @else if (estadoNegocios() === 'vacio') {
           <h4 class="leyenda-negocios-titulo">Sin negocios cercanos</h4>
-          <p class="leyenda-negocios-descripcion">No encontramos negocios relacionados con mascotas dentro de un radio de 5 km de tu ubicación.</p>
+          <p class="leyenda-negocios-descripcion">
+            No encontramos negocios relacionados con mascotas dentro de un radio de 5 km de tu
+            ubicación.
+          </p>
         } @else if (estadoNegocios() === 'exito') {
           <h4 class="leyenda-negocios-titulo">Negocios para mascotas</h4>
-          <p class="leyenda-negocios-descripcion">Los marcadores indican negocios relacionados con mascotas cercanos a tu ubicación.</p>
+          <p class="leyenda-negocios-descripcion">
+            Los marcadores indican negocios relacionados con mascotas cercanos a tu ubicación.
+          </p>
         }
 
         <!-- Línea informativa de ubicación del usuario unificada -->
@@ -136,14 +245,25 @@
             <div class="ubicacion-unificada-pulso"></div>
             <div class="ubicacion-unificada-centro"></div>
           </div>
-          <span class="ubicacion-unificada-texto">El punto animado indica tu <strong>ubicación actual</strong>.</span>
+          <span class="ubicacion-unificada-texto"
+            >El punto animado indica tu <strong>ubicación actual</strong>.</span
+          >
         </div>
       </div>
 
       @if (estadoNegocios() === 'error') {
         <button class="boton-reintento-pequeno" (click)="reintentarNegocios()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
           </svg>
         </button>
       } @else if (estadoNegocios() === 'cargando' || estadoNegocios() === 'inicial') {
@@ -152,5 +272,3 @@
     </div>
   }
 </div>
-
-

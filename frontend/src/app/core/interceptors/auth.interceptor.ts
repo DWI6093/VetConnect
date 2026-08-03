@@ -1,4 +1,10 @@
-import { HttpInterceptorFn, HttpErrorResponse, HttpRequest, HttpEvent, HttpHandlerFn } from '@angular/common/http';
+import {
+  HttpInterceptorFn,
+  HttpErrorResponse,
+  HttpRequest,
+  HttpEvent,
+  HttpHandlerFn,
+} from '@angular/common/http';
 import { inject } from '@angular/core';
 import { BehaviorSubject, catchError, filter, Observable, switchMap, take, throwError } from 'rxjs';
 import { ServicioAutenticacion } from '../services/auth.service';
@@ -12,7 +18,10 @@ const tokenRefrescado$ = new BehaviorSubject<boolean>(false);
  * El navegador envía las cookies automáticamente gracias a `withCredentials: true`.
  * Este interceptor solo maneja los errores 401 para intentar refrescar la sesión.
  */
-export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
+export const authInterceptor: HttpInterceptorFn = (
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn,
+): Observable<HttpEvent<unknown>> => {
   const servicioAuth = inject(ServicioAutenticacion);
 
   // Adjuntar withCredentials para que el navegador envíe las cookies HttpOnly automáticamente
@@ -53,14 +62,14 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
         return manejarError401(req, next, servicioAuth);
       }
       return throwError(() => error);
-    })
+    }),
   );
 };
 
 function manejarError401(
   solicitud: HttpRequest<unknown>,
   siguiente: HttpHandlerFn,
-  servicioAuth: ServicioAutenticacion
+  servicioAuth: ServicioAutenticacion,
 ): Observable<HttpEvent<unknown>> {
   // Si ya hay un proceso de refresco activo, se espera a que termine
   if (estaRefrescandoToken) {
@@ -70,7 +79,7 @@ function manejarError401(
       switchMap(() => {
         // Reintentar la solicitud original; el navegador enviará la nueva cookie automáticamente
         return siguiente(solicitud.clone({ withCredentials: true }));
-      })
+      }),
     );
   }
 
@@ -89,6 +98,6 @@ function manejarError401(
       tokenRefrescado$.next(false);
       servicioAuth.cerrarSesion();
       return throwError(() => errorRefresco);
-    })
+    }),
   );
 }

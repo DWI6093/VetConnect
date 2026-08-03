@@ -7,7 +7,7 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-colaborador-inicio',
   standalone: true,
-  imports: [RouterLink], 
+  imports: [RouterLink],
   templateUrl: './colaborador-inicio.component.html',
   styleUrl: './colaborador-inicio.component.css',
 })
@@ -55,8 +55,8 @@ export class ColaboradorInicioComponente implements OnInit {
         // Actualiza el estado localmente sin recargar la página completa
         this.negocios.update((lista) =>
           lista.map((n) =>
-            n.id_negocio === negocio.id_negocio ? { ...n, estado: nuevoEstado } : n
-          )
+            n.id_negocio === negocio.id_negocio ? { ...n, estado: nuevoEstado } : n,
+          ),
         );
       },
       error: () => {

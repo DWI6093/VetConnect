@@ -55,20 +55,34 @@ export class NegociosControlador {
   @UseGuards(GuardAutenticacion, RolesGuard)
   @Roles(Role.COLABORADOR)
   async obtenerMisNegocios(@Req() solicitud: any) {
-    return this.negociosServicio.obtenerMisNegocios(solicitud.usuario.id_usuario);
+    return this.negociosServicio.obtenerMisNegocios(
+      solicitud.usuario.id_usuario,
+    );
   }
 
   @Post()
   @UseGuards(GuardAutenticacion, RolesGuard)
   @Roles(Role.COLABORADOR)
-  async crearNegocio(@Req() solicitud: any, @Body() crearNegocioDto: CrearNegocioDto) {
-    return this.negociosServicio.crearNegocio(solicitud.usuario.id_usuario, crearNegocioDto);
+  async crearNegocio(
+    @Req() solicitud: any,
+    @Body() crearNegocioDto: CrearNegocioDto,
+  ) {
+    return this.negociosServicio.crearNegocio(
+      solicitud.usuario.id_usuario,
+      crearNegocioDto,
+    );
   }
   @Get('colaborador/:id')
   @UseGuards(GuardAutenticacion, RolesGuard)
   @Roles(Role.COLABORADOR)
-  async obtenerDetalleColaborador(@Req() solicitud: any, @Param('id', ParseIntPipe) id: number) {
-    return this.negociosServicio.obtenerDetalleColaborador(id, solicitud.usuario.id_usuario);
+  async obtenerDetalleColaborador(
+    @Req() solicitud: any,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.negociosServicio.obtenerDetalleColaborador(
+      id,
+      solicitud.usuario.id_usuario,
+    );
   }
 
   @Patch(':id')
@@ -94,7 +108,11 @@ export class NegociosControlador {
     @Param('id', ParseIntPipe) id: number,
     @Body('estado') estado: 'ACTIVO' | 'INACTIVO',
   ) {
-    return this.negociosServicio.cambiarEstadoNegocio(id, solicitud.usuario.id_usuario, estado);
+    return this.negociosServicio.cambiarEstadoNegocio(
+      id,
+      solicitud.usuario.id_usuario,
+      estado,
+    );
   }
   // RF17 - Horarios
   @Put(':id/horarios')
@@ -105,7 +123,11 @@ export class NegociosControlador {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: ActualizarHorariosDto,
   ) {
-    return this.negociosServicio.actualizarHorarios(id, solicitud.usuario.id_usuario, dto.horarios);
+    return this.negociosServicio.actualizarHorarios(
+      id,
+      solicitud.usuario.id_usuario,
+      dto.horarios,
+    );
   }
 
   // RF17 - Servicios
@@ -117,14 +139,24 @@ export class NegociosControlador {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: CrearServicioDto,
   ) {
-    return this.negociosServicio.crearServicio(id, solicitud.usuario.id_usuario, dto);
+    return this.negociosServicio.crearServicio(
+      id,
+      solicitud.usuario.id_usuario,
+      dto,
+    );
   }
 
   @Delete('servicios/:idServicio')
   @UseGuards(GuardAutenticacion, RolesGuard)
   @Roles(Role.COLABORADOR)
-  async eliminarServicio(@Req() solicitud: any, @Param('idServicio', ParseIntPipe) idServicio: number) {
-    return this.negociosServicio.eliminarServicio(idServicio, solicitud.usuario.id_usuario);
+  async eliminarServicio(
+    @Req() solicitud: any,
+    @Param('idServicio', ParseIntPipe) idServicio: number,
+  ) {
+    return this.negociosServicio.eliminarServicio(
+      idServicio,
+      solicitud.usuario.id_usuario,
+    );
   }
 
   // RF17 - Productos
@@ -136,14 +168,24 @@ export class NegociosControlador {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: CrearProductoDto,
   ) {
-    return this.negociosServicio.crearProducto(id, solicitud.usuario.id_usuario, dto);
+    return this.negociosServicio.crearProducto(
+      id,
+      solicitud.usuario.id_usuario,
+      dto,
+    );
   }
 
   @Delete('productos/:idProducto')
   @UseGuards(GuardAutenticacion, RolesGuard)
   @Roles(Role.COLABORADOR)
-  async eliminarProducto(@Req() solicitud: any, @Param('idProducto', ParseIntPipe) idProducto: number) {
-    return this.negociosServicio.eliminarProducto(idProducto, solicitud.usuario.id_usuario);
+  async eliminarProducto(
+    @Req() solicitud: any,
+    @Param('idProducto', ParseIntPipe) idProducto: number,
+  ) {
+    return this.negociosServicio.eliminarProducto(
+      idProducto,
+      solicitud.usuario.id_usuario,
+    );
   }
 
   // RF15, RF28 - Imágenes (máximo 4, plan Básico)
@@ -161,7 +203,12 @@ export class NegociosControlador {
       }),
       fileFilter: (_req, file, callback) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
-          return callback(new BadRequestException('Solo se permiten imágenes JPG, PNG o WEBP'), false);
+          return callback(
+            new BadRequestException(
+              'Solo se permiten imágenes JPG, PNG o WEBP',
+            ),
+            false,
+          );
         }
         callback(null, true);
       },
@@ -176,13 +223,23 @@ export class NegociosControlador {
     if (!archivo) {
       throw new BadRequestException('No se recibió ningún archivo.');
     }
-    return this.negociosServicio.agregarImagen(id, solicitud.usuario.id_usuario, archivo);
+    return this.negociosServicio.agregarImagen(
+      id,
+      solicitud.usuario.id_usuario,
+      archivo,
+    );
   }
 
   @Delete('imagenes/:idImagen')
   @UseGuards(GuardAutenticacion, RolesGuard)
   @Roles(Role.COLABORADOR)
-  async eliminarImagen(@Req() solicitud: any, @Param('idImagen', ParseIntPipe) idImagen: number) {
-    return this.negociosServicio.eliminarImagen(idImagen, solicitud.usuario.id_usuario);
+  async eliminarImagen(
+    @Req() solicitud: any,
+    @Param('idImagen', ParseIntPipe) idImagen: number,
+  ) {
+    return this.negociosServicio.eliminarImagen(
+      idImagen,
+      solicitud.usuario.id_usuario,
+    );
   }
 }

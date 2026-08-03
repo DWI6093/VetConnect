@@ -71,7 +71,9 @@
   padding: 0.55rem 1rem;
   border-radius: var(--radio-sm);
   position: relative;
-  transition: color var(--transicion), background var(--transicion);
+  transition:
+    color var(--transicion),
+    background var(--transicion);
   cursor: pointer;
 }
 
@@ -207,8 +209,14 @@
 }
 
 @keyframes dropdownAnim {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dropdown-cabecera {

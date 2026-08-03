@@ -7,10 +7,13 @@ import {
   inject,
   PLATFORM_ID,
   effect,
-  signal
+  signal,
 } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
-import { GeolocalizacionServicio, Coordenadas } from '../../../app/core/services/geolocalizacion.service';
+import {
+  GeolocalizacionServicio,
+  Coordenadas,
+} from '../../../app/core/services/geolocalizacion.service';
 import { NegociosServicio } from '../../../app/core/services/negocios.servicio';
 import { NegocioCercano } from '../../../app/core/models/negocio.modelo';
 import * as L from 'leaflet';
@@ -21,7 +24,7 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './mapa.component.html',
-  styleUrl: './mapa.component.css'
+  styleUrl: './mapa.component.css',
 })
 export class MapaComponente implements AfterViewInit, OnDestroy {
   // Inyección de dependencias
@@ -30,14 +33,17 @@ export class MapaComponente implements AfterViewInit, OnDestroy {
   private readonly servicioNegocios = inject(NegociosServicio);
 
   // Referencia al elemento DOM del mapa
-  @ViewChild('mapaContenedor') private readonly mapaContenedorRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('mapaContenedor')
+  private readonly mapaContenedorRef!: ElementRef<HTMLDivElement>;
 
   // Referencias a los signals del servicio de geolocalización
   protected readonly estado = this.servicioGeolocalizacion.estado;
   protected readonly mensajeError = this.servicioGeolocalizacion.mensajeError;
 
   // Signals para el estado de los negocios
-  protected readonly estadoNegocios = signal<'inicial' | 'cargando' | 'exito' | 'error' | 'vacio'>('inicial');
+  protected readonly estadoNegocios = signal<'inicial' | 'cargando' | 'exito' | 'error' | 'vacio'>(
+    'inicial',
+  );
   protected readonly mensajeErrorNegocios = signal<string | null>(null);
 
   // Instancias de Leaflet y control de suscripciones
@@ -86,13 +92,14 @@ export class MapaComponente implements AfterViewInit, OnDestroy {
     // Inicializar mapa de Leaflet
     this.mapaInstancia = L.map(this.mapaContenedorRef.nativeElement, {
       zoomControl: true,
-      attributionControl: true
+      attributionControl: true,
     }).setView([latitud, longitud], 15);
 
     // Añadir capa de OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> colaboradores'
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> colaboradores',
     }).addTo(this.mapaInstancia);
 
     this.actualizarMarcador(latitud, longitud);
@@ -117,14 +124,14 @@ export class MapaComponente implements AfterViewInit, OnDestroy {
         <div class="marcador-centro"></div>
       `,
       iconSize: [24, 24],
-      iconAnchor: [12, 12]
+      iconAnchor: [12, 12],
     });
 
     if (this.marcadorUbicacionActual) {
       this.marcadorUbicacionActual.setLatLng([latitud, longitud]);
     } else {
       this.marcadorUbicacionActual = L.marker([latitud, longitud], {
-        icon: iconoPersonalizado
+        icon: iconoPersonalizado,
       }).addTo(this.mapaInstancia);
     }
   }
@@ -141,21 +148,23 @@ export class MapaComponente implements AfterViewInit, OnDestroy {
     this.mensajeErrorNegocios.set(null);
     this.limpiarMarcadoresNegocios();
 
-    this.suscripcionNegocios = this.servicioNegocios.obtenerNegociosCercanos(latitud, longitud).subscribe({
-      next: (negocios) => {
-        if (negocios.length === 0) {
-          this.estadoNegocios.set('vacio');
-        } else {
-          this.renderizarMarcadoresNegocios(negocios);
-          this.estadoNegocios.set('exito');
-        }
-      },
-      error: (error) => {
-        this.estadoNegocios.set('error');
-        this.mensajeErrorNegocios.set('Ocurrió un error al obtener los negocios cercanos.');
-        console.error('Error al cargar negocios:', error);
-      }
-    });
+    this.suscripcionNegocios = this.servicioNegocios
+      .obtenerNegociosCercanos(latitud, longitud)
+      .subscribe({
+        next: (negocios) => {
+          if (negocios.length === 0) {
+            this.estadoNegocios.set('vacio');
+          } else {
+            this.renderizarMarcadoresNegocios(negocios);
+            this.estadoNegocios.set('exito');
+          }
+        },
+        error: (error) => {
+          this.estadoNegocios.set('error');
+          this.mensajeErrorNegocios.set('Ocurrió un error al obtener los negocios cercanos.');
+          console.error('Error al cargar negocios:', error);
+        },
+      });
   }
 
   /**
@@ -178,32 +187,43 @@ export class MapaComponente implements AfterViewInit, OnDestroy {
       `,
       iconSize: [36, 42],
       iconAnchor: [18, 42],
-      popupAnchor: [0, -42]
+      popupAnchor: [0, -42],
     });
 
-    negocios.forEach(negocio => {
-      const marcador = L.marker([negocio.latitud, negocio.longitud], { icon: iconoNegocio });
-      
-      const distanciaAmigable = negocio.distanciaMetros < 1000 
-        ? `A ${Math.round(negocio.distanciaMetros)} m` 
-        : `A ${(negocio.distanciaMetros / 1000).toFixed(1)} km`;
+    negocios.forEach((negocio) => {
+      const marcador = L.marker([negocio.latitud, negocio.longitud], {
+        icon: iconoNegocio,
+      });
+
+      const distanciaAmigable =
+        negocio.distanciaMetros < 1000
+          ? `A ${Math.round(negocio.distanciaMetros)} m`
+          : `A ${(negocio.distanciaMetros / 1000).toFixed(1)} km`;
 
       const contenidoPopup = `
         <div class="popup-negocio">
           <h4 class="popup-titulo">${negocio.nombre}</h4>
           ${negocio.descripcion ? `<p class="popup-descripcion">${negocio.descripcion}</p>` : ''}
-          ${negocio.direccion ? `
+          ${
+            negocio.direccion
+              ? `
             <p class="popup-info-linea">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
               ${negocio.direccion}
             </p>
-          ` : ''}
-          ${negocio.telefono ? `
+          `
+              : ''
+          }
+          ${
+            negocio.telefono
+              ? `
             <p class="popup-info-linea">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
               ${negocio.telefono}
             </p>
-          ` : ''}
+          `
+              : ''
+          }
           <div class="popup-footer">
             <span class="popup-distancia">${distanciaAmigable}</span>
             <button class="popup-boton-detalles" type="button" onclick="event.preventDefault();">Ver detalles</button>
@@ -211,7 +231,10 @@ export class MapaComponente implements AfterViewInit, OnDestroy {
         </div>
       `;
 
-      marcador.bindPopup(contenidoPopup, { closeButton: false, offset: [0, -5] });
+      marcador.bindPopup(contenidoPopup, {
+        closeButton: false,
+        offset: [0, -5],
+      });
       marcador.addTo(this.mapaInstancia!);
       this.marcadoresNegocios.push(marcador);
     });
@@ -222,7 +245,7 @@ export class MapaComponente implements AfterViewInit, OnDestroy {
    */
   private limpiarMarcadoresNegocios(): void {
     if (!this.mapaInstancia) return;
-    this.marcadoresNegocios.forEach(marcador => {
+    this.marcadoresNegocios.forEach((marcador) => {
       marcador.remove();
     });
     this.marcadoresNegocios = [];
@@ -263,4 +286,3 @@ export class MapaComponente implements AfterViewInit, OnDestroy {
     this.marcadorUbicacionActual = null;
   }
 }
-

@@ -1,4 +1,9 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideAppInitializer, inject } from '@angular/core';
+import {
+  ApplicationConfig,
+  provideBrowserGlobalErrorListeners,
+  provideAppInitializer,
+  inject,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
@@ -14,6 +19,6 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => {
       const servicioAuth = inject(ServicioAutenticacion);
       return servicioAuth.inicializarSesion();
-    })
+    }),
   ],
 };

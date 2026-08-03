@@ -30,7 +30,8 @@ export interface CoordenadasSeleccionadas {
 export class MapaSelectorComponente implements AfterViewInit, OnChanges, OnDestroy {
   private readonly idPlataforma = inject(PLATFORM_ID);
 
-  @ViewChild('mapaSelectorContenedor') private readonly contenedorRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('mapaSelectorContenedor')
+  private readonly contenedorRef!: ElementRef<HTMLDivElement>;
 
   /** Ubicación inicial a mostrar (por ejemplo, el centro de la ciudad, o la ubicación ya guardada al editar) */
   @Input() latitudInicial = 20.9153; // San Miguel de Allende como fallback
@@ -68,7 +69,8 @@ export class MapaSelectorComponente implements AfterViewInit, OnChanges, OnDestr
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> colaboradores',
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> colaboradores',
     }).addTo(this.mapaInstancia);
 
     this.colocarMarcador(this.latitudInicial, this.longitudInicial);
@@ -98,7 +100,10 @@ export class MapaSelectorComponente implements AfterViewInit, OnChanges, OnDestr
     // También permite ajustar arrastrando el marcador
     this.marcador.on('dragend', () => {
       const posicion = this.marcador!.getLatLng();
-      this.ubicacionSeleccionada.emit({ latitud: posicion.lat, longitud: posicion.lng });
+      this.ubicacionSeleccionada.emit({
+        latitud: posicion.lat,
+        longitud: posicion.lng,
+      });
     });
   }
 

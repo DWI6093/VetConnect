@@ -1,12 +1,11 @@
 <div class="inicio-colaborador-contenedor">
-
   <!-- Encabezado de Bienvenida -->
   <div class="seccion-bienvenida">
     <div class="bienvenida-texto">
-      <h1 class="bienvenida-titulo">
-        ¡Bienvenido, {{ obtenerPrimerNombre() }}! 🐾
-      </h1>
-      <p class="bienvenida-subtitulo">Aquí puedes ver y administrar los negocios que tienes registrados.</p>
+      <h1 class="bienvenida-titulo">¡Bienvenido, {{ obtenerPrimerNombre() }}! 🐾</h1>
+      <p class="bienvenida-subtitulo">
+        Aquí puedes ver y administrar los negocios que tienes registrados.
+      </p>
     </div>
   </div>
 
@@ -69,7 +68,10 @@
             <p class="tarjeta-negocio-direccion">📍 {{ negocio.direccion }}</p>
 
             <div class="tarjeta-negocio-acciones">
-              <a [routerLink]="['/colaborador/negocios', negocio.id_negocio, 'editar']" class="boton-secundario">
+              <a
+                [routerLink]="['/colaborador/negocios', negocio.id_negocio, 'editar']"
+                class="boton-secundario"
+              >
                 Editar
               </a>
               <button

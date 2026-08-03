@@ -17,7 +17,20 @@ export interface NegocioColaborador {
   estado: 'ACTIVO' | 'INACTIVO';
   latitud: number;
   longitud: number;
-   imagenPrincipal?: string | null;
+  imagenPrincipal?: string | null;
+}
+
+export interface HorarioNegocio {
+  dia: DiaSemana;
+  hora_apertura: string;
+  hora_cierre: string;
+}
+
+export interface NegocioDetalleColaborador extends NegocioColaborador {
+  horarios: HorarioNegocio[];
+  servicios: Servicio[];
+  productos: Producto[];
+  imagenes: ImagenNegocio[];
 }
 
 export interface NegocioCatalogo {
@@ -47,7 +60,14 @@ export interface ActualizarNegocioPayload {
   latitud?: number;
   longitud?: number;
 }
-export type DiaSemana = 'LUNES' | 'MARTES' | 'MIERCOLES' | 'JUEVES' | 'VIERNES' | 'SABADO' | 'DOMINGO';
+export type DiaSemana =
+  | 'LUNES'
+  | 'MARTES'
+  | 'MIERCOLES'
+  | 'JUEVES'
+  | 'VIERNES'
+  | 'SABADO'
+  | 'DOMINGO';
 
 export interface HorarioPayload {
   dia: DiaSemana;

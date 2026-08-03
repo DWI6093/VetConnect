@@ -38,7 +38,9 @@ export class ServicioAutenticacion {
    */
   inicializarSesion(): Observable<SesionUsuario | null> {
     return this.httpCliente
-      .get<SesionUsuario>(`${this.urlBaseApi}/auth/me`, { withCredentials: true })
+      .get<SesionUsuario>(`${this.urlBaseApi}/auth/me`, {
+        withCredentials: true,
+      })
       .pipe(
         tap((info) => {
           this.sesionActual.set(info);
@@ -46,7 +48,7 @@ export class ServicioAutenticacion {
         catchError(() => {
           this.sesionActual.set(null);
           return of(null);
-        })
+        }),
       );
   }
 
@@ -67,7 +69,7 @@ export class ServicioAutenticacion {
           correo: credenciales.correo,
           password: credenciales.contrasena,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       )
       .pipe(
         tap(() => {
@@ -75,7 +77,7 @@ export class ServicioAutenticacion {
           // Consultamos /auth/me para obtener el rol y actualizar el signal.
           this.verificarSesionActiva();
         }),
-        catchError((error) => throwError(() => error))
+        catchError((error) => throwError(() => error)),
       );
   }
 
@@ -90,14 +92,14 @@ export class ServicioAutenticacion {
           password: datos.contrasena,
           aceptoAviso: datos.aceptoAviso,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       )
       .pipe(
         tap(() => {
           // Tras el registro, el backend ya estableció las cookies HttpOnly.
           this.verificarSesionActiva();
         }),
-        catchError((error) => throwError(() => error))
+        catchError((error) => throwError(() => error)),
       );
   }
 
@@ -112,14 +114,14 @@ export class ServicioAutenticacion {
           password: datos.contrasena,
           aceptoAviso: datos.aceptoAviso,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       )
       .pipe(
         tap(() => {
           // Tras el registro, el backend ya estableció las cookies HttpOnly.
           this.verificarSesionActiva();
         }),
-        catchError((error) => throwError(() => error))
+        catchError((error) => throwError(() => error)),
       );
   }
 
@@ -146,7 +148,7 @@ export class ServicioAutenticacion {
     return this.httpCliente.post<RespuestaAuth>(
       `${this.urlBaseApi}/auth/refresh`,
       {},
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -160,7 +162,7 @@ export class ServicioAutenticacion {
   }
 
   obtenerEstado(): 'ACTIVO' | 'PENDIENTE_ELIMINACION' | null {
-  const sesion = this.sesionActual();
-  return sesion ? sesion.estado : null;
-}
+    const sesion = this.sesionActual();
+    return sesion ? sesion.estado : null;
+  }
 }

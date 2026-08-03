@@ -10,4 +10,3 @@ import { Header } from '../../../shared/components/header/header';
   styleUrl: './colaboradores.component.css',
 })
 export class LayoutColaboradoresComponente {}
-
