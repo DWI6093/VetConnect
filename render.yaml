@@ -4,11 +4,12 @@ services:
     runtime: node
     plan: free
     region: oregon
+    branch: deploy/abraham
     rootDir: backend
     buildCommand: npm ci --include=dev && npm run build && npm run db:migrate
     startCommand: npm run start:prod
     healthCheckPath: /
-    autoDeployTrigger: checksPass
+    autoDeployTrigger: off
     envVars:
       - key: NODE_ENV
         value: production

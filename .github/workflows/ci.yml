@@ -1,4 +1,4 @@
-name: CI - VetConnect
+name: CI/CD - VetConnect
 
 on:
   push:
@@ -83,3 +83,16 @@ jobs:
       - name: Build backend
         working-directory: ./backend
         run: npm run build
+
+  deploy-render:
+    name: Deploy backend to Render
+    if: github.event_name == 'push' && github.ref == 'refs/heads/deploy/abraham'
+    needs: [frontend, backend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          curl --fail --silent --show-error \
+            --request POST "$RENDER_DEPLOY_HOOK_URL"
