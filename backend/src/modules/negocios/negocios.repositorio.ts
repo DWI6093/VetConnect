@@ -6,7 +6,7 @@ import { Prisma } from '@prisma/client';
 export class NegociosRepositorio {
   constructor(private readonly prisma: PrismaService) {}
 
-  async buscarCercanos(
+  buscarCercanos(
     latitud: number,
     longitud: number,
     radioMetros: number,
@@ -36,7 +36,7 @@ export class NegociosRepositorio {
       ORDER BY "distanciaMetros" ASC;
     `;
   }
-  async buscarPorNombre(
+  buscarPorNombre(
     nombre: string | undefined,
     pagina: number,
     limite: number,
@@ -68,7 +68,7 @@ export class NegociosRepositorio {
     return resultado[0] ?? null;
   }
 
-  async obtenerPorPropietario(idPropietario: number): Promise<any[]> {
+  obtenerPorPropietario(idPropietario: number): Promise<any[]> {
     return this.prisma.$queryRaw<any[]>`
     SELECT n.id_negocio, n.nombre, n.direccion, n.telefono, n.descripcion, n.estado,
            ST_Y(n.ubicacion::geometry) AS latitud,
@@ -167,7 +167,7 @@ export class NegociosRepositorio {
   }
 
   // ── Horarios (reemplaza todo el set de horarios del negocio) ──
-  async reemplazarHorarios(
+  reemplazarHorarios(
     idNegocio: number,
     horarios: { dia: string; horaApertura: string; horaCierre: string }[],
   ) {
@@ -186,7 +186,7 @@ export class NegociosRepositorio {
   }
 
   // ── Servicios ──
-  async crearServicio(
+  crearServicio(
     idNegocio: number,
     datos: { nombre: string; descripcion?: string; precio: number },
   ) {
@@ -200,19 +200,19 @@ export class NegociosRepositorio {
     });
   }
 
-  async obtenerServicioConPropietario(idServicio: number) {
+  obtenerServicioConPropietario(idServicio: number) {
     return this.prisma.servicio.findUnique({
       where: { id_servicio: idServicio },
       include: { negocio: { select: { id_propietario: true } } },
     });
   }
 
-  async eliminarServicio(idServicio: number) {
+  eliminarServicio(idServicio: number) {
     return this.prisma.servicio.delete({ where: { id_servicio: idServicio } });
   }
 
   // ── Productos ──
-  async crearProducto(
+  crearProducto(
     idNegocio: number,
     datos: {
       nombre: string;
@@ -232,25 +232,25 @@ export class NegociosRepositorio {
     });
   }
 
-  async obtenerProductoConPropietario(idProducto: number) {
+  obtenerProductoConPropietario(idProducto: number) {
     return this.prisma.producto.findUnique({
       where: { id_producto: idProducto },
       include: { negocio: { select: { id_propietario: true } } },
     });
   }
 
-  async eliminarProducto(idProducto: number) {
+  eliminarProducto(idProducto: number) {
     return this.prisma.producto.delete({ where: { id_producto: idProducto } });
   }
 
   // ── Imágenes (RF28: máximo 4 en plan Básico) ──
-  async contarImagenes(idNegocio: number) {
+  contarImagenes(idNegocio: number) {
     return this.prisma.imagen_negocio.count({
       where: { id_negocio: idNegocio },
     });
   }
 
-  async agregarImagen(
+  agregarImagen(
     idNegocio: number,
     rutaImagen: string,
     nombreArchivo: string,
@@ -266,14 +266,14 @@ export class NegociosRepositorio {
     });
   }
 
-  async obtenerImagenConPropietario(idImagen: number) {
+  obtenerImagenConPropietario(idImagen: number) {
     return this.prisma.imagen_negocio.findUnique({
       where: { id_imagen: idImagen },
       include: { negocio: { select: { id_propietario: true } } },
     });
   }
 
-  async eliminarImagen(idImagen: number) {
+  eliminarImagen(idImagen: number) {
     return this.prisma.imagen_negocio.delete({
       where: { id_imagen: idImagen },
     });
