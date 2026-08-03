@@ -1,30 +1,15 @@
-name: CI - Angular + Postgres
+name: CI - VetConnect
 
 on:
   push:
     branches:
       - main
+      - develop
   pull_request:
 
 jobs:
-  build:
+  frontend:
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: admin
-          POSTGRES_PASSWORD: admin123
-          POSTGRES_DB: testdb
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,12 +17,58 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
         working-directory: ./frontend
-        run: npm install
+        run: npm ci
 
-      - name: Build
+      - name: Lint frontend
         working-directory: ./frontend
+        run: npm run lint
+
+      - name: Test frontend
+        working-directory: ./frontend
+        run: npm test -- --watch=false
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+
+  backend:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/vetconnect
+      DIRECT_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/vetconnect
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Validate Prisma schema
+        working-directory: ./backend
+        run: npx prisma validate
+
+      - name: Lint backend
+        working-directory: ./backend
+        run: npm run lint:check
+
+      - name: Test backend
+        working-directory: ./backend
+        run: npm test -- --runInBand --passWithNoTests
+
+      - name: Build backend
+        working-directory: ./backend
         run: npm run build

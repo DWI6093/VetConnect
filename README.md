@@ -111,6 +111,32 @@ src/app/
 
 ```
 
+## Despliegue gratuito y CI/CD
+
+La configuración del repositorio separa el despliegue en dos servicios:
+
+- `render.yaml` crea en Render un Web Service gratuito para el backend NestJS y solicita las variables de conexión a Neon.
+- `frontend/vercel.json` configura Vercel para compilar y servir la SPA de Angular desde `frontend`.
+- `.github/workflows/ci.yml` ejecuta lint, validación de Prisma y builds en cada pull request y en `main`/`develop`.
+
+### Render
+
+1. En Neon crea el proyecto y copia sus cadenas de conexión: la **pooled** para `DATABASE_URL` y la directa para `DIRECT_DATABASE_URL`.
+2. En Render selecciona **New > Blueprint**, conecta el repositorio y usa el archivo `render.yaml`.
+3. Cuando lo solicite, define `DATABASE_URL`, `DIRECT_DATABASE_URL` y `FRONTEND_URL`; Render generará `JWT_SECRET` y `REFRESH_SECRET`.
+4. Las migraciones se ejecutan durante cada build mediante `npm run db:migrate`, usando la conexión directa de Neon.
+5. Si el nombre `vetconnect-api` ya está ocupado y Render asigna otra URL, usa la URL real del servicio al configurar `API_URL` en Vercel.
+
+### Vercel
+
+1. Crea un proyecto nuevo conectado al repositorio y establece `frontend` como **Root Directory**.
+2. Mantén el comando de build `npm run build` y añade la variable `API_URL` en Preview y Production con la URL pública del backend de Render, sin `/` final.
+3. Cada pull request tendrá un preview y cada push a la rama de producción desplegará automáticamente la aplicación.
+
+### Consideraciones del plan gratuito
+
+El Web Service gratuito de Render puede suspenderse después de 15 minutos sin tráfico y tardar aproximadamente un minuto en reactivarse. Neon administra la base de datos por separado y aplicará los límites de su propio plan; conserva las cadenas de conexión como secretos.
+
 ## Estructura de carpetas del Backend
 
 ```

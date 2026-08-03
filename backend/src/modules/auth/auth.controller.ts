@@ -10,7 +10,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import type { Request, Response } from 'express';
+import type { CookieOptions, Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { CrearClienteDto } from '../usuarios/dto/crear-cliente.dto';
 import { CrearColaboradorDto } from '../usuarios/dto/crear-colaborador.dto';
@@ -29,10 +29,21 @@ const DURACION_REFRESH_MS = 7 * 24 * 60 * 60 * 1000;
  * HttpOnly → no accesible por JavaScript (mitiga XSS).
  * SameSite Strict → no se envían en peticiones cross-site (mitiga CSRF).
  */
-const opcionesCookieBase = {
+const cookiesSeguras = process.env.NODE_ENV === 'production';
+const valorMismoSitio = process.env.COOKIE_SAME_SITE;
+const mismoSitio: NonNullable<CookieOptions['sameSite']> =
+  valorMismoSitio === 'strict' ||
+  valorMismoSitio === 'lax' ||
+  valorMismoSitio === 'none'
+    ? valorMismoSitio
+    : cookiesSeguras
+      ? 'none'
+      : 'lax';
+
+const opcionesCookieBase: CookieOptions = {
   httpOnly: true,
-  sameSite: 'strict' as const,
-  secure: process.env.NODE_ENV === 'production',
+  sameSite: mismoSitio,
+  secure: cookiesSeguras,
   path: '/',
 };
 

@@ -9,12 +9,13 @@ import {
   DatosRegistroCliente,
   DatosRegistroColaborador,
 } from '../models/usuario.modelo';
+import { URL_BASE_API } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ServicioAutenticacion {
-  private readonly urlBaseApi = window.location.protocol === 'https:' ? 'https://localhost:3000' : 'http://localhost:3000';
+  private readonly urlBaseApi = URL_BASE_API;
 
   /**
    * Solo almacena información mínima de sesión: el rol.
