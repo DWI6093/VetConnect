@@ -208,10 +208,7 @@
       <div class="galeria-imagenes">
         @for (imagen of imagenes(); track imagen.id_imagen) {
           <div class="miniatura-imagen">
-            <img
-              [src]="urlBaseApi + imagen.ruta_imagen"
-              [alt]="imagen.nombre_archivo"
-            />
+            <img [src]="urlBaseApi + imagen.ruta_imagen" [alt]="imagen.nombre_archivo" />
             <button type="button" class="boton-quitar-imagen" (click)="quitarImagen(imagen)">
               ✕
             </button>
