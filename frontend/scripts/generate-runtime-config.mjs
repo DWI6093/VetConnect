@@ -8,8 +8,29 @@ if (!apiUrl) {
   process.exit(0);
 }
 
+let urlValidada;
+
+try {
+  urlValidada = new URL(apiUrl);
+} catch {
+  console.error('API_URL debe ser una URL absoluta que comience con http:// o https://.');
+  process.exit(1);
+}
+
+if (!['http:', 'https:'].includes(urlValidada.protocol)) {
+  console.error('API_URL debe usar el protocolo http:// o https://.');
+  process.exit(1);
+}
+
+if (urlValidada.username || urlValidada.password || urlValidada.search || urlValidada.hash) {
+  console.error('API_URL no debe incluir credenciales, parámetros de consulta ni fragmentos.');
+  process.exit(1);
+}
+
+const apiUrlNormalizada = apiUrl.replace(/\/+$/, '');
+
 const runtimeConfig = `window.__env = {
-  API_URL: ${JSON.stringify(apiUrl.replace(/\/+$/, ''))}
+  API_URL: ${JSON.stringify(apiUrlNormalizada)}
 };
 `;
 
