@@ -209,7 +209,7 @@
         @for (imagen of imagenes(); track imagen.id_imagen) {
           <div class="miniatura-imagen">
             <img
-              [src]="'http://localhost:3000' + imagen.ruta_imagen"
+              [src]="urlBaseApi + imagen.ruta_imagen"
               [alt]="imagen.nombre_archivo"
             />
             <button type="button" class="boton-quitar-imagen" (click)="quitarImagen(imagen)">

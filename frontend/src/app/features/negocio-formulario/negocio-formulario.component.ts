@@ -8,6 +8,7 @@ import {
 } from '../../../shared/components/mapa-selector/mapa-selector.component';
 import { DiaSemana, Servicio, Producto, ImagenNegocio } from '../../core/models/negocio.modelo';
 import { ActivatedRoute, Router } from '@angular/router';
+import { URL_BASE_API } from '../../core/config/api.config';
 
 const DIAS_SEMANA: DiaSemana[] = [
   'LUNES',
@@ -30,6 +31,7 @@ export class NegocioFormularioComponente implements OnInit {
   private readonly negociosServicio = inject(NegociosServicio);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  protected readonly urlBaseApi = URL_BASE_API;
   protected readonly esEdicion = signal(false);
   protected readonly dias = DIAS_SEMANA;
 

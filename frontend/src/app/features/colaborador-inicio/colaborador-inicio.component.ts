@@ -3,6 +3,7 @@ import { ServicioAutenticacion } from '../../core/services/auth.service';
 import { NegociosServicio } from '../../core/services/negocios.servicio';
 import { NegocioColaborador } from '../../core/models/negocio.modelo';
 import { RouterLink } from '@angular/router';
+import { URL_BASE_API } from '../../core/config/api.config';
 
 @Component({
   selector: 'app-colaborador-inicio',
@@ -14,6 +15,7 @@ import { RouterLink } from '@angular/router';
 export class ColaboradorInicioComponente implements OnInit {
   protected readonly servicioAutenticacion = inject(ServicioAutenticacion);
   private readonly negociosServicio = inject(NegociosServicio);
+  protected readonly urlBaseApi = URL_BASE_API;
 
   protected readonly negocios = signal<NegocioColaborador[]>([]);
   protected readonly cargando = signal<boolean>(true);

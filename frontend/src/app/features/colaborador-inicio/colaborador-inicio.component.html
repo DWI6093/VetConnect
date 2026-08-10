@@ -46,7 +46,7 @@
           <div class="tarjeta-negocio">
             @if (negocio.imagenPrincipal) {
               <img
-                [src]="'https://localhost:3000' + negocio.imagenPrincipal"
+                [src]="urlBaseApi + negocio.imagenPrincipal"
                 alt="{{ negocio.nombre }}"
                 class="tarjeta-negocio-imagen"
               />
