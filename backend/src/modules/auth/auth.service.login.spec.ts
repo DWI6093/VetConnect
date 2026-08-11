@@ -47,9 +47,9 @@ describe('AuthService - iniciarSesion (login con credenciales inválidas)', () =
       password: 'cualquierpassword',
     };
 
-    await expect(
-      authService.iniciarSesion(reqMock, dto),
-    ).rejects.toThrow(UnauthorizedException);
+    await expect(authService.iniciarSesion(reqMock, dto)).rejects.toThrow(
+      UnauthorizedException,
+    );
 
     expect(prismaMock.usuario.update).not.toHaveBeenCalled();
   });
@@ -67,9 +67,9 @@ describe('AuthService - iniciarSesion (login con credenciales inválidas)', () =
       password: 'cualquierpassword',
     };
 
-    await expect(
-      authService.iniciarSesion(reqMock, dto),
-    ).rejects.toThrow(UnauthorizedException);
+    await expect(authService.iniciarSesion(reqMock, dto)).rejects.toThrow(
+      UnauthorizedException,
+    );
 
     expect(prismaMock.usuario.update).not.toHaveBeenCalled();
   });
@@ -93,9 +93,9 @@ describe('AuthService - iniciarSesion (login con credenciales inválidas)', () =
       password: 'PasswordIncorrecto999',
     };
 
-    await expect(
-      authService.iniciarSesion(reqMock, dto),
-    ).rejects.toThrow(UnauthorizedException);
+    await expect(authService.iniciarSesion(reqMock, dto)).rejects.toThrow(
+      UnauthorizedException,
+    );
 
     expect(prismaMock.usuario.update).not.toHaveBeenCalled();
   });
