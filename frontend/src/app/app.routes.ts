@@ -14,16 +14,12 @@ export const routes: Routes = [
   {
     path: 'auth/registro',
     loadComponent: () =>
-      import('./features/auth/registro/registro.component').then(
-        (m) => m.RegistroComponente,
-      ),
+      import('./features/auth/registro/registro.component').then((m) => m.RegistroComponente),
   },
   {
     path: 'cliente',
     loadComponent: () =>
-      import('./layouts/clientes/clientes.component').then(
-        (m) => m.LayoutClientesComponente,
-      ),
+      import('./layouts/clientes/clientes.component').then((m) => m.LayoutClientesComponente),
     canActivate: [guardiaAutenticacion, guardiaRol],
     canActivateChild: [guardiaEstadoEliminacionChild],
     data: { rol: 'CLIENTE' },
@@ -38,9 +34,7 @@ export const routes: Routes = [
       {
         path: 'configuracion',
         loadComponent: () =>
-          import('../shared/components/cuenta/cuenta').then(
-            (m) => m.CuentaComponente,
-          ),
+          import('../shared/components/cuenta/cuenta').then((m) => m.CuentaComponente),
       },
       {
         path: '',
@@ -67,11 +61,23 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'negocios/crear',
+        loadComponent: () =>
+          import('./features/negocio-formulario/negocio-formulario.component').then(
+            (m) => m.NegocioFormularioComponente,
+          ),
+      },
+      {
+        path: 'negocios/:id/editar',
+        loadComponent: () =>
+          import('./features/negocio-formulario/negocio-formulario.component').then(
+            (m) => m.NegocioFormularioComponente,
+          ),
+      },
+      {
         path: 'configuracion',
         loadComponent: () =>
-          import('../shared/components/cuenta/cuenta').then(
-            (m) => m.CuentaComponente,
-          ),
+          import('../shared/components/cuenta/cuenta').then((m) => m.CuentaComponente),
       },
       {
         path: '',

@@ -10,4 +10,3 @@ import { Header } from '../../../shared/components/header/header';
   styleUrl: './clientes.component.css',
 })
 export class LayoutClientesComponente {}
-

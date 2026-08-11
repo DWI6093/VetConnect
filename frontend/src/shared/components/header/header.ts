@@ -33,4 +33,3 @@ export class Header {
     this.servicioAutenticacion.cerrarSesion();
   }
 }
-

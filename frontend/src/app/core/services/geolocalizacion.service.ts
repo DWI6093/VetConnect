@@ -8,7 +8,7 @@ export interface Coordenadas {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GeolocalizacionServicio {
   // Signals privadas para control del estado interno
@@ -37,30 +37,32 @@ export class GeolocalizacionServicio {
     const opciones: PositionOptions = {
       enableHighAccuracy: true,
       timeout: 10000,
-      maximumAge: 0
+      maximumAge: 0,
     };
 
     navigator.geolocation.getCurrentPosition(
       (posicion: GeolocationPosition) => {
         this.coordenadasInternas.set({
           latitud: posicion.coords.latitude,
-          longitud: posicion.coords.longitude
+          longitud: posicion.coords.longitude,
         });
         this.estadoInterno.set('exito');
       },
       (error: GeolocationPositionError) => {
         this.coordenadasInternas.set(null);
-        
+
         switch (error.code) {
           case error.PERMISSION_DENIED:
             this.estadoInterno.set('denegado');
             this.mensajeErrorInterno.set(
-              'Has denegado el permiso para acceder a tu ubicación. Por favor, actívalo en la configuración de tu navegador para ver el mapa.'
+              'Has denegado el permiso para acceder a tu ubicación. Por favor, actívalo en la configuración de tu navegador para ver el mapa.',
             );
             break;
           case error.POSITION_UNAVAILABLE:
             this.estadoInterno.set('error');
-            this.mensajeErrorInterno.set('La información de ubicación no está disponible en este momento.');
+            this.mensajeErrorInterno.set(
+              'La información de ubicación no está disponible en este momento.',
+            );
             break;
           case error.TIMEOUT:
             this.estadoInterno.set('error');
@@ -72,7 +74,7 @@ export class GeolocalizacionServicio {
             break;
         }
       },
-      opciones
+      opciones,
     );
   }
 

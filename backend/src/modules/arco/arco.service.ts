@@ -198,7 +198,7 @@ export class ArcoService {
     };
   }
 
-  async anonimizarUsuario(idUsuario: number) {
+  anonimizarUsuario(idUsuario: number) {
     const sufijo = crypto.randomBytes(4).toString('hex');
     return this.prisma.usuario.update({
       where: { id_usuario: idUsuario },
@@ -213,7 +213,7 @@ export class ArcoService {
     });
   }
 
-  async obtenerPendientesDeAnonimizar() {
+  obtenerPendientesDeAnonimizar() {
     return this.prisma.usuario.findMany({
       where: {
         estado: 'PENDIENTE_ELIMINACION',

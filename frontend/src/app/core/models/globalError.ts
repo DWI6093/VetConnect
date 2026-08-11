@@ -1,7 +1,7 @@
 export interface IErrorGlobal {
-    status: number;
-    message: string;
-    timestamp: Date;
-    path: string;
-    error?: unknown;
-}
+  status: number;
+  message: string;
+  timestamp: Date;
+  path: string;
+  error?: unknown;
+}

@@ -4,11 +4,15 @@
 .pantalla-contenedor {
   min-height: 100vh;
   width: 100%;
-  background: #F8FAFC;
+  background: #f8fafc;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
   position: relative;
   overflow-x: hidden;
   padding: 0 1.5rem 2rem;
@@ -28,14 +32,39 @@
 .huella {
   position: absolute;
   opacity: 0.06;
-  color: #14B8A6;
+  color: #14b8a6;
 }
 
-.huella-1 { top: 5%; right: 5%; transform: rotate(-20deg); font-size: 2.5rem; }
-.huella-2 { top: 35%; left: 3%; transform: rotate(15deg); font-size: 1.8rem; }
-.huella-3 { top: 60%; right: 10%; transform: rotate(10deg); font-size: 2rem; }
-.huella-4 { bottom: 30%; left: 8%; transform: rotate(-10deg); font-size: 2.2rem; }
-.huella-5 { bottom: 10%; right: 20%; transform: rotate(25deg); font-size: 1.5rem; }
+.huella-1 {
+  top: 5%;
+  right: 5%;
+  transform: rotate(-20deg);
+  font-size: 2.5rem;
+}
+.huella-2 {
+  top: 35%;
+  left: 3%;
+  transform: rotate(15deg);
+  font-size: 1.8rem;
+}
+.huella-3 {
+  top: 60%;
+  right: 10%;
+  transform: rotate(10deg);
+  font-size: 2rem;
+}
+.huella-4 {
+  bottom: 30%;
+  left: 8%;
+  transform: rotate(-10deg);
+  font-size: 2.2rem;
+}
+.huella-5 {
+  bottom: 10%;
+  right: 20%;
+  transform: rotate(25deg);
+  font-size: 1.5rem;
+}
 
 /* Barra superior */
 .barra-superior {
@@ -57,7 +86,7 @@
 }
 
 .enlace-volver:hover {
-  color: #14B8A6;
+  color: #14b8a6;
 }
 
 /* Cabecera superior */
@@ -79,7 +108,7 @@
 .logo-icono {
   width: 72px;
   height: 72px;
-  background: #14B8A6;
+  background: #14b8a6;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -92,13 +121,13 @@
 .logo-texto h1 {
   font-size: 2rem;
   font-weight: 800;
-  color: #1E3A5F;
+  color: #1e3a5f;
   margin: 0;
   letter-spacing: -0.03em;
 }
 
 .logo-texto .resaltado {
-  color: #14B8A6;
+  color: #14b8a6;
 }
 
 .logo-texto p {
@@ -108,7 +137,7 @@
 }
 
 .corazon {
-  color: #EF4444;
+  color: #ef4444;
 }
 
 /* Tarjeta de registro */
@@ -120,12 +149,18 @@
 }
 
 @keyframes deslizarArriba {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .tarjeta-contenido {
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 20px;
   padding: 2.5rem;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
@@ -135,7 +170,7 @@
 .tarjeta-contenido h2 {
   font-size: 1.6rem;
   font-weight: 700;
-  color: #1E3A5F;
+  color: #1e3a5f;
   margin: 0 0 0.25rem;
   text-align: center;
 }
@@ -176,7 +211,7 @@
   align-items: center;
   text-align: center;
   padding: 1.25rem 1rem;
-  background: #FFFFFF;
+  background: #ffffff;
   border: 2px solid #e2e8f0;
   border-radius: 16px;
   cursor: pointer;
@@ -191,15 +226,15 @@
 }
 
 .rol-activo {
-  border-color: #14B8A6;
-  background: #F0FDFA;
+  border-color: #14b8a6;
+  background: #f0fdfa;
   box-shadow: 0 2px 12px rgba(20, 184, 166, 0.15);
 }
 
 .rol-icono {
   width: 48px;
   height: 48px;
-  background: #F1F5F9;
+  background: #f1f5f9;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -209,7 +244,7 @@
 }
 
 .rol-activo .rol-icono {
-  background: #14B8A6;
+  background: #14b8a6;
   color: #fff;
 }
 
@@ -219,7 +254,7 @@
   right: 10px;
   width: 22px;
   height: 22px;
-  background: #14B8A6;
+  background: #14b8a6;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -230,7 +265,7 @@
 .rol-nombre {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #1E3A5F;
+  color: #1e3a5f;
 }
 
 .rol-descripcion {
@@ -250,14 +285,14 @@
 }
 
 .mensaje-alerta.error {
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
-  color: #991B1B;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
 }
 
 .mensaje-alerta.exito {
-  background: #F0FDF4;
-  border: 1px solid #BBF7D0;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
   color: #166534;
 }
 
@@ -312,7 +347,7 @@
 .campo-input input {
   width: 100%;
   padding: 12px 16px 12px 44px;
-  background: #FFFFFF;
+  background: #ffffff;
   border: 1.5px solid #e2e8f0;
   border-radius: 12px;
   font-size: 0.95rem;
@@ -327,16 +362,16 @@
 }
 
 .campo-input input:focus {
-  border-color: #14B8A6;
+  border-color: #14b8a6;
   box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12);
 }
 
 .campo-input input:focus ~ .campo-icono {
-  color: #14B8A6;
+  color: #14b8a6;
 }
 
 .campo-invalido {
-  border-color: #EF4444 !important;
+  border-color: #ef4444 !important;
 }
 
 .campo-invalido:focus {
@@ -345,7 +380,7 @@
 
 .error-validacion {
   font-size: 0.78rem;
-  color: #EF4444;
+  color: #ef4444;
   font-weight: 500;
   margin-top: 0.1rem;
 }
@@ -355,12 +390,12 @@
   margin-top: 0.5rem;
   width: 100%;
   padding: 14px;
-  background: #14B8A6;
+  background: #14b8a6;
   border: none;
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #ffffff;
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -403,7 +438,9 @@
 }
 
 @keyframes girar {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Pie de tarjeta */
@@ -415,7 +452,7 @@
 }
 
 .enlace-primario {
-  color: #14B8A6;
+  color: #14b8a6;
   text-decoration: none;
   font-weight: 700;
   transition: color 0.2s;
@@ -438,7 +475,7 @@
 }
 
 .caracteristica {
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 16px;
   padding: 1.25rem 1rem;
   text-align: center;
@@ -449,24 +486,24 @@
 .caracteristica-icono {
   width: 44px;
   height: 44px;
-  background: #F0FDFA;
+  background: #f0fdfa;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 0.75rem;
-  color: #14B8A6;
+  color: #14b8a6;
 }
 
 .caracteristica-icono-rosa {
-  background: #FFF1F2;
-  color: #F43F5E;
+  background: #fff1f2;
+  color: #f43f5e;
 }
 
 .caracteristica h3 {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #1E3A5F;
+  color: #1e3a5f;
   margin: 0 0 0.35rem;
 }
 
@@ -516,8 +553,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   padding: 0.75rem 1rem;
   margin-top: 0.5rem;
   gap: 1rem;
@@ -541,8 +578,8 @@
   width: 18px;
   height: 18px;
   border-radius: 6px;
-  border: 1.5px solid #CBD5E1;
-  accent-color: #14B8A6;
+  border: 1.5px solid #cbd5e1;
+  accent-color: #14b8a6;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -559,7 +596,7 @@
 }
 
 .resaltado-aviso {
-  color: #14B8A6;
+  color: #14b8a6;
   font-weight: 600;
 }
 
@@ -594,7 +631,7 @@
 }
 
 .modal-contenedor {
-  background: #FFFFFF;
+  background: #ffffff;
   width: 90%;
   max-width: 700px;
   height: 80vh;
@@ -608,20 +645,20 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #E2E8F0;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .modal-cabecera h3 {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1E3A5F;
+  color: #1e3a5f;
   margin: 0;
 }
 
 .modal-boton-cerrar {
   background: none;
   border: none;
-  color: #64748B;
+  color: #64748b;
   cursor: pointer;
   padding: 4px;
   border-radius: 50%;
@@ -632,15 +669,15 @@
 }
 
 .modal-boton-cerrar:hover {
-  background: #F1F5F9;
-  color: #0F172A;
+  background: #f1f5f9;
+  color: #0f172a;
 }
 
 .modal-cuerpo {
   flex: 1;
   padding: 0;
   position: relative;
-  background: #F8FAFC;
+  background: #f8fafc;
 }
 
 .modal-iframe {
@@ -651,14 +688,14 @@
 
 .modal-pie {
   padding: 1rem 1.5rem;
-  border-top: 1px solid #E2E8F0;
+  border-top: 1px solid #e2e8f0;
   display: flex;
   justify-content: flex-end;
 }
 
 .boton-cerrar-modal {
   padding: 10px 20px;
-  background: #14B8A6;
+  background: #14b8a6;
   border: none;
   border-radius: 10px;
   color: white;
@@ -672,13 +709,23 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scaleIn {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @media (max-width: 480px) {
@@ -696,7 +743,7 @@
   font-family: inherit;
   font-size: inherit;
   font-weight: 600;
-  color: #14B8A6;
+  color: #14b8a6;
   cursor: pointer;
   text-decoration: underline;
   display: inline;

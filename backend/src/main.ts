@@ -44,8 +44,21 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
+  const originsPermitidos = (
+    process.env.FRONTEND_URL ?? 'http://localhost:4200,https://localhost:4200'
+  )
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
   app.enableCors({
-    origin: ['http://localhost:4200', 'https://localhost:4200'],
+    origin: (origin, callback) => {
+      if (!origin || originsPermitidos.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error('Origen no permitido por CORS'), false);
+    },
     credentials: true,
   });
 
@@ -59,10 +72,10 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
-  const puerto = process.env.PORT ?? 3000;
-  await app.listen(puerto);
+  const puerto = Number(process.env.PORT ?? 3000);
+  await app.listen(puerto, '0.0.0.0');
   console.log(
-    `Aplicación ejecutándose en: ${usarHttps && opcionesHttps ? 'https' : 'http'}://localhost:${puerto}`,
+    `Aplicación ejecutándose en: ${usarHttps && opcionesHttps ? 'https' : 'http'}://0.0.0.0:${puerto}`,
   );
 }
 bootstrap();

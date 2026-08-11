@@ -47,7 +47,7 @@ export class ColaboradoresService {
     });
   }
 
-  async obtenerTodos() {
+  obtenerTodos() {
     return this.prismaService.usuario.findMany({
       where: {
         rol: 'COLABORADOR',

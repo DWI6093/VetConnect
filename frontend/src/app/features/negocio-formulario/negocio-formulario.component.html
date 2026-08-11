@@ -1,0 +1,243 @@
+<div class="formulario-negocio-contenedor">
+  <h1 class="formulario-titulo">Registrar negocio</h1>
+
+  <!-- ── Paso 1: Información básica ── -->
+  <section class="paso-seccion">
+    <h2 class="paso-titulo">1. Información básica</h2>
+
+    @if (!idNegocio()) {
+      <div class="campo-grupo">
+        <label for="nombre-negocio">Nombre</label>
+        <input
+          id="nombre-negocio"
+          type="text"
+          [ngModel]="nombre()"
+          (ngModelChange)="nombre.set($event)"
+          maxlength="50"
+        />
+      </div>
+
+      <div class="campo-grupo">
+        <label for="direccion-negocio">Dirección</label>
+        <input
+          id="direccion-negocio"
+          type="text"
+          [ngModel]="direccion()"
+          (ngModelChange)="direccion.set($event)"
+          maxlength="150"
+        />
+      </div>
+
+      <div class="campo-grupo">
+        <label for="telefono-negocio">Teléfono</label>
+        <input
+          id="telefono-negocio"
+          type="tel"
+          [ngModel]="telefono()"
+          (ngModelChange)="telefono.set($event)"
+          maxlength="10"
+        />
+      </div>
+
+      <div class="campo-grupo">
+        <label for="descripcion-negocio">Descripción (opcional)</label>
+        <textarea
+          id="descripcion-negocio"
+          [ngModel]="descripcion()"
+          (ngModelChange)="descripcion.set($event)"
+          rows="3"
+        ></textarea>
+      </div>
+
+      <div class="campo-grupo">
+        <span class="campo-etiqueta">Ubicación</span>
+        <app-mapa-selector
+          [latitudInicial]="latitud()"
+          [longitudInicial]="longitud()"
+          (ubicacionSeleccionada)="onUbicacionSeleccionada($event)"
+        ></app-mapa-selector>
+      </div>
+
+      @if (errorInfoBasica()) {
+        <p class="mensaje-error">{{ errorInfoBasica() }}</p>
+      }
+
+      <button
+        type="button"
+        class="boton-primario"
+        [disabled]="guardandoInfoBasica()"
+        (click)="guardarInfoBasica()"
+      >
+        {{ guardandoInfoBasica() ? 'Guardando...' : 'Registrar negocio' }}
+      </button>
+    } @else {
+      <p class="paso-completado">
+        ✅ Negocio registrado: <strong>{{ nombre() }}</strong>
+      </p>
+    }
+  </section>
+
+  <!-- Los siguientes pasos se habilitan hasta tener un id_negocio -->
+  @if (idNegocio()) {
+    <!-- ── Paso 2: Horarios ── -->
+    <section class="paso-seccion">
+      <h2 class="paso-titulo">2. Horarios</h2>
+
+      @for (fila of horarios(); track $index) {
+        <div class="fila-horario">
+          <select [ngModel]="fila.dia" (ngModelChange)="fila.dia = $event">
+            @for (dia of dias; track dia) {
+              <option [value]="dia">{{ dia }}</option>
+            }
+          </select>
+          <input
+            type="time"
+            [ngModel]="fila.horaApertura"
+            (ngModelChange)="fila.horaApertura = $event"
+          />
+          <span>a</span>
+          <input
+            type="time"
+            [ngModel]="fila.horaCierre"
+            (ngModelChange)="fila.horaCierre = $event"
+          />
+          <button type="button" class="boton-quitar" (click)="eliminarFilaHorario($index)">
+            ✕
+          </button>
+        </div>
+      }
+
+      <button type="button" class="boton-secundario" (click)="agregarHorario()">
+        + Agregar día
+      </button>
+
+      @if (errorHorarios()) {
+        <p class="mensaje-error">{{ errorHorarios() }}</p>
+      }
+
+      @if (horariosGuardados()) {
+        <p class="mensaje-exito">Horarios guardados ✓</p>
+      }
+
+      <button
+        type="button"
+        class="boton-primario"
+        [disabled]="guardandoHorarios() || horarios().length === 0"
+        (click)="guardarHorarios()"
+      >
+        {{ guardandoHorarios() ? 'Guardando...' : 'Guardar horarios' }}
+      </button>
+    </section>
+
+    <!-- ── Paso 3: Servicios ── -->
+    <section class="paso-seccion">
+      <h2 class="paso-titulo">3. Servicios</h2>
+
+      @for (servicio of servicios(); track servicio.id_servicio) {
+        <div class="fila-item">
+          <span>{{ servicio.nombre }} — ${{ servicio.precio }}</span>
+          <button type="button" class="boton-quitar" (click)="quitarServicio(servicio)">✕</button>
+        </div>
+      }
+
+      <div class="fila-agregar">
+        <input
+          type="text"
+          placeholder="Nombre del servicio"
+          [ngModel]="nombreServicio()"
+          (ngModelChange)="nombreServicio.set($event)"
+        />
+        <input
+          type="number"
+          placeholder="Precio"
+          min="0"
+          step="0.01"
+          [ngModel]="precioServicio()"
+          (ngModelChange)="precioServicio.set($event)"
+        />
+        <button type="button" class="boton-secundario" (click)="agregarServicio()">
+          + Agregar
+        </button>
+      </div>
+
+      @if (errorServicio()) {
+        <p class="mensaje-error">{{ errorServicio() }}</p>
+      }
+    </section>
+
+    <!-- ── Paso 4: Productos ── -->
+    <section class="paso-seccion">
+      <h2 class="paso-titulo">4. Productos</h2>
+
+      @for (producto of productos(); track producto.id_producto) {
+        <div class="fila-item">
+          <span>{{ producto.nombre }} — ${{ producto.precio }}</span>
+          <button type="button" class="boton-quitar" (click)="quitarProducto(producto)">✕</button>
+        </div>
+      }
+
+      <div class="fila-agregar">
+        <input
+          type="text"
+          placeholder="Nombre del producto"
+          [ngModel]="nombreProducto()"
+          (ngModelChange)="nombreProducto.set($event)"
+        />
+        <input
+          type="number"
+          placeholder="Precio"
+          min="0"
+          step="0.01"
+          [ngModel]="precioProducto()"
+          (ngModelChange)="precioProducto.set($event)"
+        />
+        <button type="button" class="boton-secundario" (click)="agregarProducto()">
+          + Agregar
+        </button>
+      </div>
+
+      @if (errorProducto()) {
+        <p class="mensaje-error">{{ errorProducto() }}</p>
+      }
+    </section>
+
+    <!-- ── Paso 5: Imágenes ── -->
+    <section class="paso-seccion">
+      <h2 class="paso-titulo">5. Imágenes (máximo 4)</h2>
+
+      <div class="galeria-imagenes">
+        @for (imagen of imagenes(); track imagen.id_imagen) {
+          <div class="miniatura-imagen">
+            <img [src]="urlBaseApi + imagen.ruta_imagen" [alt]="imagen.nombre_archivo" />
+            <button type="button" class="boton-quitar-imagen" (click)="quitarImagen(imagen)">
+              ✕
+            </button>
+          </div>
+        }
+      </div>
+
+      @if (imagenes().length < 4) {
+        <input
+          type="file"
+          accept=".jpg,.jpeg,.png,.webp"
+          (change)="onSeleccionarImagen($event)"
+          [disabled]="subiendoImagen()"
+        />
+      }
+
+      @if (subiendoImagen()) {
+        <p>Subiendo imagen...</p>
+      }
+
+      @if (errorImagen()) {
+        <p class="mensaje-error">{{ errorImagen() }}</p>
+      }
+    </section>
+
+    <div class="seccion-finalizar">
+      <button type="button" class="boton-primario" (click)="finalizarRegistro()">
+        Finalizar y ver mi tablero
+      </button>
+    </div>
+  }
+</div>

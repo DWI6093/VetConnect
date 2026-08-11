@@ -22,14 +22,20 @@ async function main() {
           nombre: 'Propietario',
           apellido: 'Prueba',
           correo: 'propietario.prueba@vetconnect.com',
-          password_hash: '$2b$10$xyz...', 
+          password_hash: '$2b$10$xyz...',
           rol: 'COLABORADOR',
           estado: 'ACTIVO',
         },
       });
-      console.log('Usuario de prueba creado con ID:', usuarioPropietario.id_usuario);
+      console.log(
+        'Usuario de prueba creado con ID:',
+        usuarioPropietario.id_usuario,
+      );
     } else {
-      console.log('Usuario de prueba ya existe con ID:', usuarioPropietario.id_usuario);
+      console.log(
+        'Usuario de prueba ya existe con ID:',
+        usuarioPropietario.id_usuario,
+      );
     }
 
     // 2. Limpiar negocios de prueba previos
@@ -37,7 +43,9 @@ async function main() {
     const negociosBorrados = await prisma.negocio.deleteMany({
       where: { id_propietario: idPropietario },
     });
-    console.log(`Eliminados ${negociosBorrados.count} negocios de prueba anteriores.`);
+    console.log(
+      `Eliminados ${negociosBorrados.count} negocios de prueba anteriores.`,
+    );
 
     // Coordenadas base: 21.150806, -100.959112
 

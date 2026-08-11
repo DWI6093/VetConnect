@@ -13,7 +13,8 @@ export const guardiaEstadoEliminacionChild: CanActivateChildFn = (childRoute) =>
   }
 
   const rol = authService.obtenerRol();
-  const rutaConfiguracion = rol === 'CLIENTE' ? '/cliente/configuracion' : '/colaborador/configuracion';
+  const rutaConfiguracion =
+    rol === 'CLIENTE' ? '/cliente/configuracion' : '/colaborador/configuracion';
 
   // Permitir el acceso solo si la ruta hija es exactamente 'configuracion'
   if (childRoute.routeConfig?.path === 'configuracion') {

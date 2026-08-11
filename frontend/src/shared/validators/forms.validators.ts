@@ -59,7 +59,7 @@ export function sqlInjectionValidator(control: AbstractControl): ValidationError
 
   // Patrón para detectar posibles inyecciones SQL
   const patronSQL = /(['";=]|--|\/\*|\*\/|xp_)/i;
-  
+
   if (patronSQL.test(valor)) {
     return { posibleInyeccionSQL: true };
   }
@@ -70,21 +70,52 @@ export function sqlInjectionValidator(control: AbstractControl): ValidationError
 // Compuestos
 
 export function nameFieldValidator(): ValidatorFn {
-  return Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50), spacesValidator, onlyWordsValidator, textValidator, sqlInjectionValidator])!;
+  return Validators.compose([
+    Validators.required,
+    Validators.minLength(3),
+    Validators.maxLength(50),
+    spacesValidator,
+    onlyWordsValidator,
+    textValidator,
+    sqlInjectionValidator,
+  ])!;
 }
 
 export function emailFieldValidator(): ValidatorFn {
-  return Validators.compose([Validators.required, Validators.email, Validators.maxLength(50), passwordValidator, sqlInjectionValidator])!;
+  return Validators.compose([
+    Validators.required,
+    Validators.email,
+    Validators.maxLength(50),
+    passwordValidator,
+    sqlInjectionValidator,
+  ])!;
 }
 
 export function passwordFieldValidator(): ValidatorFn {
-  return Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(50), passwordValidator, sqlInjectionValidator])!;
+  return Validators.compose([
+    Validators.required,
+    Validators.minLength(6),
+    Validators.maxLength(50),
+    passwordValidator,
+    sqlInjectionValidator,
+  ])!;
 }
 
 export function optionalPasswordFieldValidator(): ValidatorFn {
-  return Validators.compose([Validators.minLength(6), Validators.maxLength(50), passwordValidator, sqlInjectionValidator])!;
+  return Validators.compose([
+    Validators.minLength(6),
+    Validators.maxLength(50),
+    passwordValidator,
+    sqlInjectionValidator,
+  ])!;
 }
 
 export function textFieldValidator(): ValidatorFn {
-  return Validators.compose([Validators.required, Validators.minLength(3), spacesValidator, textValidator, sqlInjectionValidator])!;
+  return Validators.compose([
+    Validators.required,
+    Validators.minLength(3),
+    spacesValidator,
+    textValidator,
+    sqlInjectionValidator,
+  ])!;
 }

@@ -1,4 +1,4 @@
 export interface ErrorGlobal {
-    error: boolean
-    mensaje: string
+  error: boolean;
+  mensaje: string;
 }

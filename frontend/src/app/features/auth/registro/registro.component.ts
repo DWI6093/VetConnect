@@ -1,5 +1,12 @@
 import { Component, signal, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, AbstractControl, ValidationErrors, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  AbstractControl,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { finalize } from 'rxjs';
@@ -35,7 +42,7 @@ export class RegistroComponente {
 
   constructor() {
     this.urlAvisoPrivacidadSegura = this.sanitizador.bypassSecurityTrustResourceUrl(
-      this.servicioAutenticacion.obtenerUrlAvisoPrivacidad(false)
+      this.servicioAutenticacion.obtenerUrlAvisoPrivacidad(false),
     );
     this.formularioRegistro = this.constructorFormularios.group(
       {
@@ -48,7 +55,7 @@ export class RegistroComponente {
       },
       {
         validators: this.validarContrasenasCoincidan,
-      }
+      },
     );
   }
 
@@ -57,7 +64,6 @@ export class RegistroComponente {
     const confirmarContrasena = control.get('confirmarContrasena')?.value;
     return contrasena === confirmarContrasena ? null : { contrasenasNoCoinciden: true };
   }
-
 
   private validarConfirmacionRequerida(control: AbstractControl): ValidationErrors | null {
     const valor = control.value;
@@ -96,23 +102,21 @@ export class RegistroComponente {
     const rutaDestino =
       this.rolSeleccionado() === 'CLIENTE' ? '/cliente/inicio' : '/colaborador/inicio';
 
-    observable$
-      .pipe(finalize(() => this.estaCargando.set(false)))
-      .subscribe({
-        next: () => {
-          this.mensajeExito.set('¡Registro exitoso! Iniciando sesión...');
-          setTimeout(() => {
-            this.enrutador.navigate([rutaDestino]);
-          }, 1500);
-        },
-        error: (error) => {
-          if (error.status === 409) {
-            this.mensajeError.set('El correo electrónico ingresado ya está registrado.');
-          } else {
-            this.mensajeError.set('Ocurrió un error en el registro. Por favor, intente de nuevo.');
-          }
-        },
-      });
+    observable$.pipe(finalize(() => this.estaCargando.set(false))).subscribe({
+      next: () => {
+        this.mensajeExito.set('¡Registro exitoso! Iniciando sesión...');
+        setTimeout(() => {
+          this.enrutador.navigate([rutaDestino]);
+        }, 1500);
+      },
+      error: (error) => {
+        if (error.status === 409) {
+          this.mensajeError.set('El correo electrónico ingresado ya está registrado.');
+        } else {
+          this.mensajeError.set('Ocurrió un error en el registro. Por favor, intente de nuevo.');
+        }
+      },
+    });
   }
 
   protected abrirModalAviso(evento: Event): void {

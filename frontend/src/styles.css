@@ -1,4 +1,4 @@
-@import "leaflet/dist/leaflet.css";
+@import 'leaflet/dist/leaflet.css';
 
 /* =============================================
    VetConnect – Variables Globales de Diseño
@@ -6,47 +6,47 @@
 
 :root {
   /* Paleta Principal */
-  --color-principal:    #14B8A6;
-  --color-secundario:   #1E3A5F;
+  --color-principal: #14b8a6;
+  --color-secundario: #1e3a5f;
 
   /* Fondos */
-  --color-fondo:        #F8FAFC;
-  --color-tarjeta:      #FFFFFF;
+  --color-fondo: #f8fafc;
+  --color-tarjeta: #ffffff;
 
   /* Tipografía */
-  --color-texto:        #334155;
-  --color-texto-suave:  #64748b;
+  --color-texto: #334155;
+  --color-texto-suave: #64748b;
   --color-texto-oscuro: #0f172a;
 
   /* Bordes y divisores */
-  --color-borde:        #e2e8f0;
-  --color-borde-suave:  #f1f5f9;
+  --color-borde: #e2e8f0;
+  --color-borde-suave: #f1f5f9;
 
   /* Estados / Semánticos */
-  --color-exito:        #22C55E;
-  --color-advertencia:  #F59E0B;
-  --color-error:        #EF4444;
-  --color-info:         #3B82F6;
+  --color-exito: #22c55e;
+  --color-advertencia: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
 
   /* Variantes con opacidad */
-  --color-principal-suave:  rgba(20, 184, 166, 0.1);
-  --color-principal-borde:  #CCFBF1;
-  --color-exito-suave:      rgba(34, 197, 94, 0.1);
-  --color-error-suave:      rgba(239, 68, 68, 0.08);
-  --color-info-suave:       rgba(59, 130, 246, 0.08);
+  --color-principal-suave: rgba(20, 184, 166, 0.1);
+  --color-principal-borde: #ccfbf1;
+  --color-exito-suave: rgba(34, 197, 94, 0.1);
+  --color-error-suave: rgba(239, 68, 68, 0.08);
+  --color-info-suave: rgba(59, 130, 246, 0.08);
 
   /* Tipografía */
   --fuente-base: 'Inter', system-ui, -apple-system, sans-serif;
 
   /* Sombras */
-  --sombra-tarjeta:  0 4px 20px rgba(0, 0, 0, 0.05);
-  --sombra-navbar:   0 1px 3px rgba(0, 0, 0, 0.05);
+  --sombra-tarjeta: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --sombra-navbar: 0 1px 3px rgba(0, 0, 0, 0.05);
   --sombra-dropdown: 0 10px 25px rgba(0, 0, 0, 0.08);
 
   /* Radios de borde */
-  --radio-sm:   8px;
-  --radio-md:   12px;
-  --radio-lg:   16px;
+  --radio-sm: 8px;
+  --radio-md: 12px;
+  --radio-lg: 16px;
   --radio-pill: 9999px;
 
   /* Transición estándar */
