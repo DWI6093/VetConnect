@@ -1,0 +1,20 @@
+config:
+  target: "https://vetconnect-q6c5.onrender.com"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+  plugins:
+    expect: {}
+    ensure:
+      conditions:
+        - expression: "http.response_time.p95 <= 1000"
+        - expression: "vusers.failed == 0"
+
+scenarios:
+  - name: CP-PE-01 Negocios cercanos
+    flow:
+      - get:
+          url: "/negocios/cercanos?latitud=21.168499122610434&longitud=-100.93475679604775"
+          expect:
+            - statusCode: 200
+            - contentType: json

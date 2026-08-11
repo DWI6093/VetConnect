@@ -19,9 +19,12 @@ RUN npm ci --omit=dev && npm cache clean --force
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 # Usuario sin privilegios
 RUN addgroup -S nestjs && adduser -S nestjs -G nestjs
+RUN mkdir -p /app/uploads/negocios \
+  && chown -R nestjs:nestjs /app/uploads
 USER nestjs
 
 EXPOSE 3000

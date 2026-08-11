@@ -1,0 +1,25 @@
+config:
+  target: "https://vetconnect-q6c5.onrender.com"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+  plugins:
+    expect: {}
+    ensure:
+      conditions:
+        - expression: "http.response_time.p95 <= 1000"
+        - expression: "vusers.failed == 0"
+  variables:
+    accessToken:
+      - "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJjb3JyZW8iOiJsb3BlemNlc2FyMDQyOEBnbWFpbC5jb20iLCJyb2wiOiJDT0xBQk9SQURPUiIsIm5vbWJyZSI6IkNlc2FyQSIsImFwZWxsaWRvIjoiTG9wZXogQWd1aWxhciIsImlhdCI6MTc4NjQ1NzUxOCwiZXhwIjoxNzg2NDU4MTE4fQ.GEkGAKtIU0OGQZIVlLyS4KZeVvi96qx8fG9fFpnD3IQ"
+
+scenarios:
+  - name: CP-PE-03 Datos autenticados
+    flow:
+      - get:
+          url: "/arco/acceso"
+          headers:
+            Authorization: "Bearer {{ accessToken }}"
+          expect:
+            - statusCode: 200
+            - contentType: json

@@ -1,0 +1,82 @@
+name: vetconnect
+
+services:
+  db:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: vetconnect_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vetconnect_user
+      POSTGRES_PASSWORD: vetconnect_pass
+      POSTGRES_DB: vetconnect_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - vetconnect_pgdata:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vetconnect_user -d vetconnect_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  migrate:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: builder
+    environment:
+      DATABASE_URL: postgresql://vetconnect_user:vetconnect_pass@db:5432/vetconnect_db
+      DIRECT_DATABASE_URL: postgresql://vetconnect_user:vetconnect_pass@db:5432/vetconnect_db
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["npm", "run", "db:migrate"]
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: vetconnect_backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://vetconnect_user:vetconnect_pass@db:5432/vetconnect_db
+      DIRECT_DATABASE_URL: postgresql://vetconnect_user:vetconnect_pass@db:5432/vetconnect_db
+      FRONTEND_URL: http://localhost:4200
+      JWT_SECRET: vetconnect-local-jwt-secret
+      REFRESH_SECRET: vetconnect-local-refresh-secret
+      COOKIE_SAME_SITE: lax
+    ports:
+      - "3000:3000"
+    volumes:
+      - vetconnect_uploads:/app/uploads
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        API_URL: http://localhost:3000
+    container_name: vetconnect_frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  vetconnect_pgdata:
+  vetconnect_uploads:
