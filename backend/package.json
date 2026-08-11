@@ -17,7 +17,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:cp": "jest --verbose src/modules/usuarios/dto/crear-cliente.spec.ts src/modules/auth/auth.service.spec.ts src/modules/auth/auth.service.login.spec.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -70,6 +71,7 @@
     "multer": "^2.2.0"
   },
   "jest": {
+    "moduleNameMapper": { "^src/(.*)$": "<rootDir>/$1" },
     "moduleFileExtensions": [
       "js",
       "json",
