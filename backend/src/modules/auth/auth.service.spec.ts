@@ -40,11 +40,7 @@ describe('AuthService - registrarCliente (hasheo de contraseña)', () => {
     const auditLogMock = { logAudit: jest.fn() } as unknown as AuditLogService;
     const errorLogMock = { logError: jest.fn() } as unknown as ErrorLogService;
 
-    authService = new AuthService(
-      prismaMock as unknown as PrismaService,
-      auditLogMock,
-      errorLogMock,
-    );
+    authService = new AuthService(prismaMock, auditLogMock, errorLogMock);
   });
 
   it('debe guardar la contraseña hasheada, nunca en texto plano', async () => {

@@ -32,11 +32,7 @@ describe('AuthService - iniciarSesion (login con credenciales inválidas)', () =
     const auditLogMock = { logAudit: jest.fn() } as unknown as AuditLogService;
     const errorLogMock = { logError: jest.fn() } as unknown as ErrorLogService;
 
-    authService = new AuthService(
-      prismaMock as unknown as PrismaService,
-      auditLogMock,
-      errorLogMock,
-    );
+    authService = new AuthService(prismaMock, auditLogMock, errorLogMock);
   });
 
   it('A) debe fallar si el correo no existe', async () => {
@@ -47,9 +43,9 @@ describe('AuthService - iniciarSesion (login con credenciales inválidas)', () =
       password: 'cualquierpassword',
     };
 
-    await expect(
-      authService.iniciarSesion(reqMock, dto),
-    ).rejects.toThrow(UnauthorizedException);
+    await expect(authService.iniciarSesion(reqMock, dto)).rejects.toThrow(
+      UnauthorizedException,
+    );
 
     expect(prismaMock.usuario.update).not.toHaveBeenCalled();
   });
@@ -67,9 +63,9 @@ describe('AuthService - iniciarSesion (login con credenciales inválidas)', () =
       password: 'cualquierpassword',
     };
 
-    await expect(
-      authService.iniciarSesion(reqMock, dto),
-    ).rejects.toThrow(UnauthorizedException);
+    await expect(authService.iniciarSesion(reqMock, dto)).rejects.toThrow(
+      UnauthorizedException,
+    );
 
     expect(prismaMock.usuario.update).not.toHaveBeenCalled();
   });
@@ -93,9 +89,9 @@ describe('AuthService - iniciarSesion (login con credenciales inválidas)', () =
       password: 'PasswordIncorrecto999',
     };
 
-    await expect(
-      authService.iniciarSesion(reqMock, dto),
-    ).rejects.toThrow(UnauthorizedException);
+    await expect(authService.iniciarSesion(reqMock, dto)).rejects.toThrow(
+      UnauthorizedException,
+    );
 
     expect(prismaMock.usuario.update).not.toHaveBeenCalled();
   });
